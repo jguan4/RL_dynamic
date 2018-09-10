@@ -71,4 +71,4 @@ class Acrobot:
         self.history.append(temp)
 
     def __str__(self):
-        return self.name + '\nseed: {0}\nactions: {1}'.format(self.seed, self.action_dict)
+        return self.name + '\nseed: {0}\nactions: {1}'.format(0, self.action_dict)

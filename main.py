@@ -14,7 +14,7 @@ import parameters.setup as setup
 #    in parameters/setup.py.
 ########################################################################################################
 
-environment = env.CarRacing(**setup.setup_dict['acrobot'])
+environment = env.Acrobot(**setup.setup_dict['acrobot'])
 control = agent.DQN_Agent(environment=environment, model_name=sys.argv[1], **setup.setup_dict['agent'])
 
 #####################################  Traning a model  ################################################
