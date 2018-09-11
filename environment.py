@@ -17,13 +17,13 @@ class Acrobot:
     def __init__(self, type="Acrobot", history_pick=4):
         self.name = type + str(time.time())
         self.env = gym.make(type + '-v1')
-        self.state_dimension = [1,6]
+        self.state_dimension = [6]
         self.history_pick = history_pick
         self.state_space_size = history_pick * np.prod(self.state_dimension)
         self.action_space_size = 3
         self.state_shape = [None, self.history_pick] + list(self.state_dimension)
         self.history = []
-        self.action_dict = {0: [-1], 1: [0], 2: [1]}
+        self.action_dict = {0: -1, 1: 0, 2: 1}
 
     # returns a random action
     def sample_action_space(self):
@@ -57,7 +57,7 @@ class Acrobot:
         self.add_history(state)
         if len(self.history) < self.history_pick:
             zeros = np.zeros(self.state_dimension)
-            result = np.tile(zeros, ((self.history_pick - len(self.history)), 1, 1))
+            result = np.tile(zeros, ((self.history_pick - len(self.history)), 1))
             result = np.concatenate((result, np.array(self.history)))
         else:
             result = np.array(self.history)
