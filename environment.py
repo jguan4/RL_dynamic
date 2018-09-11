@@ -21,7 +21,7 @@ class Acrobot:
         self.history_pick = history_pick
         self.state_space_size = history_pick * np.prod(self.state_dimension)
         self.action_space_size = 3
-        self.state_shape = [None, self.history_pick] + list(self.state_dimension)
+        self.state_shape = [None, self.history_pick*self.state_dimension[0]] 
         self.history = []
         self.action_dict = {0: -1, 1: 0, 2: 1}
         self.link1 = 1
@@ -45,7 +45,7 @@ class Acrobot:
         n = 1
         for i in range(n):
             next_state, reward, done, info = self.env.step(action)
-            reward = self.analyze_state(next_state):
+            # reward = self.analyze_state(self.process(next_state))
             total_reward += reward
             info = {'true_done': done}
             if done: break
@@ -60,10 +60,11 @@ class Acrobot:
         self.add_history(state)
         if len(self.history) < self.history_pick:
             zeros = np.zeros(self.state_dimension)
-            result = np.tile(zeros, ((self.history_pick - len(self.history)), 2))
-            result = np.concatenate((result, np.array(self.history)))
+            result = np.tile(zeros, ((self.history_pick - len(self.history)), 1))
+            result = np.concatenate((result, np.array(self.history)),axis=0)
         else:
             result = np.array(self.history)
+        result = np.reshape(result,(self.history_pick*self.state_dimension[0]))
         return result
 
     def add_history(self, state):
@@ -74,11 +75,15 @@ class Acrobot:
         self.history.append(temp)
 
     def analyze_state(self, state):
-        p1 = [-self.link1*state[:,0], self.link2*state[:,1]]
-        p2 = [p1[:,0]-self.link2*(state[:,0]*state[:,2]-state[:,1]*state[:,3]), 
-            p1[:,1]+self.link2*(state[:,0]*state[:,1]+state[:,2]*state[:,3])]
-        height_std = np.std(p2, axis=0)
-        height_ave = np.average(p2, axis=0)
+        costheta1 = np.array(state[0::self.state_dimension[0]])
+        sintheta1 = np.array(state[1::self.state_dimension[0]])
+        costheta2 = np.array(state[2::self.state_dimension[0]])
+        sintheta2 = np.array(state[3::self.state_dimension[0]])
+        p1 = np.array([[-self.link1*costheta1], [self.link2*sintheta1]])
+        p2 = np.array([[p1[0]-self.link2*(costheta1*costheta2-sintheta1*sintheta2)], 
+            [p1[1]+self.link2*(costheta1*sintheta1+costheta2*sintheta2)]])
+        height_std = np.std(p2, axis=1)
+        height_ave = np.average(p2, axis=1)
         reward = self.reward_func(height_ave, height_std)
         return reward
 

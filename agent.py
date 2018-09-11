@@ -147,7 +147,6 @@ class DQN_Agent:
         greedy_actions = self.sess.run(self.onehot_greedy_action, feed_dict={self.state_tf: next_state_batch})
         fixed_feed_dict.update({self.action_tf: greedy_actions})
         Q_batch = self.sess.run(self.Q_value_at_action, feed_dict=fixed_feed_dict)
-
         y_batch = reward_batch + self.discount * np.multiply(np.invert(done_batch), Q_batch)
 
         feed = {self.state_tf: state_batch, self.action_tf: action_batch, self.y_tf: y_batch, self.alpha: alpha}
@@ -191,6 +190,7 @@ class DQN_Agent:
             print("Episode {0}/{1} \t Epsilon: {2} \t Alpha: {3}".format(episode, self.training_metadata.num_episodes, epsilon, alpha))
             episode_frame = 0
             while not done:
+                self.env.render()
                 # Updating fixed target weights every #target_update_frequency frames
                 if self.training_metadata.frame % self.target_update_frequency == 0 and (self.training_metadata.frame != 0):
                     self.update_fixed_target_weights()
