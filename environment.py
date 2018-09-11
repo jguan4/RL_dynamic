@@ -24,6 +24,8 @@ class Acrobot:
         self.state_shape = [None, self.history_pick] + list(self.state_dimension)
         self.history = []
         self.action_dict = {0: -1, 1: 0, 2: 1}
+        self.link1 = 1
+        self.link2 = 1
 
     # returns a random action
     def sample_action_space(self):
@@ -43,6 +45,7 @@ class Acrobot:
         n = 1
         for i in range(n):
             next_state, reward, done, info = self.env.step(action)
+            reward = self.analyze_state(next_state):
             total_reward += reward
             info = {'true_done': done}
             if done: break
@@ -69,6 +72,18 @@ class Acrobot:
         # temp = utils.process_image(state, detect_edges=self.detect_edges, flip=self.flip_episode)
         temp = state
         self.history.append(temp)
+
+    def analyze_state(self, state):
+        p1 = [-self.link1*state[:,0], self.link2*state[:,1]]
+        p2 = [p1[:,0]-self.link2*(state[:,0]*state[:,2]-state[:,1]*state[:,3]), 
+            p1[:,1]+self.link2*(state[:,0]*state[:,1]+state[:,2]*state[:,3])]
+        height_std = np.std(p2, axis=0)
+        height_ave = np.average(p2, axis=0)
+        reward = self.reward_func(height_ave, height_std)
+        return reward
+
+    def reward_func(self, height_ave, height_std):
+        return -height_std[0]
 
     def __str__(self):
         return self.name + '\nseed: {0}\nactions: {1}'.format(0, self.action_dict)
