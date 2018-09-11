@@ -60,7 +60,7 @@ class Acrobot:
         self.add_history(state)
         if len(self.history) < self.history_pick:
             zeros = np.zeros(self.state_dimension)
-            result = np.tile(zeros, ((self.history_pick - len(self.history)), 1))
+            result = np.tile(zeros, ((self.history_pick - len(self.history)), 2))
             result = np.concatenate((result, np.array(self.history)))
         else:
             result = np.array(self.history)

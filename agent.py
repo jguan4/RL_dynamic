@@ -100,7 +100,6 @@ class DQN_Agent:
         self.Q_amax = tf.reduce_max(self.Q_value, axis=1, name='Q_max')
         self.Q_value_at_action = tf.reduce_sum(tf.multiply(self.Q_value, self.action_tf), axis=1, name='Q_value_at_action')
         self.onehot_greedy_action = tf.one_hot(self.Q_argmax, depth=self.action_size)
-        # self.onehot_greedy_action = tf.squeeze(tf.one_hot(self.Q_argmax, depth=1))
 
         # Training related
         # NAME                          FEED DEPENDENCIES
@@ -145,10 +144,8 @@ class DQN_Agent:
         y_batch = [None] * self.replay_memory.batch_size
         fixed_feed_dict = {self.state_tf: next_state_batch}
         fixed_feed_dict.update(zip(self.trainable_variables, self.fixed_target_weights))
-        print(action_batch)
         greedy_actions = self.sess.run(self.onehot_greedy_action, feed_dict={self.state_tf: next_state_batch})
         fixed_feed_dict.update({self.action_tf: greedy_actions})
-        print(greedy_actions)
         Q_batch = self.sess.run(self.Q_value_at_action, feed_dict=fixed_feed_dict)
 
         y_batch = reward_batch + self.discount * np.multiply(np.invert(done_batch), Q_batch)
