@@ -234,7 +234,7 @@ class DQN_Agent:
         rewards = []
         for episode in range(num_test_episodes):
             done = False
-            state, _ = self.env.reset(test=True)
+            state = self.env.reset(test=True)
             episode_reward = 0
             if not visualize:
                 self.test_env.render()
@@ -242,7 +242,7 @@ class DQN_Agent:
                 if visualize:
                     self.env.render()
                 action = self.get_action(state, epsilon=0)
-                next_state, reward, done, info, _ = self.env.step(action, test=True)
+                next_state, reward, done, info = self.env.step(action, test=True)
                 state = next_state
                 episode_reward += reward
                 done = info['true_done']
