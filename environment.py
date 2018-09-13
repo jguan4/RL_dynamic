@@ -74,16 +74,17 @@ class Acrobot:
         sintheta1 = np.array(state[1::self.state_dimension[0]])
         costheta2 = np.array(state[2::self.state_dimension[0]])
         sintheta2 = np.array(state[3::self.state_dimension[0]])
+        theta1dot = np.array(state[4::self.state_dimension[0]])
+        theta2dot = np.array(state[5::self.state_dimension[0]])
         p1 = np.array([-self.link1*costheta1, self.link2*sintheta1])
         p2 = np.array([p1[0]-self.link2*(costheta1*costheta2-sintheta1*sintheta2), 
             p1[1]+self.link2*(costheta1*sintheta1+costheta2*sintheta2)])
         height_std = np.std(p2, axis=1)
         height_ave = np.average(p2, axis=1)
-        reward = self.reward_func(height_ave, height_std)
+        theta1dot_ave = np.average(theta1dot)
+        theta2dot_ave = np.average(theta2dot)
+        reward = (height_ave^2) - (0.1*(theta1dot_ave^2+theta2dot_ave^2))
         return reward
-
-    def reward_func(self, height_ave, height_std):
-        return height_ave[0]-height_std[0]
 
     def __str__(self):
         return self.name + '\nseed: {0}\nactions: {1}'.format(0, self.action_dict)
