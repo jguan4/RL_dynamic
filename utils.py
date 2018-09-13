@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 # Pauses the game until a key is pressed.
 # Used for debugging purposes
 def pause():
-    programPause = raw_input("Press the <ENTER> key to continue...")
+    programPause = input("Press the <ENTER> key to continue...")
 
 
 # Sets all pixel values to be between (0,1)

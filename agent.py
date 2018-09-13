@@ -246,7 +246,9 @@ class DQN_Agent:
                 state = next_state
                 episode_reward += reward
                 done = info['true_done']
+                utils.pause()
             rewards.append(episode_reward)
+
         return np.mean(rewards), np.std(rewards), rewards
 
     # Description: Returns average Q-value over some number of fixed tracks
