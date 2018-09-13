@@ -14,13 +14,13 @@ import parameters.setup as setup
 #    in parameters/setup.py.
 ########################################################################################################
 
-environment = env.Acrobot(**setup.setup_dict['acrobot'])
+environment = env.Pendulum(**setup.setup_dict['acrobot'])
 control = agent.DQN_Agent(environment=environment, model_name=sys.argv[1], **setup.setup_dict['agent'])
 
 #####################################  Traning a model  ################################################
-# control.train()
+control.train()
 
 #####################################  Testing a model  ################################################
 ##### 
-control.load("/home/fred/Documents/JJ_Folder/RL_dynamic/models/test/data.chkp-2851")
-control.test(5, True)
+# control.load("/home/fred/Documents/JJ_Folder/RL_dynamic/models/test/data.chkp-2851")
+# control.test(5, True)

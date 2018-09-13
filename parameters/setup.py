@@ -69,5 +69,8 @@ setup_dict = {
 
 	'acrobot': {
 	}
+
+	'pendulum': {
+	}
 }
 

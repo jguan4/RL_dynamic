@@ -9,11 +9,6 @@ import utils
 import time
 
 class Acrobot:
-
-    # Parameters
-    # - type: Name of environment. Default is classic Car Racing game, but can be changed to introduce perturbations in environment
-    # - history_pick: Size of history
-    # - seed: List of seeds to sample from during training. Default is none (random games)
     def __init__(self, type="Acrobot", history_pick=4):
         self.name = type + str(time.time())
         self.env = gym.make(type + '-v1')
@@ -89,6 +84,69 @@ class Acrobot:
 
     def reward_func(self, height_ave, height_std):
         return height_ave[0]-height_std[0]
+
+    def __str__(self):
+        return self.name + '\nseed: {0}\nactions: {1}'.format(0, self.action_dict)
+
+
+class Pendulum:
+
+    def __init__(self, type="Pendulum", history_pick=4):
+        self.name = type + str(time.time())
+        self.env = gym.make(type + '-v0')
+        self.state_dimension = [3]
+        self.history_pick = history_pick
+        self.state_space_size = history_pick * np.prod(self.state_dimension)
+        self.action_space_size = 5
+        self.state_shape = [None, self.history_pick*self.state_dimension[0]] 
+        self.history = []
+        self.action_dict = {0: -2, 1: -1, 2: 0, 3: 1, 4: 2}
+
+    # returns a random action
+    def sample_action_space(self):
+        return np.random.randint(self.action_space_size)
+
+    def map_action(self, action):
+        return self.action_dict[action]
+
+    # resets the environment and returns the initial state
+    def reset(self, test=False):
+        return self.process(self.env.reset())
+
+    # take action 
+    def step(self, action, test=False):
+        action = self.map_action(action)
+        total_reward = 0
+        n = 1
+        for i in range(n):
+            next_state, reward, done, info = self.env.step(action)
+            total_reward += reward
+            info = {'true_done': done}
+            if done: break
+        processed_next_state = self.process(next_state)    
+        return processed_next_state, total_reward, done, info
+
+    def render(self):
+        self.env.render()
+
+    # process state and return the current history
+    def process(self, state):
+        self.add_history(state)
+        if len(self.history) < self.history_pick:
+            zeros = np.zeros(self.state_dimension)
+            result = np.tile(zeros, ((self.history_pick - len(self.history)), 1))
+            result = np.concatenate((result, np.array(self.history)),axis=0)
+        else:
+            result = np.array(self.history)
+        result = np.reshape(result,(self.history_pick*self.state_dimension[0]))
+        return result
+
+    def add_history(self, state):
+        if len(self.history) >= self.history_pick:
+            self.history.pop(0)
+        # temp = utils.process_image(state, detect_edges=self.detect_edges, flip=self.flip_episode)
+        temp = state
+        self.history.append(temp)
 
     def __str__(self):
         return self.name + '\nseed: {0}\nactions: {1}'.format(0, self.action_dict)
