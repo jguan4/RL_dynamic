@@ -100,7 +100,7 @@ class Pendulum:
         self.action_space_size = 5
         self.state_shape = [None, self.history_pick*self.state_dimension[0]] 
         self.history = []
-        self.action_dict = {0: -2, 1: -1, 2: 0, 3: 1, 4: 2}
+        self.action_dict = {0: [-2], 1: [-1], 2: [0], 3: [1], 4: [2]}
 
     # returns a random action
     def sample_action_space(self):
