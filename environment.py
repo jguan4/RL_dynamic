@@ -83,7 +83,8 @@ class Acrobot:
         height_ave = np.average(p2, axis=1)
         theta1dot_ave = np.average(theta1dot)
         theta2dot_ave = np.average(theta2dot)
-        reward = (np.square(height_ave[0])) - (0.1*(np.square(theta1dot_ave)+np.square(theta2dot_ave)))
+        reward = height_ave[0] - ((np.square(theta1dot_ave)+np.square(theta2dot_ave))/(97*np.square(np.pi)))
+        # reward = height_ave[0]
         return reward
 
     def __str__(self):

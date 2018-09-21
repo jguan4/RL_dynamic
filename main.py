@@ -22,5 +22,5 @@ control.train()
 
 #####################################  Testing a model  ################################################
 ##### 
-# control.load("/home/fred/Documents/JJ_Folder/RL_dynamic/models/test/data.chkp-2851")
+# control.load("/home/fred/Documents/JJ_Folder/RL_dynamic/models/acrobot_reward_pendulum_normalize_correcte/data.chkp-2791")
 # control.test(5, True)
