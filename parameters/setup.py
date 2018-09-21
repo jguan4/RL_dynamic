@@ -12,11 +12,14 @@ fixed_1track_seed = [108]
 fixed_3track_seed = [104, 106, 108]
 
 import sys
-sys.path.append("/home/fred/Documents/JJ_Folder/RL_dynamic/parameters")
+import os
+path = os.path.realpath(__file__)
+sys.path.append(path)
+
 # import necessary classes
-from explore_rates import *
-from learning_rates import * 
-from architectures import *
+from .explore_rates import *
+from .learning_rates import * 
+from .architectures import *
 
 ####################################################################
 # Hyperparameters:												   #

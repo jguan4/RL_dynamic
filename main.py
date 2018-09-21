@@ -1,7 +1,8 @@
 import sys
 sys.dont_write_bytecode = True
-
-import sys
+import os
+path = os.path.realpath(__file__)
+sys.path.append(path)
 import tensorflow as tf
 import agent
 import environment as env
@@ -14,7 +15,7 @@ import parameters.setup as setup
 #    in parameters/setup.py.
 ########################################################################################################
 
-environment = env.Acrobot(**setup.setup_dict['acrobot'], factor = sys.argv[1], normalize = sys.argv[2])
+environment = env.Acrobot(**setup.setup_dict['acrobot'], factor = int(sys.argv[1]), normalize = float(sys.argv[2]))
 control = agent.DQN_Agent(environment=environment, model_name=sys.argv[3], **setup.setup_dict['agent'])
 
 #####################################  Traning a model  ################################################

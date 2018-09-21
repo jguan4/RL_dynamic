@@ -7,5 +7,5 @@ normalizes = [normalized_1, normalized_1*0.5, normalized_1*0.25, normalized_1*0.
 
 for factor in factors:
 	for normalize in normalizes:
-		model_name = "Acrobot_reward_factor_{0}/normalize_{1}".format(factor, normalize)
+		model_name = "Acrobot_reward_factor_{0}/normalize_{1}".format(factor, normalize/normalized_1)
 		subprocess.run(['python3', 'main.py', str(factor), str(normalize), model_name])

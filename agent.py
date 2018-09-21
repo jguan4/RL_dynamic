@@ -204,7 +204,7 @@ class DQN_Agent:
                 self.replay_memory.add(self, state, action, reward, next_state, done)
 
                 # Performing experience replay if replay memory populated
-                if self.replay_memory.length() > 10 * self.replay_memory.batch_size:
+                if self.replay_memory.length() > 100 * self.replay_memory.batch_size:
                     self.sess.run(self.increment_frames_op)
                     self.training_metadata.increment_frame()
                     self.experience_replay(alpha)

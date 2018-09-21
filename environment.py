@@ -15,7 +15,6 @@ class Acrobot:
         self.env.factor = factor
         self.factor = factor
         self.normalize = normalize
-        print(self.env.AVAIL_TORQUE)
         self.state_dimension = [6]
         self.history_pick = history_pick
         self.state_space_size = history_pick * np.prod(self.state_dimension)
@@ -48,7 +47,7 @@ class Acrobot:
             total_reward += reward
             info = {'true_done': done}
             if done: break
-        total_reward = total_reward/i
+        total_reward = total_reward/(i+1)
         processed_next_state = self.process(next_state)    
         return processed_next_state, total_reward, done, info
 
