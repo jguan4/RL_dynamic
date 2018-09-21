@@ -14,8 +14,8 @@ import parameters.setup as setup
 #    in parameters/setup.py.
 ########################################################################################################
 
-environment = env.Acrobot(**setup.setup_dict['acrobot'])
-control = agent.DQN_Agent(environment=environment, model_name=sys.argv[1], **setup.setup_dict['agent'])
+environment = env.Acrobot(**setup.setup_dict['acrobot'], factor = sys.argv[1], normalize = sys.argv[2])
+control = agent.DQN_Agent(environment=environment, model_name=sys.argv[3], **setup.setup_dict['agent'])
 
 #####################################  Traning a model  ################################################
 control.train()
