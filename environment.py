@@ -9,10 +9,12 @@ import utils
 import time
 
 class Acrobot:
-    def __init__(self, type="Acrobot", history_pick=4, factor=1):
+    def __init__(self, type="Acrobot", history_pick=4, factor=1, normalize=97*np.square(np.pi)):
         self.name = type + str(time.time())
-        self.env = gym.make(type + '-v1')
+        self.env = gym.make(type + '-v1', factor)
         self.env.factor = factor
+        self.factor = factor
+        self.normalize = normalize
         print(self.env.AVAIL_TORQUE)
         self.state_dimension = [6]
         self.history_pick = history_pick
@@ -20,7 +22,7 @@ class Acrobot:
         self.action_space_size = 3
         self.state_shape = [None, self.history_pick*self.state_dimension[0]] 
         self.history = []
-        self.action_dict = {0: -1, 1: 0, 2: 1}
+        self.action_dict = {0: 0, 1: 1, 2: 2}
         self.link1 = 1
         self.link2 = 1
 
@@ -37,15 +39,16 @@ class Acrobot:
 
     # take action 
     def step(self, action, test=False):
-        # action = self.map_action(action)
+        action = self.map_action(action)
         total_reward = 0
-        n = 1
+        n = self.factor
         for i in range(n):
             next_state, reward, done, info = self.env.step(action)
             reward = self.analyze_state(self.process(next_state))
             total_reward += reward
             info = {'true_done': done}
             if done: break
+        total_reward = total_reward/i
         processed_next_state = self.process(next_state)    
         return processed_next_state, total_reward, done, info
 
@@ -85,7 +88,7 @@ class Acrobot:
         height_ave = np.average(p2, axis=1)
         theta1dot_ave = np.average(theta1dot)
         theta2dot_ave = np.average(theta2dot)
-        reward = height_ave[0] - ((np.square(theta1dot_ave)+np.square(theta2dot_ave))/(97*np.square(np.pi)))
+        reward = height_ave[0] - ((np.square(theta1dot_ave)+np.square(theta2dot_ave))/(self.normalize))
         # reward = height_ave[0]
         return reward
 
