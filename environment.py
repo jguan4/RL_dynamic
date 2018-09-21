@@ -9,9 +9,11 @@ import utils
 import time
 
 class Acrobot:
-    def __init__(self, type="Acrobot", history_pick=4):
+    def __init__(self, type="Acrobot", history_pick=4, factor=1):
         self.name = type + str(time.time())
         self.env = gym.make(type + '-v1')
+        self.env.factor = factor
+        print(self.env.AVAIL_TORQUE)
         self.state_dimension = [6]
         self.history_pick = history_pick
         self.state_space_size = history_pick * np.prod(self.state_dimension)
@@ -35,7 +37,7 @@ class Acrobot:
 
     # take action 
     def step(self, action, test=False):
-        action = self.map_action(action)
+        # action = self.map_action(action)
         total_reward = 0
         n = 1
         for i in range(n):
