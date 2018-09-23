@@ -65,9 +65,9 @@ setup_dict = {
 		'explore_rate': Decay_Explore_Rate,
 		'target_update_frequency': 1000,
 		'batch_size': 32, 
-		'memory_capacity': 100000, 
-		'num_episodes': 3000,
-		'learning_rate_drop_frame_limit': 250000
+		'memory_capacity': 1000000, 
+		'num_episodes': 5000,
+		'learning_rate_drop_frame_limit': 500000
 	},
 
 	'acrobot': {
