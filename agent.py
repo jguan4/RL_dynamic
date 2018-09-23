@@ -230,7 +230,7 @@ class DQN_Agent:
     # Parameters:
     # - num_test_episodes: 	Integer, giving the number of episodes to be tested over
     # - visualize: 			Boolean, gives whether should render the testing gameplay
-    def test(self, num_test_episodes, visualize):
+    def test(self, num_test_episodes, visualize, pause=False):
         rewards = []
         for episode in range(num_test_episodes):
             done = False
@@ -246,6 +246,7 @@ class DQN_Agent:
                 state = next_state
                 episode_reward += reward
                 done = info['true_done']
+                if pause: utils.pause()
             rewards.append(episode_reward)
 
         return np.mean(rewards), np.std(rewards), rewards

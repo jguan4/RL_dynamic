@@ -19,9 +19,4 @@ environment = env.Acrobot(**setup.setup_dict['acrobot'], factor = int(sys.argv[1
 control = agent.DQN_Agent(environment=environment, model_name=sys.argv[3], **setup.setup_dict['agent'])
 
 #####################################  Traning a model  ################################################
-# control.train()
-
-#####################################  Testing a model  ################################################
-##### 
-control.load("/home/fred/Documents/JJ_Folder/RL_dynamic/models/acrobot_reward_pendulum_normalize_correcte/data.chkp-4051")
-control.test(5, True)
+control.train()
