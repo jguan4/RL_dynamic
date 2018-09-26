@@ -40,10 +40,11 @@ class Acrobot:
     def step(self, action, test=False):
         action = self.map_action(action)
         total_reward = 0
-        n = self.factor
+        # n = self.factor
+        n = 1
         for i in range(n):
             next_state, reward, done, info = self.env.step(action)
-            reward = self.analyze_state(self.process(next_state))
+            reward, done = self.analyze_state(self.process(next_state))
             total_reward += reward
             info = {'true_done': done}
             if done: break
@@ -88,8 +89,9 @@ class Acrobot:
         theta1dot_ave = np.average(theta1dot)
         theta2dot_ave = np.average(theta2dot)
         reward = height_ave[0] - ((np.square(theta1dot_ave)+np.square(theta2dot_ave))/(self.normalize))
+        done = True if height_ave[0]< 1 else False
         # reward = height_ave[0]
-        return reward
+        return reward, done
 
     def __str__(self):
         return self.name + '\nseed: {0}\nactions: {1}'.format(0, self.action_dict)
