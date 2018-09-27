@@ -12,7 +12,7 @@ import numpy as np
 class Basic_Architecture:
 
     def __init__(self):
-        self.layer_sizes = [32, 32]
+        self.layer_sizes = [128, 128]
 
     def evaluate(self, input, action_size):
         neural_net = input
