@@ -12,7 +12,7 @@ normalizes = [normalized_1*4, normalized_1*2, normalized_1, normalized_1*0.5, no
 # 	for normalize in normalizes:
 for factor in factors:
 	normalize = normalizes[2]
-	model_name = "Acrobot_reward_factor_{0}_straightstart/normalize_{1}".format(factor, normalize/normalized_1)
+	model_name = "Acrobot_reward_factor_{0}_straightstart_notorquechange/normalize_{1}".format(factor, normalize/normalized_1)
 	model_path = DIR_PATH+"/models/"+model_name
 	if os.path.isdir(model_path):
 		continue

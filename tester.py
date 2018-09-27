@@ -13,6 +13,5 @@ control = agent.DQN_Agent(environment=environment, model_name=sys.argv[3], **set
 
 #####################################  Testing a model  ################################################
 ##### 
-print(path)
 control.load(path+"/models/"+sys.argv[3]+"/data.chkp-"+sys.argv[4])
-control.test(5, True, pause = True)
+control.test(10, True, pause = True)
