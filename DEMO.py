@@ -12,7 +12,7 @@ for factor in factors:
 # 	for normalize in normalizes:
 # factor = factors[2]
 	normalize = normalizes[2]
-	model_name = "Acrobot_reward_factor_{0}_straightstart/nostack/normalize_{1}".format(factor, normalize/normalized_1)
+	model_name = "Acrobot_reward_factor_{0}_straightstart/5actions/normalize_{1}".format(factor, normalize/normalized_1)
 	model_path = DIR_PATH+"/models/"+model_name
 	if os.path.isdir(model_path):
 		continue

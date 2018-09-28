@@ -9,7 +9,7 @@ import utils
 import time
 
 class Acrobot:
-    def __init__(self, type="Acrobot", history_pick=1, factor=1, normalize=97*np.square(np.pi)):
+    def __init__(self, type="Acrobot", history_pick=4, factor=1, normalize=97*np.square(np.pi)):
         self.name = type + str(time.time())
         self.env = gym.make(type + '-v1', factor)
         self.env.factor = factor
@@ -21,7 +21,7 @@ class Acrobot:
         self.action_space_size = 3
         self.state_shape = [None, self.history_pick*self.state_dimension[0]] 
         self.history = []
-        self.action_dict = {0: 0, 1: 1, 2: 2}
+        self.action_dict = {0: 0, 1: 1, 2: 2, 3:3, 4:4}
         self.link1 = 1
         self.link2 = 1
 
