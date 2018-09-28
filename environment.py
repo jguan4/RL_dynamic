@@ -9,7 +9,7 @@ import utils
 import time
 
 class Acrobot:
-    def __init__(self, type="Acrobot", history_pick=4, factor=1, normalize=97*np.square(np.pi)):
+    def __init__(self, type="Acrobot", history_pick=1, factor=1, normalize=97*np.square(np.pi)):
         self.name = type + str(time.time())
         self.env = gym.make(type + '-v1', factor)
         self.env.factor = factor

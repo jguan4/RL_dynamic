@@ -16,7 +16,7 @@ class Basic_Architecture:
 
     def evaluate(self, input, action_size):
         neural_net_1 = tf.layers.dense(input, self.layer_sizes[0], activation=tf.nn.relu)
-        neural_net_2 = tf.nn.dropout(tf.layers.dense(neural_net_1, self.layer_sizes[1], activation=tf.nn.relu),0.7)
+        neural_net_2 = tf.layers.dense(neural_net_1, self.layer_sizes[1], activation=tf.nn.relu)
         output = tf.layers.dense(neural_net_2, action_size, activation=None, name='output')
         return output
 
