@@ -190,7 +190,7 @@ class DQN_Agent:
             print("Episode {0}/{1} \t Epsilon: {2} \t Alpha: {3}".format(episode, self.training_metadata.num_episodes, epsilon, alpha))
             episode_frame = 0
             while not done:
-                self.env.render()
+                # self.env.render()
                 # Updating fixed target weights every #target_update_frequency frames
                 if self.training_metadata.frame % self.target_update_frequency == 0 and (self.training_metadata.frame != 0):
                     self.update_fixed_target_weights()
