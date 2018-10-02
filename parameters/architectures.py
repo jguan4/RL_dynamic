@@ -12,7 +12,7 @@ import numpy as np
 class Basic_Architecture:
 
     def __init__(self):
-        self.layer_sizes = [32, 32]
+        self.layer_sizes = [64, 64]
 
     def evaluate(self, input, action_size):
         neural_net_1 = tf.layers.dense(input, self.layer_sizes[0], activation=tf.nn.relu)
