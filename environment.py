@@ -99,7 +99,7 @@ class Acrobot:
 
 class Pendulum:
 
-    def __init__(self, type="Pendulum", history_pick=4):
+    def __init__(self, type="Pendulum", history_pick=1):
         self.name = type + str(time.time())
         self.env = gym.make(type + '-v0')
         self.state_dimension = [3]
