@@ -56,6 +56,7 @@ class DQN_Agent:
         # Training parameters setup
         self.target_update_frequency = target_update_frequency
         self.discount = discount
+        self.best_training_score = None;
         self.replay_memory = rplm.Replay_Memory(memory_capacity, batch_size)
         # self.training_metadata = utils.Training_Metadata(frame=self.sess.run(self.frames), frame_limit=learning_rate_drop_frame_limit,
         # 												   episode=self.sess.run(self.episode), num_episodes=num_episodes)
@@ -219,11 +220,16 @@ class DQN_Agent:
             # Saving tensorboard data and model weights
             if (episode % 30 == 0) and (episode != 0):
                 score, std, rewards = self.test(num_test_episodes=5, visualize=True)
+                if score>self.best_training_score or self.best_training_score==None:
+                    self.best_training_score = score
+                    self.delete_previous_checkpoints()
+                    self.saver.save(self.sess, self.model_path + '/bestdata.chkp', global_step=self.training_metadata.episode)
+                else if (self.training_metadata.num_episodes - episode)<30:
+                    self.saver.save(self.sess, self.model_path + '/lastdata.chkp', global_step=self.training_metadata.episode)
                 print('{0} +- {1}'.format(score, std))
                 self.writer.add_summary(self.sess.run(self.test_summary,
                                                       feed_dict={self.test_score: score}), episode / 30)
-                self.saver.save(self.sess, self.model_path + '/data.chkp', global_step=self.training_metadata.episode)
-
+                
             self.writer.add_summary(self.sess.run(self.training_summary, feed_dict={self.avg_q: avg_q}), episode)
 
     # Description: Tests the model
@@ -265,3 +271,9 @@ class DQN_Agent:
     # Output:	None
     def load(self, path):
         self.saver.restore(self.sess, path)
+
+    def delete_previous_checkpoints(self):
+        my_dir = self.model_path
+        for fname in os.listdir(my_dir):
+            if fname.startswith("bestdata"):
+                os.remove(os.path.join(my_dir, fname))
