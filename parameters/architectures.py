@@ -12,12 +12,13 @@ import numpy as np
 class Basic_Architecture:
 
     def __init__(self):
-        self.layer_sizes = [512, 512]
+        self.layer_sizes = [64, 64, 64]
 
     def evaluate(self, input, action_size):
         neural_net_1 = tf.layers.dense(input, self.layer_sizes[0], activation=tf.nn.relu)
         neural_net_2 = tf.layers.dense(neural_net_1, self.layer_sizes[1], activation=tf.nn.relu)
-        output = tf.layers.dense(neural_net_2, action_size, activation=None, name='output')
+        neural_net_3 = tf.layers.dense(neural_net_2, self.layer_sizes[2], activation=tf.nn.relu)
+        output = tf.layers.dense(neural_net_3, action_size, activation=None, name='output')
         return output
 
     def __str__(self):
