@@ -13,9 +13,9 @@ last_modified_name = os.path.splitext(os.path.basename(last_modified))[0]
 for f in paths:
 	if os.stat(f).st_mtime < best_chkp_time_a and \
 	os.stat(f).st_mtime > best_chkp_time_p:
-		os.rename(os.path.basename(f),"best."+os.path.basename(f))
-	elif re.match(last_modified_name,f):
-		os.rename(os.path.basename(f),"last."+os.path.basename(f))	
+		os.rename(f,os.path.join(path,"best."+os.path.basename(f)))
+	elif re.match(last_modified_name,os.basename(f)):
+		os.rename(f,os.path.join(path,"last."+os.path.basename(f)))
 	else:
 		if os.path.isfile(f):
 			# os.remove(f)
