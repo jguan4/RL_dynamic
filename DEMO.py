@@ -12,7 +12,7 @@ normalizes = [normalized_1*4, normalized_1*2, normalized_1, normalized_1*0.5, no
 # 	for normalize in normalizes:
 factor = factors[0]
 normalize = normalizes[2]
-model_name = "1008runs/Pendulum/actioninreward".format(factor, normalize/normalized_1)
+model_name = "1014runs/Acrobat/FrameReward".format(factor, normalize/normalized_1)
 model_path = DIR_PATH+"/models/"+model_name
 # if os.path.isdir(model_path):
 # 	continue

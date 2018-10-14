@@ -15,7 +15,7 @@ import parameters.setup as setup
 #    in parameters/setup.py.
 ########################################################################################################
 
-environment = env.Pendulum(**setup.setup_dict['pendulum'], factor = int(sys.argv[1]), normalize = float(sys.argv[2]))
+environment = env.Acrobat(**setup.setup_dict['acrobat'], factor = int(sys.argv[1]), normalize = float(sys.argv[2]))
 control = agent.DQN_Agent(environment=environment, model_name=sys.argv[3], **setup.setup_dict['agent'])
 
 #####################################  Traning a model  ################################################

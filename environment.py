@@ -88,8 +88,9 @@ class Acrobot:
         height_ave = np.average(p2, axis=1)
         theta1dot_ave = np.average(theta1dot)
         theta2dot_ave = np.average(theta2dot)
-        reward = height_ave[0] - ((np.square(theta1dot_ave)+np.square(theta2dot_ave))/(self.normalize))
+        # reward = height_ave[0] - ((np.square(theta1dot_ave)+np.square(theta2dot_ave))/(self.normalize))
         done = True if height_ave[0]< 1 else False
+        reward = 1 if done else 0
         # reward = height_ave[0]
         return reward, done
 

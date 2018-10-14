@@ -1,4 +1,4 @@
-import sys
+import sys, re
 sys.dont_write_bytecode = True
 
 import gym
@@ -223,9 +223,9 @@ class DQN_Agent:
                 if score>self.best_training_score or self.best_training_score==None:
                     self.best_training_score = score
                     self.delete_previous_checkpoints()
-                    self.saver.save(self.sess, self.model_path + '/bestdata.chkp', global_step=self.training_metadata.episode)
+                    self.saver.save(self.sess, self.model_path + '/best.data.chkp', global_step=self.training_metadata.episode)
                 else if (self.training_metadata.num_episodes - episode)<30:
-                    self.saver.save(self.sess, self.model_path + '/lastdata.chkp', global_step=self.training_metadata.episode)
+                    self.saver.save(self.sess, self.model_path + '/last.data.chkp', global_step=self.training_metadata.episode)
                 print('{0} +- {1}'.format(score, std))
                 self.writer.add_summary(self.sess.run(self.test_summary,
                                                       feed_dict={self.test_score: score}), episode / 30)
@@ -275,5 +275,5 @@ class DQN_Agent:
     def delete_previous_checkpoints(self):
         my_dir = self.model_path
         for fname in os.listdir(my_dir):
-            if fname.startswith("bestdata"):
+            if re.match("best.data", fname):
                 os.remove(os.path.join(my_dir, fname))
