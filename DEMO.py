@@ -2,6 +2,7 @@ import subprocess
 import numpy as np
 import os
 import utils
+import re
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 
 factors = [1, 2, 4, 6, 8, 10]
@@ -19,14 +20,11 @@ model_path = DIR_PATH+"/models/"+model_name
 # 	continue
 # else:
 
-
-
-if train:
-	subprocess.run(['python3', 'main.py', str(factor), str(normalize), model_name, None])
-else: 
+best_checkpoint_name = 'None'
+if not train:
 	files = os.listdir(model_path)
-	paths = [os.path.join(path,i) for i in os.listdir(path) if os.path.isfile(os.path.join(path,i)) and re.match('data.chkp', i)]
-	for f in paths:
-		if re.match('best.data.chkp',os.path.basename(f)):
-			best_checkpoint_name = os.path.basename(f)
-	subprocess.run(['python3', 'main.py', str(factor), str(normalize), model_name, best_checkpoint_name])
+	paths = [i for i in files if os.path.isfile(os.path.join(model_path,i)) and re.match('best.data.chkp', i)]
+	best_checkpoint_name = os.path.join(model_path,os.path.splitext(paths[1])[0])
+
+
+subprocess.run(['python3', 'main.py', str(factor), str(normalize), model_name, best_checkpoint_name])
