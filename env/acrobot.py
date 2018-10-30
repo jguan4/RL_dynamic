@@ -72,7 +72,7 @@ class AcrobotEnv(core.Env):
     MAX_VEL_1 = 4 * np.pi
     MAX_VEL_2 = 9 * np.pi
 
-    AVAIL_TORQUE = [-1., 0., +1.]
+    AVAIL_TORQUE = [-1., -0.5, 0., +0.5, +1.]
 
     torque_noise_max = 0.
 
@@ -80,14 +80,14 @@ class AcrobotEnv(core.Env):
     book_or_nips = "book"
     action_arrow = None
     domain_fig = None
-    actions_num = 3
+    actions_num = np.size(AVAIL_TORQUE)
 
     def __init__(self):
         self.viewer = None
         high = np.array([1.0, 1.0, 1.0, 1.0, self.MAX_VEL_1, self.MAX_VEL_2])
         low = -high
         self.observation_space = spaces.Box(low=low, high=high)
-        self.action_space = spaces.Discrete(3)
+        self.action_space = spaces.Discrete(self.actions_num)
         self.state = None
         self.factor = 1
         self.dt = self.dt/self.factor
