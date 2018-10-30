@@ -220,11 +220,11 @@ class DQN_Agent:
             # Saving tensorboard data and model weights
             if (episode % 30 == 0) and (episode != 0):
                 score, std, rewards = self.test(num_test_episodes=5, visualize=True)
-                if score>self.best_training_score or self.best_training_score==None:
+                if self.best_training_score==None or score>self.best_training_score:
                     self.best_training_score = score
                     self.delete_previous_checkpoints()
                     self.saver.save(self.sess, self.model_path + '/best.data.chkp', global_step=self.training_metadata.episode)
-                else if (self.training_metadata.num_episodes - episode)<30:
+                elif (self.training_metadata.num_episodes - episode)<30:
                     self.saver.save(self.sess, self.model_path + '/last.data.chkp', global_step=self.training_metadata.episode)
                 print('{0} +- {1}'.format(score, std))
                 self.writer.add_summary(self.sess.run(self.test_summary,
