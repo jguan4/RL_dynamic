@@ -14,7 +14,7 @@ train = 1
 # 	for normalize in normalizes:
 factor = factors[0]
 normalize = normalizes[2]
-model_name = "1030runs/Acrobat/5Actions".format(factor, normalize/normalized_1)
+model_name = "1103runs/Acrobat/DecaySlower".format(factor, normalize/normalized_1)
 model_path = DIR_PATH+"/models/"+model_name
 # if os.path.isdir(model_path):
 # 	continue
