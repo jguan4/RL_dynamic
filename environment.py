@@ -18,10 +18,11 @@ class Acrobot:
         self.state_dimension = [6]
         self.history_pick = history_pick
         self.state_space_size = history_pick * np.prod(self.state_dimension)
-        self.action_space_size = 5
+        self.action_space_size = 3
         self.state_shape = [None, self.history_pick*self.state_dimension[0]] 
         self.history = []
-        self.action_dict = {0:0, 1:1, 2:2, 3:3, 4:4}
+        # self.action_dict = {0:0, 1:1, 2:2, 3:3, 4:4}
+        self.action_dict = {0:0, 1:1, 2:2}
         self.link1 = 1
         self.link2 = 1
 
