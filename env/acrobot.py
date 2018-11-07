@@ -73,7 +73,7 @@ class AcrobotEnv(core.Env):
     MAX_VEL_2 = 9 * np.pi
 
     # AVAIL_TORQUE = [-1., -0.5, 0., +0.5, +1.]
-    AVAIL_TORQUE = [-1., 0., +1.]
+    AVAIL_TORQUE = [-0.7, 0., +0.7]
 
     torque_noise_max = 0.
 
