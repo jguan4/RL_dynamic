@@ -13,7 +13,7 @@ __author__ = "Christoph Dann <cdann@cdann.de>"
 # SOURCE:
 # https://github.com/rlpy/rlpy/blob/master/rlpy/Domains/Acrobot.py
 
-class AcrobotEnv(core.Env):
+class AcrobotEnv_mag(core.Env):
 
     """
     Acrobot is a 2-link pendulum with only the second joint actuated

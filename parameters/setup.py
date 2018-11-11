@@ -67,7 +67,7 @@ setup_dict = {
 		'batch_size': 32, 
 		'memory_capacity': 1000000, 
 		'num_episodes': 1000000,
-		'learning_rate_drop_frame_limit': 1000000
+		'learning_rate_drop_frame_limit': 500000
 	},
 
 	'acrobot': {
