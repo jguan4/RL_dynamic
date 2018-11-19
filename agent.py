@@ -82,6 +82,7 @@ class DQN_Agent:
         self.alpha = tf.placeholder(dtype=tf.float32, name='alpha')
         self.test_score = tf.placeholder(dtype=tf.float32, name='test_score')
         self.avg_q = tf.placeholder(dtype=tf.float32, name='avg_q')
+        self.loss_value = tf.placeholder(dtype=tf.float32, name='loss_value')
 
         # Keep track of episode and frames
         self.episode = tf.Variable(initial_value=0, trainable=False, name='episode')
@@ -126,7 +127,9 @@ class DQN_Agent:
         self.writer.add_graph(self.sess.graph)
         test_score = tf.summary.scalar("Training score", self.test_score, collections=None, family=None)
         avg_q = tf.summary.scalar("Average Q-value", self.avg_q, collections=None, family=None)
+        loss = tf.summary.scalar("Loss", self.loss_value, collections=None, family=None)
         self.training_summary = tf.summary.merge([avg_q])
+        self.update_summary = tf.summary.merge([loss])
         self.test_summary = tf.summary.merge([test_score])
         # subprocess.Popen(['tensorboard', '--logdir', self.log_path])
 
@@ -149,6 +152,9 @@ class DQN_Agent:
         fixed_feed_dict.update({self.action_tf: greedy_actions})
         Q_batch = self.sess.run(self.Q_value_at_action, feed_dict=fixed_feed_dict)
         y_batch = reward_batch + self.discount * np.multiply(np.invert(done_batch), Q_batch)
+
+        loss_value = self.sess.run(self.loss, feed_dict={self.y_tf:y_batch, self.Q_value_at_action:Q_batch})
+        self.writer.add_summary(self.sess.run(self.update_summary, feed_dict={self.loss_value: loss_value}), self.training_metadata.frame)
 
         feed = {self.state_tf: state_batch, self.action_tf: action_batch, self.y_tf: y_batch, self.alpha: alpha}
         self.sess.run(self.train_op, feed_dict=feed)
@@ -199,7 +205,6 @@ class DQN_Agent:
                 # Choosing and performing action and updating the replay memory
                 action = self.get_action(state, epsilon)
                 next_state, reward, done, info = self.env.step(action)
-
                 episode_frame += 1
 
                 self.replay_memory.add(self, state, action, reward, next_state, done)
@@ -224,13 +229,13 @@ class DQN_Agent:
                     self.best_training_score = score
                     self.delete_previous_checkpoints()
                     self.saver.save(self.sess, self.model_path + '/best.data.chkp', global_step=self.training_metadata.episode)
-                elif (self.training_metadata.num_episodes - episode)<30:
+                if (self.training_metadata.num_episodes - episode)<30:
                     self.saver.save(self.sess, self.model_path + '/last.data.chkp', global_step=self.training_metadata.episode)
                 print('{0} +- {1}'.format(score, std))
                 self.writer.add_summary(self.sess.run(self.test_summary,
-                                                      feed_dict={self.test_score: score}), episode / 30)
+                                                      feed_dict={self.test_score: score}), self.training_metadata.frame)
                 
-            self.writer.add_summary(self.sess.run(self.training_summary, feed_dict={self.avg_q: avg_q}), episode)
+            self.writer.add_summary(self.sess.run(self.training_summary, feed_dict={self.avg_q: avg_q}), self.training_metadata.frame)
 
     # Description: Tests the model
     # Parameters:
