@@ -44,6 +44,7 @@ class Henon:
 			if s_dev[0]<0.025 and s_dev[1]<0.025:
 				ret = True
 				cat = 2
+				self.x_bar = self.state
 		else:
 			traj_dev = np.absolute(traj[-1]-traj[-2])
 			if traj_dev[0]<0.025 and traj_dev[1]<0.025:
