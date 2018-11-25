@@ -41,7 +41,7 @@ class Henon_Map:
         for i in range(n):
             next_state, reward, done, info = self.env.step(action)
             total_reward += reward
-            info = {'true_done': done}
+            info['true_done'] = done
             if done: break
         processed_next_state = self.process(next_state)    
         return processed_next_state, total_reward, done, info
