@@ -255,6 +255,7 @@ class DQN_Agent:
                 action = self.get_action(state, epsilon=0)
                 next_state, reward, done, info = self.env.step(action, test=True)
                 state = next_state
+                print("Reward: {0} \t State: {1}".format(reward, state))
                 episode_reward += reward
                 done = info['true_done']
                 if pause: utils.pause()
