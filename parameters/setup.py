@@ -74,6 +74,9 @@ setup_dict = {
 	},
 
 	'pendulum': {
+	},
+
+	'henon': {
 	}
 }
 
