@@ -26,6 +26,8 @@ class Henon:
 		elif s_dev[0]<0.025 and s_dev[1]<0.025:
 			ret = True
 			cat = 2
+		elif self.t > 500:
+			ret = True
 		return (ret, cat)
 
 	def render(self):
