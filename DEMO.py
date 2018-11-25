@@ -18,7 +18,7 @@ factor = factors[0]
 normalize = normalizes[2]
 mag_ind = 0
 mag = mags[mag_ind]
-model_name = "1124runs/Henon_guess_x_bar".format(factor, normalize/normalized_1,mags_string[mag_ind])
+model_name = "1124runs/Henon_moving_x_bar".format(factor, normalize/normalized_1,mags_string[mag_ind])
 model_path = DIR_PATH+"/models/"+model_name
 # if os.path.isdir(model_path):
 # 	continue
