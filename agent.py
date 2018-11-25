@@ -83,6 +83,8 @@ class DQN_Agent:
         self.test_score = tf.placeholder(dtype=tf.float32, name='test_score')
         self.avg_q = tf.placeholder(dtype=tf.float32, name='avg_q')
         self.loss_value = tf.placeholder(dtype=tf.float32, name='loss_value')
+        self.henon_x1 = tf.placeholder(dtype=tf.float32, name='henon_x1')
+        self.henon_x2 = tf.placeholder(dtype=tf.float32, name='henon_x2')
 
         # Keep track of episode and frames
         self.episode = tf.Variable(initial_value=0, trainable=False, name='episode')
@@ -128,9 +130,12 @@ class DQN_Agent:
         test_score = tf.summary.scalar("Training score", self.test_score, collections=None, family=None)
         avg_q = tf.summary.scalar("Average Q-value", self.avg_q, collections=None, family=None)
         loss = tf.summary.scalar("Loss", self.loss_value, collections=None, family=None)
+        henon_x1 = tf.summary.scalar("henon_x1", self.henon_x1, collections=None, family=None)
+        henon_x2 = tf.summary.scalar("henon_x2", self.henon_x2, collections=None, family=None)
         self.training_summary = tf.summary.merge([avg_q])
         self.update_summary = tf.summary.merge([loss])
         self.test_summary = tf.summary.merge([test_score])
+        self.traj_summary = tf.summary.merge([henon_x1,henon_x2])
         # subprocess.Popen(['tensorboard', '--logdir', self.log_path])
 
         # Initialising variables and finalising graph
@@ -221,6 +226,13 @@ class DQN_Agent:
             if self.replay_memory.length() > 100 * self.replay_memory.batch_size:
                 self.q_grid = self.replay_memory.get_q_grid(size=200, training_metadata=self.training_metadata)
             avg_q = self.estimate_avg_q()
+
+            if isinstance(info['Fixed_Point'], np.ndarray):
+                fp = info['Fixed_Point']
+            else:
+                fp = np.zeros(2)
+            self.writer.add_summary(self.sess.run(self.traj_summary,
+                feed_dict={self.henon_x1: fp[0], self.henon_x2: fp[1]}), self.training_metadata.frame)
 
             # Saving tensorboard data and model weights
             if (episode % 30 == 0) and (episode != 0):
