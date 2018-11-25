@@ -8,8 +8,8 @@ DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 factors = [1, 2, 4, 6, 8, 10]
 normalized_1 = 97*np.square(np.pi)
 normalizes = [normalized_1*4, normalized_1*2, normalized_1, normalized_1*0.5, normalized_1*0.25]
-mags = [0.1, 0.7]
-mags_string = ['1e-1','7e-1']
+mags = [1, 0.7]
+mags_string = ['1','7e-1']
 
 train = 1
 # for factor in factors:
@@ -18,7 +18,7 @@ factor = factors[0]
 normalize = normalizes[2]
 mag_ind = 0
 mag = mags[mag_ind]
-model_name = "1124runs/Henon".format(factor, normalize/normalized_1,mags_string[mag_ind])
+model_name = "1124runs/torque_{2}".format(factor, normalize/normalized_1,mags_string[mag_ind])
 model_path = DIR_PATH+"/models/"+model_name
 # if os.path.isdir(model_path):
 # 	continue

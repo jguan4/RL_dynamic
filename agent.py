@@ -144,16 +144,19 @@ class DQN_Agent:
     # - alpha: Number, the learning rate 
     # Output: None
     def experience_replay(self, alpha):
-        state_batch, action_batch, reward_batch, next_state_batch, done_batch = self.replay_memory.get_mini_batch(self.training_metadata)
-        y_batch = [None] * self.replay_memory.batch_size
-        fixed_feed_dict = {self.state_tf: next_state_batch}
-        fixed_feed_dict.update(zip(self.trainable_variables, self.fixed_target_weights))
-        greedy_actions = self.sess.run(self.onehot_greedy_action, feed_dict={self.state_tf: next_state_batch})
-        fixed_feed_dict.update({self.action_tf: greedy_actions})
-        Q_batch = self.sess.run(self.Q_value_at_action, feed_dict=fixed_feed_dict)
-        y_batch = reward_batch + self.discount * np.multiply(np.invert(done_batch), Q_batch)
+        loss_value = 2
+        while loss_value > 1.5:
+            state_batch, action_batch, reward_batch, next_state_batch, done_batch = self.replay_memory.get_mini_batch(self.training_metadata)
+            y_batch = [None] * self.replay_memory.batch_size
+            fixed_feed_dict = {self.state_tf: next_state_batch}
+            fixed_feed_dict.update(zip(self.trainable_variables, self.fixed_target_weights))
+            greedy_actions = self.sess.run(self.onehot_greedy_action, feed_dict={self.state_tf: next_state_batch})
+            fixed_feed_dict.update({self.action_tf: greedy_actions})
+            Q_batch = self.sess.run(self.Q_value_at_action, feed_dict=fixed_feed_dict)
+            y_batch = reward_batch + self.discount * np.multiply(np.invert(done_batch), Q_batch)
 
-        loss_value = self.sess.run(self.loss, feed_dict={self.y_tf:y_batch, self.Q_value_at_action:Q_batch})
+            loss_value = self.sess.run(self.loss, feed_dict={self.y_tf:y_batch, self.Q_value_at_action:Q_batch})
+            
         self.writer.add_summary(self.sess.run(self.update_summary, feed_dict={self.loss_value: loss_value}), self.training_metadata.frame)
 
         feed = {self.state_tf: state_batch, self.action_tf: action_batch, self.y_tf: y_batch, self.alpha: alpha}
