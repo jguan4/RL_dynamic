@@ -6,7 +6,8 @@ class Henon:
 		self.state = None
 		self.t = None
 		self.dt = 1
-		self.x_bar = [0.6314,0.1894]
+		# self.x_bar = [0.6314,0.1894]
+		self.x_bar = None
 		self.x_traj = None
 		self.action_space = np.multiply(hs, [+1.0, 0., -1.0])
 
@@ -17,9 +18,7 @@ class Henon:
 		return self.state
 
 	def _terminal(self):
-		# s = self.state
-		# s_abs = np.absolute(s)
-		# s_dev = np.absolute(s-self.x_bar)
+
 		# ret = False
 		# cat = 0
 		# if s_abs[0] > 1.5 or s_abs[1] > 0.4:
@@ -32,18 +31,27 @@ class Henon:
 		# 	ret = True
 
 		traj = self.x_traj
-		traj_dev = np.absolute(traj[-1]-traj[-2])
-		s_abs = np.absolute(self.state)
+		s = self.state
+		s_abs = np.absolute(s)
 		ret = False
 		cat = 0 
 		# cat: 0 not finished
 		#      1 out of bound
 		#      2 near fixed point
 		#      3 overtime
-		if traj_dev[0]<0.025 and traj_dev[1]<0.025:
-			ret = True
-			cat = 2
-		elif s_abs[0]> 1e3 or s_abs[1]>1e3:
+		if self.x_bar:
+			s_dev = np.absolute(s-self.x_bar)
+			if s_dev[0]<0.025 and s_dev[1]<0.025:
+				ret = True
+				cat = 2
+		else:
+			traj_dev = np.absolute(traj[-1]-traj[-2])
+			if traj_dev[0]<0.025 and traj_dev[1]<0.025:
+				ret = True
+				cat = 2
+				self.x_bar = self.state
+
+		if s_abs[0]> 1e3 or s_abs[1]>1e3:
 			ret = True
 			cat = 1
 		elif self.t>500:
