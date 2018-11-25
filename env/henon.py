@@ -39,7 +39,7 @@ class Henon:
 		#      1 out of bound
 		#      2 near fixed point
 		#      3 overtime
-		if self.x_bar:
+		if self.x_bar != None:
 			s_dev = np.absolute(s-self.x_bar)
 			if s_dev[0]<0.025 and s_dev[1]<0.025:
 				ret = True
