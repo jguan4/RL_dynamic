@@ -39,20 +39,20 @@ class Henon:
 		#      1 out of bound
 		#      2 near fixed point
 		#      3 overtime
-		if np.any(self.x_bar):
-			s_dev = np.absolute(s-self.x_bar)
-			if s_dev[0]<0.025 and s_dev[1]<0.025:
-				ret = True
-				cat = 2
-				self.x_bar = self.state
-		else:
-			traj_dev = np.absolute(traj[-1]-traj[-2])
-			if traj_dev[0]<0.025 and traj_dev[1]<0.025:
-				ret = True
-				cat = 2
-				self.x_bar = self.state
+		# if np.any(self.x_bar):
+		# 	s_dev = np.absolute(s-self.x_bar)
+		# 	if s_dev[0]<0.025 and s_dev[1]<0.025:
+		# 		ret = True
+		# 		cat = 2
+		# 		self.x_bar = self.state
+		# else:
+		traj_dev = np.absolute(traj[-1]-traj[-2])
+		if traj_dev[0]<0.025 and traj_dev[1]<0.025:
+			ret = True
+			cat = 2
+			self.x_bar = self.state
 
-		if s_abs[0]> 1e3 or s_abs[1]>1e3:
+		elif s_abs[0]> 1e3 or s_abs[1]>1e3:
 			ret = True
 			cat = 1
 		elif self.t>500:
