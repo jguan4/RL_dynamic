@@ -213,6 +213,13 @@ class DQN_Agent:
                 next_state, reward, done, info = self.env.step(action)
                 episode_frame += 1
 
+                if isinstance(info['Fixed_Point'], np.ndarray):
+                    fp = info['Fixed_Point']
+                else:
+                    fp = np.zeros(2)
+                self.writer.add_summary(self.sess.run(self.traj_summary,
+                    feed_dict={self.henon_x1: fp[0], self.henon_x2: fp[1]}), self.training_metadata.frame)
+
                 self.replay_memory.add(self, state, action, reward, next_state, done)
 
                 # Performing experience replay if replay memory populated
@@ -223,32 +230,40 @@ class DQN_Agent:
                 state = next_state
                 done = info['true_done']
 
-            # Creating q_grid if not yet defined and calculating average q-value
-            if self.replay_memory.length() > 100 * self.replay_memory.batch_size:
-                self.q_grid = self.replay_memory.get_q_grid(size=200, training_metadata=self.training_metadata)
-            avg_q = self.estimate_avg_q()
+                # Creating q_grid if not yet defined and calculating average q-value
+                if self.replay_memory.length() > 100 * self.replay_memory.batch_size:
+                    self.q_grid = self.replay_memory.get_q_grid(size=200, training_metadata=self.training_metadata)
+                avg_q = self.estimate_avg_q()
 
-            if isinstance(info['Fixed_Point'], np.ndarray):
-                fp = info['Fixed_Point']
-            else:
-                fp = np.zeros(2)
-            self.writer.add_summary(self.sess.run(self.traj_summary,
-                feed_dict={self.henon_x1: fp[0], self.henon_x2: fp[1]}), self.training_metadata.frame)
+                if (self.training_metadata.frame % 300 == 0) and (self.training_metadata.frame != 0):
+                    score, std, rewards = self.test(num_test_episodes=5, visualize=True)
+                    if self.best_training_score==None or score>self.best_training_score:
+                        self.best_training_score = score
+                        self.delete_previous_checkpoints()
+                        self.saver.save(self.sess, self.model_path + '/best.data.chkp', global_step=self.training_metadata.episode)
+                    # if (self.training_metadata.num_episodes - episode)<30:
+                    #     self.saver.save(self.sess, self.model_path + '/last.data.chkp', global_step=self.training_metadata.episode)
+                    print('{0} +- {1}'.format(score, std))
+                    self.writer.add_summary(self.sess.run(self.test_summary,
+                                                          feed_dict={self.test_score: score}), self.training_metadata.frame)
+                    
+                self.writer.add_summary(self.sess.run(self.training_summary, feed_dict={self.avg_q: avg_q}), self.training_metadata.frame)
+
 
             # Saving tensorboard data and model weights
-            if (self.training_metadata.frame % 300 == 0) and (self.training_metadata.frame != 0):
-                score, std, rewards = self.test(num_test_episodes=5, visualize=True)
-                if self.best_training_score==None or score>self.best_training_score:
-                    self.best_training_score = score
-                    self.delete_previous_checkpoints()
-                    self.saver.save(self.sess, self.model_path + '/best.data.chkp', global_step=self.training_metadata.episode)
-                # if (self.training_metadata.num_episodes - episode)<30:
-                #     self.saver.save(self.sess, self.model_path + '/last.data.chkp', global_step=self.training_metadata.episode)
-                print('{0} +- {1}'.format(score, std))
-                self.writer.add_summary(self.sess.run(self.test_summary,
-                                                      feed_dict={self.test_score: score}), self.training_metadata.frame)
+            # if (self.training_metadata.frame % 300 == 0) and (self.training_metadata.frame != 0):
+            #     score, std, rewards = self.test(num_test_episodes=5, visualize=True)
+            #     if self.best_training_score==None or score>self.best_training_score:
+            #         self.best_training_score = score
+            #         self.delete_previous_checkpoints()
+            #         self.saver.save(self.sess, self.model_path + '/best.data.chkp', global_step=self.training_metadata.episode)
+            #     # if (self.training_metadata.num_episodes - episode)<30:
+            #     #     self.saver.save(self.sess, self.model_path + '/last.data.chkp', global_step=self.training_metadata.episode)
+            #     print('{0} +- {1}'.format(score, std))
+            #     self.writer.add_summary(self.sess.run(self.test_summary,
+            #                                           feed_dict={self.test_score: score}), self.training_metadata.frame)
                 
-            self.writer.add_summary(self.sess.run(self.training_summary, feed_dict={self.avg_q: avg_q}), self.training_metadata.frame)
+            # self.writer.add_summary(self.sess.run(self.training_summary, feed_dict={self.avg_q: avg_q}), self.training_metadata.frame)
 
     # Description: Tests the model
     # Parameters:
