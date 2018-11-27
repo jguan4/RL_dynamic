@@ -64,12 +64,9 @@ class Henon:
 	def update_radius(self):
 		if self.t>self.past:
 			# stay within 2*previous radius for 10 steps
-			traj_x1_min = np.amin(self.x_traj[-1:-1-self.past,0])
-			traj_x1_max = np.amax(self.x_traj[-1:-1-self.past,0])
-			traj_x2_min = np.amin(self.x_traj[-1:-1-self.past,1])
-			traj_x2_max = np.amax(self.x_traj[-1:-1-self.past,1])
-			if np.absolute(traj_x1_max-traj_x1_min)<2*self.radius and 
-			np.absolute(traj_x2_max-traj_x2_min)<2*self.radius:
+			traj_min = np.amin(self.x_traj[-1-self.past::],axis=0)
+			traj_max = np.amax(self.x_traj[-1-self.past::],axis=0)
+			if np.absolute(traj_max-traj_min)<[2*self.radius,2*self.radius]:
 				self.radius = self.radius/2.
 				self.hs = self.hs/2.
 				self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
