@@ -9,7 +9,10 @@ class Henon:
 		# self.x_bar = [0.6314,0.1894]
 		self.x_bar = None
 		self.x_traj = None
-		self.action_space = np.multiply(hs, [+1.0, 0., -1.0])
+		self.radius = 0.025
+		self.past = 10
+		self.hs = hs
+		self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
 
 	def reset(self):
 		self.state = [-0.2, 0.15] + np.random.normal(0, 0.1, 2)
@@ -18,46 +21,16 @@ class Henon:
 		return self.state
 
 	def _terminal(self):
-
-		# ret = False
-		# cat = 0
-		# if s_abs[0] > 1.5 or s_abs[1] > 0.4:
-		# 	ret = True
-		# 	cat = 1
-		# elif s_dev[0]<0.025 and s_dev[1]<0.025:
-		# 	ret = True
-		# 	cat = 2
-		# elif self.t > 500:
-		# 	ret = True
-
 		traj = self.x_traj
-		s = self.state
-		s_abs = np.absolute(s)
-		ret = False
 		cat = 0 
-		# cat: 0 not finished
-		#      1 out of bound
-		#      2 near fixed point
-		#      3 overtime
-		# if np.any(self.x_bar):
-		# 	s_dev = np.absolute(s-self.x_bar)
-		# 	if s_dev[0]<0.025 and s_dev[1]<0.025:
-		# 		ret = True
-		# 		cat = 2
-		# 		self.x_bar = self.state
-		# else:
+		# cat: 0 not stationary - reward 0
+		#      1 stationary - reward 1*self.radius/0.025
+		ret = False
 		traj_dev = np.absolute(traj[-1]-traj[-2])
-		if traj_dev[0]<0.025 and traj_dev[1]<0.025:
-			ret = True
-			cat = 2
-			self.x_bar = self.state
-
-		elif s_abs[0]> 1e3 or s_abs[1]>1e3:
-			ret = True
+		self.update_radius()
+		if traj_dev[0]<self.radius and traj_dev[1]<self.radius:
 			cat = 1
-		elif self.t>500:
-			ret = True
-			cat = 3
+			self.x_bar = self.state
 		return (ret, cat)
 
 	def render(self):
@@ -73,21 +46,30 @@ class Henon:
 		(terminal, cat) = self._terminal()
 		info = {}
 		if cat==0:
-			reward = -1. 
+			reward = 0. 
 			info['Fixed_Point'] = None
 		elif cat == 1:
-			reward = -100.
-			info['Fixed_Point'] = 'Out_of_bound'
-		elif cat == 2: 
-			reward = 0.
+			reward = self.radius/0.025
 			info['Fixed_Point'] = self.state
-		else: 
-			reward = -1.
-			info['Fixed_Point'] = 'Overtime'
 		return (self.state, reward, terminal, info)
 
 	def henon(self,t,w):
 		y = np.zeros(2)
-		y[0] = -1.4*np.square(w[0])+w[1]+1
-		y[1] = 0.3*w[0]
+		# y[0] = -1.4*np.square(w[0])+w[1]+1
+		# y[1] = 0.3*w[0]
+		y[0] = 2*np.cos(w[0])+0.4*w[1]
+		y[1] = w[0]
 		return y
+
+	def update_radius(self):
+		if self.t>self.past:
+			# stay within 2*previous radius for 10 steps
+			traj_x1_min = np.amin(self.x_traj[-1:-1-self.past,0])
+			traj_x1_max = np.amax(self.x_traj[-1:-1-self.past,0])
+			traj_x2_min = np.amin(self.x_traj[-1:-1-self.past,1])
+			traj_x2_max = np.amax(self.x_traj[-1:-1-self.past,1])
+			if np.absolute(traj_x1_max-traj_x1_min)<2*self.radius and 
+			np.absolute(traj_x2_max-traj_x2_min)<2*self.radius:
+				self.radius = self.radius/2.
+				self.hs = self.hs/2.
+				self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
