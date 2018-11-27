@@ -197,10 +197,10 @@ class DQN_Agent:
 
             # Setting up parameters for the episode
             done = False
-            epsilon = self.explore_rate.get(self.training_metadata)
-            alpha = self.learning_rate.get(self.training_metadata)
             episode_frame = 0
             while not done:
+                epsilon = self.explore_rate.get(self.training_metadata)
+                alpha = self.learning_rate.get(self.training_metadata)
 
                 print("Frame {0} \t Epsilon: {2} \t Alpha: {3}".format(self.training_metadata.frame, self.training_metadata.num_episodes, epsilon, alpha))
                 # self.env.render()
