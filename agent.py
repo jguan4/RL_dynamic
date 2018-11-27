@@ -235,7 +235,7 @@ class DQN_Agent:
                     self.q_grid = self.replay_memory.get_q_grid(size=200, training_metadata=self.training_metadata)
                 avg_q = self.estimate_avg_q()
 
-                if (self.training_metadata.frame % 300 == 0) and (self.training_metadata.frame != 0):
+                if (self.training_metadata.frame % 3000 == 0) and (self.training_metadata.frame != 0):
                     score, std, rewards = self.test(num_test_episodes=5, visualize=True)
                     if self.best_training_score==None or score>self.best_training_score:
                         self.best_training_score = score
@@ -280,7 +280,7 @@ class DQN_Agent:
             if not visualize:
                 self.test_env.render()
             # while not done:
-            while reward < 4 and frame < 1000:
+            while frame < 1000:
                 if visualize:
                     self.env.render()
                 action = self.get_action(state, epsilon=0)
