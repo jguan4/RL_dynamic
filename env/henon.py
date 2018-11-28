@@ -12,6 +12,7 @@ class Henon:
 		self.radius = 0.025
 		self.past = 10
 		self.hs = hs
+		self.in_neigh = False
 		self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
 
 	def reset(self):
@@ -25,12 +26,18 @@ class Henon:
 		cat = 0 
 		# cat: 0 not stationary - reward 0
 		#      1 stationary - reward 1*self.radius/0.025
+		#	   2 went out of neighborhood - reward -1
 		ret = False
 		traj_dev = np.absolute(traj[-1]-traj[-2])
 		self.update_radius()
 		if traj_dev[0]<self.radius and traj_dev[1]<self.radius:
 			cat = 1
+			self.in_neigh = True
 			self.x_bar = self.state
+		elif self.in_neigh and cat == 0:
+			cat = 2
+			self.radius = self.radius*2
+			self.in_neigh = False
 		return (ret, cat)
 
 	def render(self):
@@ -51,6 +58,9 @@ class Henon:
 		elif cat == 1:
 			reward = self.radius/0.025
 			info['Fixed_Point'] = self.state
+		elif cat == 2:
+			reward = -1.
+			info['Fixed_Point'] = 'Out of neighborhood'
 		return (self.state, reward, terminal, info)
 
 	def henon(self,t,w):
