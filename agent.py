@@ -212,6 +212,10 @@ class DQN_Agent:
                 action = self.get_action(state, epsilon)
                 next_state, reward, done, info = self.env.step(action)
                 episode_frame += 1
+                # print("State: {0} \t Reward: {1}".format(next_state,reward))
+                # if reward == 1:
+                #     print(info['Fixed_Point'])
+                #     utils.pause()
 
                 if isinstance(info['Fixed_Point'], np.ndarray):
                     fp = info['Fixed_Point']

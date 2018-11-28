@@ -36,7 +36,9 @@ class Henon:
 			self.x_bar = self.state
 		elif self.in_neigh and cat == 0:
 			cat = 2
-			self.radius = self.radius*2
+			if self.radius < 0.025: self.radius = self.radius*2
+			# self.hs = self.hs*2.
+			# self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
 			self.in_neigh = False
 		return (ret, cat)
 
@@ -56,7 +58,8 @@ class Henon:
 			reward = 0. 
 			info['Fixed_Point'] = None
 		elif cat == 1:
-			reward = self.radius/0.025
+			# reward = self.radius/0.025
+			reward = 1
 			info['Fixed_Point'] = self.state
 		elif cat == 2:
 			reward = -1.
@@ -77,7 +80,7 @@ class Henon:
 			traj_min = np.amin(self.x_traj[-1-self.past::],axis=0)
 			traj_max = np.amax(self.x_traj[-1-self.past::],axis=0)
 			traj_dev = np.absolute(traj_max-traj_min)
-			if traj_dev[0]<2*self.radius and traj_dev[1]<2*self.radius:
+			if traj_dev[0]<self.radius and traj_dev[1]<self.radius:
 				self.radius = self.radius/2.
-				self.hs = self.hs/2.
-				self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
+				# self.hs = self.hs/2.
+				# self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
