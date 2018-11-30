@@ -5,24 +5,26 @@ import utils
 import re
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 
-factors = [1, 2, 4, 6, 8, 10]
-normalized_1 = 97*np.square(np.pi)
-normalizes = [normalized_1*4, normalized_1*2, normalized_1, normalized_1*0.5, normalized_1*0.25]
-mags = [0.01, 0.7]
-mags_string = ['1e-2','7e-1']
-
-train = 1
+# factors = [1, 2, 4, 6, 8, 10]
+# normalized_1 = 97*np.square(np.pi)
+# normalizes = [normalized_1*4, normalized_1*2, normalized_1, normalized_1*0.5, normalized_1*0.25]
 # for factor in factors:
 # 	for normalize in normalizes:
-factor = factors[0]
-normalize = normalizes[2]
+# factor = factors[0]
+# normalize = normalizes[2]
+
+mags = [0.01]
+mags_string = ['1e-2']
 mag_ind = 0
 mag = mags[mag_ind]
-model_name = "1126runs/Henon_control_penal".format(factor, normalize/normalized_1,mags_string[mag_ind])
+
+direction_ang = [0,np.pi/6,np.pi/4,np.pi/3,np.pi/2]
+direction_ind = 0
+direction = [np.cos(direction_ang[direction_ind]), np.sin(direction_ang[direction_ind])]
+
+train = 1
+model_name = "1129runs/Henon_{0}/angle_{1}".format(mags_string[mag_ind], direction_ang[direction_ind])
 model_path = DIR_PATH+"/models/"+model_name
-# if os.path.isdir(model_path):
-# 	continue
-# else:
 
 best_checkpoint_name = 'None'
 if not train:
@@ -30,5 +32,6 @@ if not train:
 	paths = [i for i in files if os.path.isfile(os.path.join(model_path,i)) and re.match('best.data.chkp', i)]
 	best_checkpoint_name = os.path.join(model_path,os.path.splitext(paths[1])[0])
 
-
+factor=direction
+normalize=0
 subprocess.run(['python3', 'main.py', str(factor), str(normalize), str(mag), model_name, best_checkpoint_name])

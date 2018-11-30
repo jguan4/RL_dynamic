@@ -11,9 +11,9 @@ import time
 
 class Henon_Map:
 
-    def __init__(self, type="Henon", history_pick=1, factor=1, normalize=1, mag=0.1):
+    def __init__(self, type="Henon", history_pick=1, direction=[1,0], normalize=1, mag=0.1):
         self.name = type + str(time.time())
-        self.env = Henon(hs = mag)
+        self.env = Henon(hs = mag, direction=direction)
         self.state_dimension = [2]
         self.history_pick = history_pick
         self.state_space_size = history_pick * np.prod(self.state_dimension)
@@ -73,6 +73,7 @@ class Henon_Map:
 
 
 class Acrobot:
+    # C:\Users\jiaji\AppData\Local\lxss\rootfs\usr\local\lib\python3.6\dist-packages\gym\envs
     def __init__(self, type="Acrobot_mag", history_pick=1, factor=1, normalize=97*np.square(np.pi),mag=1):
         self.name = type + str(time.time())
         self.env = gym.make(type + '-v1', factor)

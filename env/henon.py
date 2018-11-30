@@ -1,7 +1,7 @@
 import numpy as np
 
 class Henon:
-	def __init__(self, hs = 0.1):
+	def __init__(self, hs = 0.1, direction=[1,0]):
 		self.substep = 1
 		self.state = None
 		self.t = None
@@ -9,16 +9,19 @@ class Henon:
 		# self.x_bar = [0.6314,0.1894]
 		self.x_bar = None
 		self.x_traj = None
-		self.radius = 0.025
+		self.radius = 0.05
 		self.past = 10
 		self.hs = hs
 		self.in_neigh = False
+		self.direction = direction
+		self.consecutive_reward = 0
 		self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
 
 	def reset(self):
 		self.state = [-0.2, 0.15] + np.random.normal(0, 0.1, 2)
 		self.t = 0
 		self.x_traj = [self.state]
+		self.consecutive_reward = 0
 		return self.state
 
 	def _terminal(self):
@@ -32,6 +35,7 @@ class Henon:
 		self.update_radius()
 		if traj_dev[0]<self.radius and traj_dev[1]<self.radius:
 			cat = 1
+			if self.in_neigh: self.consecutive_reward += 1
 			self.in_neigh = True
 			self.x_bar = self.state
 		elif self.in_neigh and cat == 0:
@@ -40,6 +44,7 @@ class Henon:
 			# self.hs = self.hs*2.
 			# self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
 			self.in_neigh = False
+			self.consecutive_reward = 0
 		return (ret, cat)
 
 	def render(self):
@@ -47,7 +52,7 @@ class Henon:
 
 	def step(self, a):
 		action = self.action_space[a]
-		s_aft = self.state + [action, 0]
+		s_aft = self.state + np.multiply(action,self.direction)
 		self.t = self.t + self.dt
 		ns = self.henon(self.t, s_aft)
 		self.state = ns
@@ -62,8 +67,9 @@ class Henon:
 			reward = 1
 			info['Fixed_Point'] = self.state
 		elif cat == 2:
-			reward = -1.
+			reward = 0.
 			info['Fixed_Point'] = 'Out of neighborhood'
+		info['Consecutive_Reward'] = self.consecutive_reward
 		return (self.state, reward, terminal, info)
 
 	def henon(self,t,w):

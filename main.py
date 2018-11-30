@@ -6,7 +6,10 @@ sys.path.append(path)
 import tensorflow as tf
 import agent
 import environment as env
+import numpy as np
 import parameters.setup as setup
+import ast
+
 
 #####################################  Usage  ##########################################################
 # 1) A command line argument specifying the name of the folder we want to log in must
@@ -15,7 +18,8 @@ import parameters.setup as setup
 #    in parameters/setup.py.
 ########################################################################################################
 
-environment = env.Henon_Map(**setup.setup_dict['henon'], factor = int(sys.argv[1]), normalize = float(sys.argv[2]), mag = float(sys.argv[3]))
+environment = env.Henon_Map(**setup.setup_dict['henon'], direction = ast.literal_eval(sys.argv[1]), 
+	normalize = float(sys.argv[2]), mag = float(sys.argv[3]))
 control = agent.DQN_Agent(environment=environment, model_name=sys.argv[4], **setup.setup_dict['agent'])
 
 #####################################  Traning a model  ################################################

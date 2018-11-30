@@ -62,7 +62,7 @@ setup_dict = {
 	'agent': {
 		'architecture': Basic_Architecture, 
 		'learning_rate': Atari_Learning_Rate,
-		'explore_rate': Decay_Explore_Rate,
+		'explore_rate': No_Explore,
 		'target_update_frequency': 1000,
 		'batch_size': 32, 
 		'memory_capacity': 1000000, 

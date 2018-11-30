@@ -15,8 +15,8 @@ class Basic_Architecture:
         self.layer_sizes = [256,256]
 
     def evaluate(self, input, action_size):
-        neural_net_1 = tf.layers.dense(input, self.layer_sizes[0], activation=tf.nn.relu)
-        neural_net_2 = tf.layers.dense(neural_net_1, self.layer_sizes[1], activation=tf.nn.relu)
+        neural_net_1 = tf.layers.dense(input, self.layer_sizes[0], activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
+        neural_net_2 = tf.layers.dense(neural_net_1, self.layer_sizes[1], activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
         output = tf.layers.dense(neural_net_2, action_size, activation=None, name='output')
         return output
 

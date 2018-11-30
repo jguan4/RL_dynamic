@@ -50,3 +50,11 @@ class Fixed_Explore_Rate:
 
     def __str__(self):
         return '0.1'
+
+class No_Explore:
+
+    def get(self, training_metadata):
+        return 0
+
+    def __str__(self):
+        return '0'
