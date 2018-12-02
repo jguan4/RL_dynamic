@@ -67,9 +67,10 @@ class Henon:
 			reward = 1
 			info['Fixed_Point'] = self.state
 		elif cat == 2:
-			reward = 0.
+			reward = -1.
 			info['Fixed_Point'] = 'Out of neighborhood'
 		info['Consecutive_Reward'] = self.consecutive_reward
+		info['Radius'] = self.radius
 		return (self.state, reward, terminal, info)
 
 	def henon(self,t,w):

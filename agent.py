@@ -211,7 +211,7 @@ class DQN_Agent:
                 action = self.get_action(state, epsilon)
                 next_state, reward, done, info = self.env.step(action)
                 episode_frame += 1
-                print("Frame {0} \t Reward: {1} \t State: {2}".format(self.training_metadata.frame, reward, next_state))
+                print("Frame {0} \t Reward: {1} \t State: {2} \t Radius: {3}".format(self.training_metadata.frame, reward, next_state, info['Raidus']))
 
                 # print("State: {0} \t Reward: {1}".format(next_state,reward))
                 # if reward == 1:
