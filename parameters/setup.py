@@ -61,7 +61,7 @@ from .architectures import *
 setup_dict = {
 	'agent': {
 		'architecture': Basic_Architecture, 
-		'learning_rate': Large_Learning_Rate,
+		'learning_rate': Atari_Learning_Rate,
 		'explore_rate': No_Explore,
 		'target_update_frequency': 1000,
 		'batch_size': 128, 
