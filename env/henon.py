@@ -42,7 +42,7 @@ class Henon:
 			traj_dev = np.absolute(traj[-1]-x_bar)
 		if traj_dev[0]<self.radius and traj_dev[1]<self.radius:
 				cat = 1
-				self.x_bars = np.append(self.x_bars,[self.state],axis=0)
+				# self.x_bars = np.append(self.x_bars,[self.state],axis=0)
 				if self.in_neigh: self.consecutive_reward += 1
 				self.in_neigh = True
 				self.x_bar = self.state
