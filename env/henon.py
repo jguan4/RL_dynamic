@@ -7,6 +7,7 @@ class Henon:
 		self.t = None
 		self.dt = 1
 		# self.x_bar = [0.6314,0.1894]
+		self.x_bars = None
 		self.x_bar = None
 		self.x_traj = None
 		self.radius = 0.05
@@ -21,6 +22,7 @@ class Henon:
 		self.state = [-0.2, 0.15] + np.random.normal(0, 0.1, 2)
 		self.t = 0
 		self.x_traj = [self.state]
+		self.x_bars = np.empty((0,2),float)
 		self.consecutive_reward = 0
 		return self.state
 
@@ -31,16 +33,22 @@ class Henon:
 		#      1 stationary - reward 1*self.radius/0.025
 		#	   2 went out of neighborhood - reward -1
 		ret = False
-		traj_dev = np.absolute(traj[-1]-traj[-2])
-		self.update_radius()
+		
+		# self.update_radius()
+		if not self.x_bars:
+			traj_dev = np.absolute(traj[-1]-traj[-2])
+		else:
+			x_bar = np.mean(self.x_bars, axis=0)
+			traj_dev = np.absolute(traj[-1]-x_bar)
 		if traj_dev[0]<self.radius and traj_dev[1]<self.radius:
-			cat = 1
-			if self.in_neigh: self.consecutive_reward += 1
-			self.in_neigh = True
-			self.x_bar = self.state
+				cat = 1
+				# self.x_bars = np.append(self.x_bars,[self.state],axis=0)
+				if self.in_neigh: self.consecutive_reward += 1
+				self.in_neigh = True
+				self.x_bar = self.state
 		elif self.in_neigh and cat == 0:
 			cat = 2
-			if self.radius < 0.025: self.radius = self.radius*2
+			# if self.radius < 0.025: self.radius = self.radius*2
 			# self.hs = self.hs*2.
 			# self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
 			self.in_neigh = False
@@ -67,7 +75,7 @@ class Henon:
 			reward = 1
 			info['Fixed_Point'] = self.state
 		elif cat == 2:
-			reward = -1.
+			reward = 0.
 			info['Fixed_Point'] = 'Out of neighborhood'
 		info['Consecutive_Reward'] = self.consecutive_reward
 		info['Radius'] = self.radius

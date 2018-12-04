@@ -85,6 +85,7 @@ class DQN_Agent:
         self.loss_value = tf.placeholder(dtype=tf.float32, name='loss_value')
         self.henon_x1 = tf.placeholder(dtype=tf.float32, name='henon_x1')
         self.henon_x2 = tf.placeholder(dtype=tf.float32, name='henon_x2')
+        self.scat = tf.placeholder(dtype=tf.float32, name='scat')
 
         # Keep track of episode and frames
         self.episode = tf.Variable(initial_value=0, trainable=False, name='episode')
@@ -132,10 +133,12 @@ class DQN_Agent:
         loss = tf.summary.scalar("Loss", self.loss_value, collections=None, family=None)
         henon_x1 = tf.summary.scalar("henon_x1", self.henon_x1, collections=None, family=None)
         henon_x2 = tf.summary.scalar("henon_x2", self.henon_x2, collections=None, family=None)
+        scat = tf.summary.scalar("scat", self.scat, collections=None, family=None)
         self.training_summary = tf.summary.merge([avg_q])
         self.update_summary = tf.summary.merge([loss])
         self.test_summary = tf.summary.merge([test_score])
         self.traj_summary = tf.summary.merge([henon_x1,henon_x2])
+        self.scat_summary = tf.summary.merge([scat])
         # subprocess.Popen(['tensorboard', '--logdir', self.log_path])
 
         # Initialising variables and finalising graph
@@ -223,7 +226,9 @@ class DQN_Agent:
                 else:
                     fp = np.zeros(2)
                 self.writer.add_summary(self.sess.run(self.traj_summary,
-                    feed_dict={self.henon_x1: fp[0], self.henon_x2: fp[1]}), self.training_metadata.frame)
+                    feed_dict={self.henon_x1: next_state[0], self.henon_x2: next_state[1]}), self.training_metadata.frame)
+                self.writer.add_summary(self.sess.run(self.scat_summary,
+                    feed_dict={self.scat: next_state[0]}), next_state[1])
                 score = info['Consecutive_Reward']
 
                 self.replay_memory.add(self, state, action, reward, next_state, done)

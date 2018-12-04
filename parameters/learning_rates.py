@@ -16,6 +16,14 @@ class Atari_Learning_Rate:
     def __str__(self):
         return '0.00025'
 
+class Large_Learning_Rate:
+	def get(self, training_metadata):
+		return 0.9
+
+	def __str__(self):
+		return '0.9'
+		
+
 # The learning rate decays from 0.005 to 0.001 linearly over the half 
 # of the number of episodes defined in the training_metadata and stays 
 # at 0.001 thereafter

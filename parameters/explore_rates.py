@@ -58,3 +58,11 @@ class No_Explore:
 
     def __str__(self):
         return '0'
+
+class Fast_Explore:
+
+    def get(self, training_metadata):
+        return max(0., (1 - float(training_metadata.frame) / training_metadata.frame_limit))
+
+    def __str__(self):
+        return 'max(0., (1 - float(training_metadata.frame) / training_metadata.frame_limit))'
