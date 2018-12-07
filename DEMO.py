@@ -23,7 +23,7 @@ direction_ind = 0
 direction = [np.cos(direction_ang[direction_ind]), np.sin(direction_ang[direction_ind])]
 
 train = 1
-model_name = "1205runs/Henon_{0}_explore/angle_{1}".format(mags_string[mag_ind], direction_ang[direction_ind])
+model_name = "1205runs/Henon_{0}_dropout/angle_{1}".format(mags_string[mag_ind], direction_ang[direction_ind])
 model_path = DIR_PATH+"/models/"+model_name
 
 best_checkpoint_name = 'None'
