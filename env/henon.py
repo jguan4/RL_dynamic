@@ -19,9 +19,9 @@ class Henon:
 		self.direction = direction
 		self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
 		# self.x_bar = [0.6314,0.1894]
-		self.x_bar = [1.2019, 1.2019]
+		# self.x_bar = [1.2019, 1.2019]
 		self.x_bars = np.empty((0,2),float)
-		# self.x_bar = None
+		self.x_bar = None
 
 	def reset(self):
 		self.state = [-0.2, 0.15] + np.random.normal(0, 0.1, 2)
@@ -59,13 +59,13 @@ class Henon:
 			if LA.norm(np.absolute(traj[-1]-self.x_bar))<self.terminate:
 				cat = 3
 				ret = True
-			return (ret, cat)
+				return (ret, cat)
 		else:
 			if norm_dist<self.terminate:
 				cat = 3
 				ret = True
 				self.x_bars = np.append(self.x_bars,[self.state],axis=0)
-			return (ret, cat)
+				return (ret, cat)
 		if self.in_neigh and cat == 0:
 			cat = 2
 			# if self.radius < 0.025: self.radius = self.radius*2
@@ -74,6 +74,7 @@ class Henon:
 			self.in_neigh = False
 			self.consecutive_reward = 0
 			return (ret, cat)
+		return (ret, cat)
 
 	def render(self):
 		return None
