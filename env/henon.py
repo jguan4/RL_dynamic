@@ -19,9 +19,9 @@ class Henon:
 		self.direction = direction
 		self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
 		# self.x_bar = [0.6314,0.1894]
-		# self.x_bar = [1.2019, 1.2019]
+		self.x_bar = [1.2019, 1.2019]
 		self.x_bars = np.empty((0,2),float)
-		self.x_bar = None
+		# self.x_bar = None
 
 	def reset(self):
 		self.state = [-0.2, 0.15] + np.random.normal(0, 0.1, 2)
