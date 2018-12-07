@@ -87,6 +87,7 @@ class DQN_Agent:
         self.henon_x2 = tf.placeholder(dtype=tf.float32, name='henon_x2')
         self.scat_1 = tf.placeholder(dtype=tf.float32, name='scat_1')
         self.scat_2 = tf.placeholder(dtype=tf.float32, name='scat_2')
+        self.f_count = tf.placeholder(dtype=tf.float32, name='f_count')
 
         # Keep track of episode and frames
         self.episode = tf.Variable(initial_value=0, trainable=False, name='episode')
@@ -136,11 +137,13 @@ class DQN_Agent:
         henon_x2 = tf.summary.scalar("henon_x2", self.henon_x2, collections=None, family=None)
         scat_1 = tf.summary.scalar("scat_1", self.scat_1, collections=None, family=None)
         scat_2 = tf.summary.scalar("scat_2", self.scat_2, collections=None, family=None)
+        f_count= tf.summary.scalar("f_count", self.f_count, collections=None, family=None)
         self.training_summary = tf.summary.merge([avg_q])
         self.update_summary = tf.summary.merge([loss])
         self.test_summary = tf.summary.merge([test_score])
         self.traj_summary = tf.summary.merge([henon_x1,henon_x2])
         self.scat_summary = tf.summary.merge([scat_1,scat_2])
+        self.frame_summary = tf.summary.merge([f_count])
         # subprocess.Popen(['tensorboard', '--logdir', self.log_path])
 
         # Initialising variables and finalising graph
@@ -225,10 +228,8 @@ class DQN_Agent:
 
                 if isinstance(info['Fixed_Point'], np.ndarray):
                     fp = info['Fixed_Point']
-                else:
-                    fp = np.zeros(2)
-                self.writer.add_summary(self.sess.run(self.traj_summary,
-                    feed_dict={self.henon_x1: fp[0], self.henon_x2: fp[1]}), self.training_metadata.frame)
+                    self.writer.add_summary(self.sess.run(self.traj_summary,
+                        feed_dict={self.henon_x1: fp[0], self.henon_x2: fp[1]}), self.training_metadata.frame)
                 self.writer.add_summary(self.sess.run(self.scat_summary,
                     feed_dict={self.scat_1: next_state[0], self.scat_2: next_state[1]}), self.training_metadata.frame)
                 score = info['Consecutive_Reward']
@@ -244,9 +245,10 @@ class DQN_Agent:
                 done = info['true_done']
 
                 # Creating q_grid if not yet defined and calculating average q-value
-                if self.replay_memory.length() > 100 * self.replay_memory.batch_size:
+                if self.replay_memory.length() > 5 * self.replay_memory.batch_size:
                     self.q_grid = self.replay_memory.get_q_grid(size=200, training_metadata=self.training_metadata)
                 avg_q = self.estimate_avg_q()
+                self.writer.add_summary(self.sess.run(self.training_summary, feed_dict={self.avg_q: avg_q}), self.training_metadata.frame)
 
                 # if (self.training_metadata.frame % 3000 == 0) and (self.training_metadata.frame != 0):
                 #     score, std, rewards = self.test(num_test_episodes=5, visualize=True)
@@ -260,15 +262,14 @@ class DQN_Agent:
                 #     self.writer.add_summary(self.sess.run(self.test_summary,
                 #                                           feed_dict={self.test_score: score}), self.training_metadata.frame)
 
-                if self.best_training_score==None or score>self.best_training_score:
-                    self.best_training_score = score
-                    self.delete_previous_checkpoints()
-                    self.saver.save(self.sess, self.model_path + '/best.data.chkp', global_step=self.training_metadata.episode)
-                self.writer.add_summary(self.sess.run(self.test_summary,
-                    feed_dict={self.test_score: score}), self.training_metadata.frame)
-
-                self.writer.add_summary(self.sess.run(self.training_summary, feed_dict={self.avg_q: avg_q}), self.training_metadata.frame)
-
+            if self.best_training_score==None or episode_frame<self.best_training_score:#score>self.best_training_score:
+                self.best_training_score = episode_frame
+                self.delete_previous_checkpoints()
+                self.saver.save(self.sess, self.model_path + '/best.data.chkp', global_step=self.training_metadata.episode)
+            self.writer.add_summary(self.sess.run(self.test_summary,
+                feed_dict={self.test_score: score}), self.training_metadata.episode)
+            self.writer.add_summary(self.sess.run(self.frame_summary,
+                feed_dict={self.f_count: self.training_metadata.frame}), self.training_metadata.episode)
 
             # Saving tensorboard data and model weights
             # if (self.training_metadata.frame % 300 == 0) and (self.training_metadata.frame != 0):
