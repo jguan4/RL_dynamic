@@ -89,17 +89,17 @@ class Henon:
 		(terminal, cat) = self._terminal()
 		info = {}
 		if cat==0:
-			reward = 0. 
+			reward = -1. 
 			info['Fixed_Point'] = None
 		elif cat == 1:
 			# reward = self.radius/0.025
-			reward = 1.
+			reward = 0.
 			info['Fixed_Point'] = self.state
 		elif cat == 2:
-			reward = 0.
+			reward = -1.
 			info['Fixed_Point'] = 'Out of neighborhood'
 		elif cat == 3:
-			reward = 2.
+			reward = 0.
 			info['Fixed_Point'] = 'Terminate'
 		info['Consecutive_Reward'] = self.consecutive_reward
 		info['Radius'] = self.radius
