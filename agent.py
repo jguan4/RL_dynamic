@@ -267,7 +267,7 @@ class DQN_Agent:
                 self.delete_previous_checkpoints()
                 self.saver.save(self.sess, self.model_path + '/best.data.chkp', global_step=self.training_metadata.episode)
             self.writer.add_summary(self.sess.run(self.test_summary,
-                feed_dict={self.test_score: score}), self.training_metadata.episode)
+                feed_dict={self.test_score: episode_frame}), self.training_metadata.episode)
             self.writer.add_summary(self.sess.run(self.frame_summary,
                 feed_dict={self.f_count: self.training_metadata.frame}), self.training_metadata.episode)
 

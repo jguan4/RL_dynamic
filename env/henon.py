@@ -19,7 +19,8 @@ class Henon:
 		self.direction = direction
 		self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
 		# self.x_bar = [0.6314,0.1894]
-		self.x_bar = [1.2019, 1.2019]
+		# self.x_bar = [1.2019, 1.2019]
+		self.x_bar = [0.893, 0.893]
 		self.x_bars = np.empty((0,2),float)
 		# self.x_bar = None
 
@@ -41,11 +42,11 @@ class Henon:
 		ret = False
 		
 		# self.update_radius()
-		if not np.any(self.x_bars):
-			traj_dev = np.absolute(traj[-1]-traj[-2])
-		else:
-			x_bar = np.mean(self.x_bars, axis=0)
-			traj_dev = np.absolute(traj[-1]-x_bar)
+		# if not np.any(self.x_bars):
+		traj_dev = np.absolute(traj[-1]-traj[-2])
+		# else:
+		# 	x_bar = np.mean(self.x_bars, axis=0)
+		# 	traj_dev = np.absolute(traj[-1]-x_bar)
 		norm_dist = LA.norm(traj_dev,2)
 
 		if norm_dist<self.radius and norm_dist>= self.terminate:
@@ -53,19 +54,19 @@ class Henon:
 			self.x_bars = np.append(self.x_bars,[self.state],axis=0)
 			if self.in_neigh: self.consecutive_reward += 1
 			self.in_neigh = True
-			self.x_bar = self.state
+			# self.x_bar = self.state
 			return (ret, cat)
-		if np.any(self.x_bar):
-			if LA.norm(np.absolute(traj[-1]-self.x_bar))<self.terminate:
-				cat = 3
-				ret = True
-				return (ret, cat)
-		else:
-			if norm_dist<self.terminate:
-				cat = 3
-				ret = True
-				self.x_bars = np.append(self.x_bars,[self.state],axis=0)
-				return (ret, cat)
+		# if np.any(self.x_bar):
+		if LA.norm(np.absolute(traj[-1]-self.x_bar))<self.terminate:
+			cat = 3
+			ret = True
+			return (ret, cat)
+		# else:
+		# 	if norm_dist<self.terminate:
+		# 		cat = 3
+		# 		ret = True
+		# 		self.x_bars = np.append(self.x_bars,[self.state],axis=0)
+		# 		return (ret, cat)
 		if self.in_neigh and cat == 0:
 			cat = 2
 			# if self.radius < 0.025: self.radius = self.radius*2
@@ -81,9 +82,9 @@ class Henon:
 
 	def step(self, a):
 		action = self.action_space[a]
-		s_aft = self.state + np.multiply(action,self.direction)
+		act = np.multiply(action,self.direction)
 		self.t = self.t + self.dt
-		ns = self.henon(self.t, s_aft)
+		ns = self.henon(self.t, self.state, action)
 		self.state = ns
 		self.x_traj = np.append(self.x_traj,[self.state],axis=0)
 		(terminal, cat) = self._terminal()
@@ -105,11 +106,13 @@ class Henon:
 		info['Radius'] = self.radius
 		return (self.state, reward, terminal, info)
 
-	def henon(self,t,w):
+	def henon(self,t,w,act):
 		y = np.zeros(2)
 		# y[0] = -1.4*np.square(w[0])+w[1]+1
 		# y[1] = 0.3*w[0]
-		y[0] = 2*np.cos(w[0])+0.4*w[1]
+		# y[0] = 2*np.cos(w[0])+0.4*w[1]
+		# y[1] = w[0]
+		y[0] = 1.29+0.3*w[1]-w[0]**2+act
 		y[1] = w[0]
 		return y
 

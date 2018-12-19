@@ -13,9 +13,9 @@ DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 # factor = factors[0]
 # normalize = normalizes[2]
 
-mags = [0.01]
-mags_string = ['1e-2']
-mag_ind = 0
+mags = [0.01,0.025]
+mags_string = ['1e-2','25e-3']
+mag_ind = 1
 mag = mags[mag_ind]
 
 direction_ang = [0,np.pi/6,np.pi/4,np.pi/3,np.pi/2]
@@ -23,7 +23,7 @@ direction_ind = 0
 direction = [np.cos(direction_ang[direction_ind]), np.sin(direction_ang[direction_ind])]
 
 train = 1
-model_name = "1210runs/Henon_{0}_minus/angle_{1}".format(mags_string[mag_ind], direction_ang[direction_ind])
+model_name = "1218runs/Henon_paper".format(mags_string[mag_ind], direction_ang[direction_ind])
 model_path = DIR_PATH+"/models/"+model_name
 
 best_checkpoint_name = 'None'
