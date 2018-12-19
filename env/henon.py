@@ -49,32 +49,49 @@ class Henon:
 		# 	traj_dev = np.absolute(traj[-1]-x_bar)
 		norm_dist = LA.norm(traj_dev,2)
 
-		if norm_dist<self.radius and norm_dist>= self.terminate:
+		# if norm_dist<self.radius and norm_dist>= self.terminate:
+		# 	cat = 1
+		# 	self.x_bars = np.append(self.x_bars,[self.state],axis=0)
+		# 	if self.in_neigh: self.consecutive_reward += 1
+		# 	self.in_neigh = True
+		# 	# self.x_bar = self.state
+		# 	return (ret, cat)		
+		# # if np.any(self.x_bar):
+		# if LA.norm(np.absolute(traj[-1]-self.x_bar))<self.terminate:
+		# 	cat = 3
+		# 	ret = True
+		# 	return (ret, cat)
+		# # else:
+		# # 	if norm_dist<self.terminate:
+		# # 		cat = 3
+		# # 		ret = True
+		# # 		self.x_bars = np.append(self.x_bars,[self.state],axis=0)
+		# # 		return (ret, cat)
+		# if self.in_neigh and cat == 0:
+		# 	cat = 2
+		# 	# if self.radius < 0.025: self.radius = self.radius*2
+		# 	# self.hs = self.hs*2.
+		# 	# self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
+		# 	self.in_neigh = False
+		# 	self.consecutive_reward = 0
+		# 	return (ret, cat)
+
+		if norm_dist<self.radius:
 			cat = 1
 			self.x_bars = np.append(self.x_bars,[self.state],axis=0)
 			if self.in_neigh: self.consecutive_reward += 1
 			self.in_neigh = True
-			# self.x_bar = self.state
-			return (ret, cat)
-		# if np.any(self.x_bar):
-		if LA.norm(np.absolute(traj[-1]-self.x_bar))<self.terminate:
-			cat = 3
-			ret = True
-			return (ret, cat)
-		# else:
-		# 	if norm_dist<self.terminate:
-		# 		cat = 3
-		# 		ret = True
-		# 		self.x_bars = np.append(self.x_bars,[self.state],axis=0)
-		# 		return (ret, cat)
-		if self.in_neigh and cat == 0:
-			cat = 2
-			# if self.radius < 0.025: self.radius = self.radius*2
-			# self.hs = self.hs*2.
-			# self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
-			self.in_neigh = False
-			self.consecutive_reward = 0
-			return (ret, cat)
+			if LA.norm(np.absolute(traj[-1]-self.x_bar))<self.terminate:
+				cat = 3
+				ret = True
+		else:
+			if self.in_neigh and cat == 0:
+				cat = 2
+				# if self.radius < 0.025: self.radius = self.radius*2
+				# self.hs = self.hs*2.
+				# self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
+				self.in_neigh = False
+				self.consecutive_reward = 0
 		return (ret, cat)
 
 	def render(self):
