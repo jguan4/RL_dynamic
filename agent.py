@@ -245,7 +245,7 @@ class DQN_Agent:
                 done = info['true_done']
 
                 # Creating q_grid if not yet defined and calculating average q-value
-                if self.replay_memory.length() > 5 * self.replay_memory.batch_size:
+                if self.replay_memory.length() > 1000:
                     self.q_grid = self.replay_memory.get_q_grid(size=200, training_metadata=self.training_metadata)
                 avg_q = self.estimate_avg_q()
                 self.writer.add_summary(self.sess.run(self.training_summary, feed_dict={self.avg_q: avg_q}), self.training_metadata.frame)
