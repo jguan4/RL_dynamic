@@ -64,7 +64,7 @@ setup_dict = {
 		'learning_rate': Atari_Learning_Rate,
 		'explore_rate': No_Explore,
 		'target_update_frequency': 1000,
-		'batch_size': 512, 
+		'batch_size': 128, 
 		'memory_capacity': 1000000, 
 		'num_episodes': 10000,
 		'learning_rate_drop_frame_limit': 50000
