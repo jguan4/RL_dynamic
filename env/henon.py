@@ -75,15 +75,15 @@ class Henon:
 		# 	self.in_neigh = False
 		# 	self.consecutive_reward = 0
 		# 	return (ret, cat)
-		# if np.any(self.x_bars):
-		# 	x_bar = np.mean(self.x_bars, axis=0)
+		if np.any(self.x_bars):
+			x_bar = np.mean(self.x_bars, axis=0)
 		if norm_dist<self.radius:
 			cat = 1
 			self.x_bars = np.append(self.x_bars,[self.state],axis=0)
 			if self.in_neigh: self.consecutive_reward += 1
 			self.in_neigh = True
-			if LA.norm(np.absolute(traj[-1]-self.x_bar))<self.terminate:
-			# if LA.norm(np.absolute(traj[-1]-x_bar))<self.terminate:
+			# if LA.norm(np.absolute(traj[-1]-self.x_bar))<self.terminate:
+			if LA.norm(np.absolute(traj[-1]-x_bar))<self.terminate:
 			# if norm_dist<self.terminate
 				cat = 3
 				ret = True
