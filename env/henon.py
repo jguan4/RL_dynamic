@@ -82,7 +82,7 @@ class Henon:
 			self.in_neigh = True
 			# if LA.norm(np.absolute(traj[-1]-self.x_bar))<self.terminate:
 			# if LA.norm(np.absolute(traj[-1]-x_bar))<self.terminate:
-			if norm_dist<self.terminate
+			if norm_dist<self.terminate:
 				cat = 3
 				ret = True
 		else:
