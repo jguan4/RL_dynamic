@@ -11,9 +11,9 @@ import time
 
 class Henon_Map:
 
-    def __init__(self, type="Henon", history_pick=1, direction=[1,0], normalize=1, mag=0.1):
+    def __init__(self, type="Henon", history_pick=1, direction=[1,0], period=1, mag=0.1):
         self.name = type + str(time.time())
-        self.env = Henon(hs = mag, direction=direction)
+        self.env = Henon(hs = mag, direction=direction, period=period)
         self.state_dimension = [2]
         self.history_pick = history_pick
         self.state_space_size = history_pick * np.prod(self.state_dimension)

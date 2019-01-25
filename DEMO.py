@@ -23,7 +23,7 @@ direction_ind = 0
 direction = [np.cos(direction_ang[direction_ind]), np.sin(direction_ang[direction_ind])]
 
 train = 1
-model_name = "0103runs/Henon_paper_NE/128_5_layers_64_stricter_termination".format(mags_string[mag_ind], direction_ang[direction_ind])
+model_name = "0125runs/Henon_paper_NE/128_5_layers_64_tracking_average/period2".format(mags_string[mag_ind], direction_ang[direction_ind])
 model_path = DIR_PATH+"/models/"+model_name
 
 best_checkpoint_name = 'None'
@@ -33,5 +33,6 @@ if not train:
 	best_checkpoint_name = os.path.join(model_path,os.path.splitext(paths[1])[0])
 
 factor=direction
-normalize=0
-subprocess.run(['python3', 'main.py', str(factor), str(normalize), str(mag), model_name, best_checkpoint_name])
+# normalize=0
+period=2
+subprocess.run(['python3', 'main.py', str(factor), str(period), str(mag), model_name, best_checkpoint_name])

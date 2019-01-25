@@ -2,7 +2,7 @@ import numpy as np
 from numpy import linalg as LA
 
 class Henon:
-	def __init__(self, hs = 0.1, direction=[1,0]):
+	def __init__(self, hs = 0.1, direction=[1,0], period=1):
 		# initializer
 		self.state = None
 		self.t = None
@@ -11,7 +11,8 @@ class Henon:
 		self.consecutive_reward = None
 
 		# parameters
-		self.dt = 1
+		self.period = period
+		self.dt = self.period
 		self.radius = 0.05
 		self.past = 10
 		self.terminate = 0.02
@@ -20,7 +21,7 @@ class Henon:
 		self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
 		# self.x_bar = [0.6314,0.1894]
 		# self.x_bar = [1.2019, 1.2019]
-		self.x_bar = [0.8385, 0.8385]
+		# self.x_bar = [0.8385, 0.8385]
 		self.x_bars = np.empty((0,2),float)
 		# self.x_bar = None
 
@@ -42,11 +43,11 @@ class Henon:
 		ret = False
 		
 		# self.update_radius()
-		# if not np.any(self.x_bars):
-		traj_dev = np.absolute(traj[-1]-traj[-2])
-		# else:
-			# x_bar = np.mean(self.x_bars, axis=0)
-			# traj_dev = np.absolute(traj[-1]-x_bar)
+		if not np.any(self.x_bars):
+			traj_dev = np.absolute(traj[-1]-traj[-2])
+		else:
+			x_bar = np.mean(self.x_bars, axis=0)
+			traj_dev = np.absolute(traj[-1]-x_bar)
 		norm_dist = LA.norm(traj_dev,2)
 
 		# if norm_dist<self.radius and norm_dist>= self.terminate:
@@ -102,7 +103,7 @@ class Henon:
 		action = self.action_space[a]
 		act = np.multiply(action,self.direction)
 		self.t = self.t + self.dt
-		ns = self.henon(self.t, self.state, action)
+		ns = self.henon(self.t, self.state, act)
 		self.state = ns
 		self.x_traj = np.append(self.x_traj,[self.state],axis=0)
 		(terminal, cat) = self._terminal()
@@ -130,8 +131,11 @@ class Henon:
 		# y[1] = 0.3*w[0]
 		# y[0] = 2*np.cos(w[0])+0.4*w[1]
 		# y[1] = w[0]
-		y[0] = 1.29+0.3*w[1]-w[0]**2+act
-		y[1] = w[0]
+		w = w + act
+		for i in range(self.period):
+			y[0] = 1.29+0.3*w[1]-w[0]**2
+			y[1] = w[0]
+			w = y
 		return y
 
 	def update_radius(self):
