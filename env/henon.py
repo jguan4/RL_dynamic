@@ -42,11 +42,11 @@ class Henon:
 		ret = False
 		
 		# self.update_radius()
-		# if not np.any(self.x_bars):
-		traj_dev = np.absolute(traj[-1]-traj[-2])
-		# else:
-		# 	x_bar = np.mean(self.x_bars, axis=0)
-		# 	traj_dev = np.absolute(traj[-1]-x_bar)
+		if not np.any(self.x_bars):
+			traj_dev = np.absolute(traj[-1]-traj[-2])
+		else:
+			x_bar = np.mean(self.x_bars, axis=0)
+			traj_dev = np.absolute(traj[-1]-x_bar)
 		norm_dist = LA.norm(traj_dev,2)
 
 		# if norm_dist<self.radius and norm_dist>= self.terminate:
@@ -75,8 +75,6 @@ class Henon:
 		# 	self.in_neigh = False
 		# 	self.consecutive_reward = 0
 		# 	return (ret, cat)
-		if np.any(self.x_bars):
-			x_bar = np.mean(self.x_bars, axis=0)
 		if norm_dist<self.radius:
 			cat = 1
 			self.x_bars = np.append(self.x_bars,[self.state],axis=0)
