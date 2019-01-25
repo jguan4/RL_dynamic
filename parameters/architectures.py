@@ -12,24 +12,28 @@ import numpy as np
 class Basic_Architecture:
 
     def __init__(self):
-        self.layer_sizes = [128,128,128,128,128]
+        self.layer_sizes = [64,64,64,64,64]
 
     def evaluate(self, input, action_size):
         neural_net_1 = tf.layers.dense(input, self.layer_sizes[0], 
             activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
-        neural_net_2 = tf.nn.dropout(tf.layers.dense(neural_net_1, self.layer_sizes[1], 
-            activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer()),.5)
+        # neural_net_2 = tf.nn.dropout(tf.layers.dense(neural_net_1, self.layer_sizes[1], 
+        #     activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer()),.5)
+        neural_net_2 = tf.layers.dense(neural_net_1, self.layer_sizes[1], 
+            activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
         neural_net_3 = tf.layers.dense(neural_net_2, self.layer_sizes[2], 
             activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
-        neural_net_4 = tf.nn.dropout(tf.layers.dense(neural_net_3, self.layer_sizes[3], 
-            activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer()),.5)
+        # neural_net_4 = tf.nn.dropout(tf.layers.dense(neural_net_3, self.layer_sizes[3], 
+        #     activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer()),.5)
+        neural_net_4 = tf.layers.dense(neural_net_3, self.layer_sizes[3], 
+            activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
         neural_net_5 = tf.layers.dense(neural_net_4, self.layer_sizes[4], 
             activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
         output = tf.layers.dense(neural_net_5, action_size, activation=None, name='output')
         return output
 
     def __str__(self):
-        return "5 dense layers of size {0} with dropout".format(self.layer_sizes)
+        return "5 dense layers of size {0}".format(self.layer_sizes)
 
 
 # A class that defines a neural network with the following architecture:
