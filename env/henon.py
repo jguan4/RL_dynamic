@@ -103,7 +103,7 @@ class Henon:
 		action = self.action_space[a]
 		act = np.multiply(action,self.direction)
 		self.t = self.t + self.dt
-		ns = self.henon(self.t, self.state, act)
+		ns = self.henon(self.t, self.state, action)
 		self.state = ns
 		self.x_traj = np.append(self.x_traj,[self.state],axis=0)
 		(terminal, cat) = self._terminal()
@@ -131,9 +131,9 @@ class Henon:
 		# y[1] = 0.3*w[0]
 		# y[0] = 2*np.cos(w[0])+0.4*w[1]
 		# y[1] = w[0]
-		w = w + act
+		# w = w + act
 		for i in range(self.period):
-			y[0] = 1.29+0.3*w[1]-w[0]**2
+			y[0] = 1.29+0.3*w[1]-w[0]**2+act
 			y[1] = w[0]
 			w = y
 		return y
