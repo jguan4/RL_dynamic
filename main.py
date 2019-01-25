@@ -19,7 +19,7 @@ import ast
 ########################################################################################################
 
 environment = env.Henon_Map(**setup.setup_dict['henon'], direction = ast.literal_eval(sys.argv[1]), 
-	period = float(sys.argv[2]), mag = float(sys.argv[3]))
+	period = int(sys.argv[2]), mag = float(sys.argv[3]))
 control = agent.DQN_Agent(environment=environment, model_name=sys.argv[4], **setup.setup_dict['agent'])
 
 #####################################  Traning a model  ################################################
