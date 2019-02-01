@@ -10,6 +10,7 @@ import subprocess
 import replay_memory as rplm
 import utils
 import time
+import pickle
 from tensorflow.python.saved_model import tag_constants
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -266,6 +267,8 @@ class DQN_Agent:
                 self.best_training_score = episode_frame
                 self.delete_previous_checkpoints()
                 self.saver.save(self.sess, self.model_path + '/best.data.chkp', global_step=self.training_metadata.episode)
+            if abs(self.training_metadata.num_episodes - episode)<10:
+                self.saver.save(self.sess, self.model_path + '/last.data.chkp', global_step=self.training_metadata.episode)
             self.writer.add_summary(self.sess.run(self.test_summary,
                 feed_dict={self.test_score: episode_frame}), self.training_metadata.episode)
             self.writer.add_summary(self.sess.run(self.frame_summary,
@@ -292,6 +295,7 @@ class DQN_Agent:
     # - visualize: 			Boolean, gives whether should render the testing gameplay
     def test(self, num_test_episodes, visualize, pause=False):
         rewards = []
+        state_arr = []
         for episode in range(num_test_episodes):
             done = False
             state = self.env.reset(test=True)
@@ -307,12 +311,16 @@ class DQN_Agent:
                 action = self.get_action(state, epsilon=0)
                 next_state, reward, done, info = self.env.step(action, test=True)
                 frame += 1
+                state_arr.append(state[0])
                 state = next_state
                 print("Reward: {0} \t State: {1} \t Fixed Point: {2}".format(reward, state, info['Fixed_Point']))
                 episode_reward += reward
                 done = info['true_done']
                 if pause: utils.pause()
             rewards.append(episode_reward)
+        f = open(self.model_path+'/states_track.txt', 'w')
+        pickle.dump(state_arr, f)
+        f.close()
 
         return np.mean(rewards), np.std(rewards), rewards
 
