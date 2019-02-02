@@ -130,12 +130,12 @@ class Henon:
 		y = np.zeros(2)
 		# y[0] = -1.4*np.square(w[0])+w[1]+1
 		# y[1] = 0.3*w[0]
-		# y[0] = 2*np.cos(w[0])+0.4*w[1]
-		# y[1] = w[0]
 		w = w + act
 		for i in range(self.period):
-			y[0] = 1.29+0.3*w[1]-w[0]**2
+			y[0] = 2*np.cos(w[0])+0.4*w[1]
 			y[1] = w[0]
+			# y[0] = 1.29+0.3*w[1]-w[0]**2
+			# y[1] = w[0]
 			w = y.copy()
 		return y
 
