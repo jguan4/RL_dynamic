@@ -81,7 +81,7 @@ class Henon:
 		# 	self.in_neigh = False
 		# 	self.consecutive_reward = 0
 		# 	return (ret, cat)
-		if norm_dist<self.radius and past_dev > self.radius:
+		if norm_dist<self.radius and past_dev > self.radius*1.5:
 			cat = 1
 			self.x_bars = np.append(self.x_bars,[self.state],axis=0)
 			if self.in_neigh: self.consecutive_reward += 1
