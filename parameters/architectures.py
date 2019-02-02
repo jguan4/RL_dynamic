@@ -12,7 +12,7 @@ import numpy as np
 class Basic_Architecture:
 
     def __init__(self):
-        self.layer_sizes = [64,64,64,64,64]
+        self.layer_sizes = [64,64,64,64,64,64,64]
 
     def evaluate(self, input, action_size):
         neural_net_1 = tf.layers.dense(input, self.layer_sizes[0], 
@@ -29,11 +29,15 @@ class Basic_Architecture:
             activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
         neural_net_5 = tf.layers.dense(neural_net_4, self.layer_sizes[4], 
             activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
-        output = tf.layers.dense(neural_net_5, action_size, activation=None, name='output')
+        neural_net_6 = tf.layers.dense(neural_net_5, self.layer_sizes[5], 
+            activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
+        neural_net_7 = tf.layers.dense(neural_net_6, self.layer_sizes[6], 
+            activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
+        output = tf.layers.dense(neural_net_7, action_size, activation=None, name='output')
         return output
 
     def __str__(self):
-        return "5 dense layers of size {0}".format(self.layer_sizes)
+        return "7 dense layers of size {0}".format(self.layer_sizes)
 
 
 # A class that defines a neural network with the following architecture:
