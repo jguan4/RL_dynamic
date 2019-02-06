@@ -19,6 +19,7 @@ class Henon_Map:
         self.state_space_size = history_pick * np.prod(self.state_dimension)
         self.action_space_size = 3
         self.state_shape = [None, self.history_pick*self.state_dimension[0]] 
+        self.action_shape = [None, self.history_pick*1] 
         self.history = []
         self.action_dict = {0: 0, 1: 1, 2: 2}
 
