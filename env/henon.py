@@ -12,6 +12,7 @@ class Henon:
 		self.consecutive_reward = None
 
 		# parameters
+		self.delay = 1
 		self.period = period
 		self.dt = self.period
 		self.radius = 0.05
@@ -50,10 +51,11 @@ class Henon:
 			x_bar = np.mean(self.x_bars, axis=0)
 			traj_dev = np.absolute(traj[-1]-x_bar)
 		norm_dist = LA.norm(traj_dev,2)
-		if self.period>1:
-			past_dev = LA.norm(np.absolute(traj[-1]-traj[-2]),2)
-		else:
-			past_dev = self.radius + 1
+
+		# if self.period>1:
+		# 	past_dev = LA.norm(np.absolute(traj[-1]-traj[-2]),2)
+		# else:
+		# 	past_dev = self.radius + 1
 
 		# if norm_dist<self.radius and norm_dist>= self.terminate:
 		# 	cat = 1
@@ -81,7 +83,8 @@ class Henon:
 		# 	self.in_neigh = False
 		# 	self.consecutive_reward = 0
 		# 	return (ret, cat)
-		if norm_dist<self.radius and past_dev > self.radius*1.5:
+		# if norm_dist<self.radius and past_dev > self.radius*1.5:
+		if norm_dist<self.radius:
 			cat = 1
 			self.x_bars = np.append(self.x_bars,[self.state],axis=0)
 			if self.in_neigh: self.consecutive_reward += 1
@@ -109,7 +112,8 @@ class Henon:
 		act = np.multiply(action,self.direction)
 		self.t = self.t + self.dt
 		ns_p = self.henon(self.t, self.state, act)
-		self.state = ns_p[-1]
+		# self.state = ns_p[-1]
+		self.state = ns_p
 		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
 		(terminal, cat) = self._terminal()
 		info = {}
@@ -135,13 +139,15 @@ class Henon:
 		# y[0] = -1.4*np.square(w[0])+w[1]+1
 		# y[1] = 0.3*w[0]
 		w = w + act
-		for i in range(self.period):
+		iter_num = max(2,self.period)
+		for i in range(iter_num):
 			# y[0] = 2*np.cos(w[0])+0.4*w[1]
 			# y[1] = w[0]
 			y[i,0] = 1.29+0.3*w[1]-w[0]**2
 			y[i,1] = w[0]
 			w = y[i,:].copy()
-		return y
+		y = np.array(y)
+		return y[:,0]
 
 	def update_radius(self):
 		if self.t>self.past:
