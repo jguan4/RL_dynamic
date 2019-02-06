@@ -8,6 +8,7 @@ class Henon:
 		self.state = None
 		self.t = None
 		self.x_traj = None
+		self.o_traj = None
 		self.in_neigh = False
 		self.consecutive_reward = None
 
@@ -31,6 +32,7 @@ class Henon:
 		self.state = [-0.2, 0.15] + np.random.normal(0, 0.1, 2)
 		self.t = 0
 		self.x_traj = [self.state]
+		self.o_traj = [self.state]
 		self.in_neigh = False
 		self.consecutive_reward = 0
 		return self.state
@@ -40,7 +42,7 @@ class Henon:
 	#      2 went out of neighborhood - reward -1
 	#      3 close to the fixed point, terminate
 	def _terminal(self):
-		traj = self.x_traj
+		traj = self.o_traj
 		cat = 0 
 		ret = False
 		
@@ -102,7 +104,7 @@ class Henon:
 				# self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
 				self.in_neigh = False
 				self.consecutive_reward = 0
-		return (ret, cat)
+		return (norm_dist,ret, cat)
 
 	def render(self):
 		return None
@@ -111,35 +113,38 @@ class Henon:
 		action = self.action_space[a]
 		act = np.multiply(action,self.direction)
 		self.t = self.t + self.dt
-		ns_p = self.henon(self.t, self.state, act)
+		ns_p = self.henon(self.t, self.x_traj[-1], act)
 		# self.state = ns_p[-1]
-		self.state = ns_p
+		self.state = ns_p[:,0]
+		# only for producing trajectory, not for reference use
 		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
-		(terminal, cat) = self._terminal()
+		self.o_traj = np.append(self.o_traj,[self.state],axis=0)
+		(nreward,terminal, cat) = self._terminal()
 		info = {}
 		if cat==0:
-			reward = -1. 
+			# reward = -1. 
 			info['Fixed_Point'] = None
 		elif cat == 1:
 			# reward = self.radius/0.025
-			reward = 0.
+			# reward = 0.
 			info['Fixed_Point'] = self.state
 		elif cat == 2:
-			reward = -1.
+			# reward = -1.
 			info['Fixed_Point'] = 'Out of neighborhood'
 		elif cat == 3:
-			reward = 0.
+			# reward = 0.
 			info['Fixed_Point'] = 'Terminate'
+		reward = -nreward
 		info['Consecutive_Reward'] = self.consecutive_reward
 		info['Radius'] = self.radius
 		return (self.state, reward, terminal, info)
 
 	def henon(self,t,w,act):
-		y = np.zeros((self.period,2))
+		iter_num = max(2,self.period)
+		y = np.zeros((iter_num,2))
 		# y[0] = -1.4*np.square(w[0])+w[1]+1
 		# y[1] = 0.3*w[0]
 		w = w + act
-		iter_num = max(2,self.period)
 		for i in range(iter_num):
 			# y[0] = 2*np.cos(w[0])+0.4*w[1]
 			# y[1] = w[0]
@@ -147,7 +152,7 @@ class Henon:
 			y[i,1] = w[0]
 			w = y[i,:].copy()
 		y = np.array(y)
-		return y[:,0]
+		return y
 
 	def update_radius(self):
 		if self.t>self.past:
