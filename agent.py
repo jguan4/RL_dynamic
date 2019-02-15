@@ -109,7 +109,7 @@ class DQN_Agent:
         # Q_amax                    Maximal action value(s) at given state(s)           state_tf
         # Q_value_at_action         Q value at specific (action, state) pair(s)         state_tf, action_tf
         # onehot_greedy_action      One-hot encodes greedy action(s) at given state(s)  state_tf
-        self.Q_value = self.architecture.evaluate(self.state_tf, self.output_size)
+        self.Q_value = self.architecture.evaluate(self.state_tf, self.action_size)
         self.Q_argmax = tf.argmax(self.Q_value, axis=0, name='Q_argmax')
         self.Q_amax = tf.reduce_max(self.Q_value, axis=0, name='Q_max')
         self.Q_value_at_action = tf.reduce_sum(tf.multiply(self.Q_value, self.action_tf), axis=1, name='Q_value_at_action')
@@ -223,6 +223,7 @@ class DQN_Agent:
             # Setting up parameters for the episode
             done = False
             episode_frame = 0
+            # while episode_frame<10000:
             while not done:
                 epsilon = self.explore_rate.get(self.training_metadata)
                 alpha = self.learning_rate.get(self.training_metadata)
