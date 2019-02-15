@@ -9,6 +9,7 @@ import environment as env
 import numpy as np
 import parameters.setup as setup
 import ast
+import utils
 
 
 #####################################  Usage  ##########################################################
@@ -18,14 +19,13 @@ import ast
 #    in parameters/setup.py.
 ########################################################################################################
 
-environment = env.Henon_Map(**setup.setup_dict['henon'], direction = ast.literal_eval(sys.argv[1]), 
-	period = int(sys.argv[2]), mag = float(sys.argv[3]))
-control = agent.DQN_Agent(environment=environment, model_name=sys.argv[4], **setup.setup_dict['agent'])
+environment = env.Henon_Map(**setup.setup_dict['henon'], period = int(sys.argv[1]))
+control = agent.DQN_Agent(environment=environment, model_name=sys.argv[2], **setup.setup_dict['agent'])
 
 #####################################  Traning a model  ################################################
-if sys.argv[5]=='None':
+if sys.argv[3]=='None':
 	control.train()
 else:
 ##################################  Testing a checkpoint ###############################################
-	control.load(sys.argv[5])
+	control.load(sys.argv[3])
 	control.test(5, True, pause = True)

@@ -11,24 +11,27 @@ import time
 
 class Henon_Map:
 
-    def __init__(self, type="Henon", history_pick=1, direction=[1,0], period=1, mag=0.1):
+    def __init__(self, action_range, hs, type="Henon", history_pick=1, period=1):
         self.name = type + str(time.time())
-        self.env = Henon(hs = mag, direction=direction, period=period)
+        self.env = Henon(period=period)
+        self.period = period
         self.state_dimension = [2]
         self.history_pick = history_pick
         self.state_space_size = history_pick * np.prod(self.state_dimension)
-        self.action_space_size = 7
+        self.action_range = action_range
+        self.hs = hs
+        self.action_space = np.multiply(self.hs, self.action_range)
+        self.action_space_size = self.action_space.size 
         self.state_shape = [None, self.history_pick*self.state_dimension[0]] 
         self.action_shape = [None, self.history_pick*1] 
         self.history = []
-        self.action_dict = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6}
 
     # returns a random action
     def sample_action_space(self):
         return np.random.randint(self.action_space_size)
 
     def map_action(self, action):
-        return self.action_dict[action]
+        return self.action_space[action]
 
     # resets the environment and returns the initial state
     def reset(self, test=False):
@@ -70,7 +73,7 @@ class Henon_Map:
         self.history.append(temp)
 
     def __str__(self):
-        return self.name + '\nseed: {0}\nactions: {1}'.format(0, self.action_dict)
+        return self.name + '\nactions: {0}\n period: {1}'.format(self.action_space, self.period)
 
 
 class Acrobot:

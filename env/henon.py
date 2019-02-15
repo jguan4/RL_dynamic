@@ -3,7 +3,7 @@ import utils
 from numpy import linalg as LA
 
 class Henon:
-	def __init__(self, hs = 0.1, direction=[1,0], period=1):
+	def __init__(self, period=1):
 		# initializer
 		self.state = None
 		self.t = None
@@ -19,9 +19,7 @@ class Henon:
 		self.radius = 0.05
 		self.past = 10
 		self.terminate = 0.02
-		self.hs = hs
-		self.direction = direction
-		self.action_space = np.multiply(self.hs, [+1.0, +0.5, +0.25, 0., -0.25, -0.5, -1.0])
+		self.direction = [1,0]
 		# self.x_bar = [0.6314,0.1894]
 		# self.x_bar = [1.2019, 1.2019]
 		# self.x_bar = [0.8385, 0.8385]
@@ -43,8 +41,8 @@ class Henon:
 	#      3 close to the fixed point, terminate
 	def _terminal(self):
 		traj = self.o_traj
-		cat = 0 
-		ret = False
+		ter = False
+		info = {}
 		
 		# self.update_radius()
 		# if not np.any(self.x_bars):
@@ -53,6 +51,7 @@ class Henon:
 		# 	x_bar = np.mean(self.x_bars, axis=0)
 		# 	traj_dev = np.absolute(traj[-1]-x_bar)
 		norm_dist = LA.norm(traj_dev,2)
+		reward = -norm_dist
 
 		# if self.period>1:
 		# 	past_dev = LA.norm(np.absolute(traj[-1]-traj[-2]),2)
@@ -60,32 +59,29 @@ class Henon:
 		# 	past_dev = self.radius + 1
 
 		# if norm_dist<self.radius and past_dev > self.radius*1.5:
+
 		if norm_dist<self.radius:
-			cat = 1
 			self.x_bars = np.append(self.x_bars,[self.state],axis=0)
-			if self.in_neigh: self.consecutive_reward += 1
-			self.in_neigh = True
+			info['Fixed_Point'] = self.state
+			# if self.in_neigh: self.consecutive_reward += 1
+			# self.in_neigh = True
 			# if LA.norm(np.absolute(traj[-1]-self.x_bar))<self.terminate:
 			# if LA.norm(np.absolute(traj[-1]-x_bar))<self.terminate:
 			if norm_dist<self.terminate:
-				cat = 3
-				ret = True
+				ter = True
 		else:
-			if self.in_neigh and cat == 0:
-				cat = 2
+			info['Fixed_Point'] = None
+			# if self.in_neigh and cat == 0:
 				# if self.radius < 0.025: self.radius = self.radius*2
 				# self.hs = self.hs*2.
 				# self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
-				self.in_neigh = False
-				self.consecutive_reward = 0
-		return (norm_dist,ret, cat)
+		return (reward,ter,info)
 
 	def render(self):
 		return None
 
 	def step(self, a):
-		action = self.action_space[a]
-		act = np.multiply(action,self.direction)
+		act = np.multiply(a, self.direction)
 		self.t = self.t + self.dt
 		ns_p = self.henon(self.t, self.x_traj[-1], act)
 		# self.state = ns_p[-1]
@@ -94,24 +90,8 @@ class Henon:
 		# only for producing trajectory, not for reference use
 		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
 		self.o_traj = np.append(self.o_traj,[self.state],axis=0)
-		(nreward,terminal, cat) = self._terminal()
-		info = {}
-		if cat==0:
-			# reward = -1. 
-			info['Fixed_Point'] = None
-		elif cat == 1:
-			# reward = self.radius/0.025
-			# reward = 0.
-			info['Fixed_Point'] = self.state
-		elif cat == 2:
-			# reward = -1.
-			info['Fixed_Point'] = 'Out of neighborhood'
-		elif cat == 3:
-			# reward = 0.
-			info['Fixed_Point'] = 'Terminate'
-		reward = -nreward
-		info['Consecutive_Reward'] = self.consecutive_reward
-		info['Radius'] = self.radius
+		(reward,terminal,info) = self._terminal()
+
 		return (self.state, reward, terminal, info)
 
 	def henon(self,t,w,act):
