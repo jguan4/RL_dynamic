@@ -48,7 +48,7 @@ class Henon:
 		
 		# self.update_radius()
 		if not np.any(self.x_bars):
-			traj_dev = np.absolute(traj[-1]-traj[-1-self.period])
+			traj_dev = np.absolute(traj[-1]-traj[-2])
 		else:
 			x_bar = np.mean(self.x_bars, axis=0)
 			traj_dev = np.absolute(traj[-1]-x_bar)
@@ -59,32 +59,6 @@ class Henon:
 		# else:
 		# 	past_dev = self.radius + 1
 
-		# if norm_dist<self.radius and norm_dist>= self.terminate:
-		# 	cat = 1
-		# 	self.x_bars = np.append(self.x_bars,[self.state],axis=0)
-		# 	if self.in_neigh: self.consecutive_reward += 1
-		# 	self.in_neigh = True
-		# 	# self.x_bar = self.state
-		# 	return (ret, cat)		
-		# # if np.any(self.x_bar):
-		# if LA.norm(np.absolute(traj[-1]-self.x_bar))<self.terminate:
-		# 	cat = 3
-		# 	ret = True
-		# 	return (ret, cat)
-		# # else:
-		# # 	if norm_dist<self.terminate:
-		# # 		cat = 3
-		# # 		ret = True
-		# # 		self.x_bars = np.append(self.x_bars,[self.state],axis=0)
-		# # 		return (ret, cat)
-		# if self.in_neigh and cat == 0:
-		# 	cat = 2
-		# 	# if self.radius < 0.025: self.radius = self.radius*2
-		# 	# self.hs = self.hs*2.
-		# 	# self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
-		# 	self.in_neigh = False
-		# 	self.consecutive_reward = 0
-		# 	return (ret, cat)
 		# if norm_dist<self.radius and past_dev > self.radius*1.5:
 		if norm_dist<self.radius:
 			cat = 1
@@ -116,6 +90,7 @@ class Henon:
 		ns_p = self.henon(self.t, self.x_traj[-1], act)
 		# self.state = ns_p[-1]
 		self.state = ns_p[:,0]
+
 		# only for producing trajectory, not for reference use
 		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
 		self.o_traj = np.append(self.o_traj,[self.state],axis=0)
