@@ -12,7 +12,7 @@ import numpy as np
 class Basic_Architecture:
 
     def __init__(self):
-        self.layer_sizes = [16,16,64,64,64,64,64]
+        self.layer_sizes = [64,64,64,64,64,64,64]
 
     def evaluate(self, input, action_size):
         neural_net_1 = tf.layers.dense(input, self.layer_sizes[0], 
@@ -21,19 +21,19 @@ class Basic_Architecture:
         #     activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer()),.5)
         neural_net_2 = tf.layers.dense(neural_net_1, self.layer_sizes[1], 
             activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
-        # neural_net_3 = tf.layers.dense(neural_net_2, self.layer_sizes[2], 
-        #     activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
+        neural_net_3 = tf.layers.dense(neural_net_2, self.layer_sizes[2], 
+            activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
         # neural_net_4 = tf.nn.dropout(tf.layers.dense(neural_net_3, self.layer_sizes[3], 
         #     activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer()),.5)
-        # neural_net_4 = tf.layers.dense(neural_net_3, self.layer_sizes[3], 
-        #     activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
-        # neural_net_5 = tf.layers.dense(neural_net_4, self.layer_sizes[4], 
-        #     activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
+        neural_net_4 = tf.layers.dense(neural_net_3, self.layer_sizes[3], 
+            activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
+        neural_net_5 = tf.layers.dense(neural_net_4, self.layer_sizes[4], 
+            activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
         # neural_net_6 = tf.layers.dense(neural_net_5, self.layer_sizes[5], 
         #     activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
         # neural_net_7 = tf.layers.dense(neural_net_6, self.layer_sizes[6], 
         #     activation=tf.nn.relu, kernel_initializer=tf.contrib.layers.xavier_initializer())
-        output = tf.layers.dense(neural_net_2, action_size, activation=None, name='output')
+        output = tf.layers.dense(neural_net_5, action_size, activation=None, name='output')
         return output
 
     def __str__(self):
