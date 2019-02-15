@@ -19,7 +19,7 @@ DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 
 train = 1
 period=1
-model_name = "0205runs/Henon_paper_NE/Delay_P{0}/action_output".format(period)
+model_name = "0205runs/Henon_paper_NE/Delay_P{0}/action_output_100update".format(period)
 model_path = DIR_PATH+"/models/"+model_name
 
 best_checkpoint_name = 'None'
