@@ -110,8 +110,8 @@ class DQN_Agent:
         # Q_value_at_action         Q value at specific (action, state) pair(s)         state_tf, action_tf
         # onehot_greedy_action      One-hot encodes greedy action(s) at given state(s)  state_tf
         self.Q_value = self.architecture.evaluate(self.state_tf, self.action_size)
-        self.Q_argmax = tf.argmax(self.Q_value, axis=0, name='Q_argmax')
-        self.Q_amax = tf.reduce_max(self.Q_value, axis=0, name='Q_max')
+        self.Q_argmax = tf.argmax(self.Q_value, axis=1, name='Q_argmax')
+        self.Q_amax = tf.reduce_max(self.Q_value, axis=1, name='Q_max')
         self.Q_value_at_action = tf.reduce_sum(tf.multiply(self.Q_value, self.action_tf), axis=1, name='Q_value_at_action')
         self.onehot_greedy_action = tf.one_hot(self.Q_argmax, depth=self.action_size)
 
@@ -124,7 +124,7 @@ class DQN_Agent:
         # train_op                      y_tf, state_tf, action_tf, alpha
 
         # self.loss = tf.losses.mean_squared_error(self.y_tf, self.Q_value_at_action)
-        self.loss = tf.losses.huber_loss(self.y_tf, self.Q_value)
+        self.loss = tf.losses.huber_loss(self.y_tf, self.Q_value_at_action)
         self.optimizer = tf.train.AdamOptimizer(learning_rate=self.alpha)
         self.train_op = self.optimizer.minimize(self.loss, name='train_minimize')
 
@@ -174,10 +174,11 @@ class DQN_Agent:
         greedy_actions = self.sess.run(self.onehot_greedy_action, feed_dict={self.state_tf: next_state_batch})
         fixed_feed_dict.update({self.action_tf: greedy_actions})
         # fixed_feed_dict.update({self.action_chosen: action_batch})
-        Q_batch = self.sess.run(self.Q_value, feed_dict=fixed_feed_dict)
+        # Q_batch = self.sess.run(self.Q_value, feed_dict=fixed_feed_dict)
+        Q_batch = self.sess.run(self.Q_value_at_action, feed_dict=fixed_feed_dict)
         y_batch = reward_batch + self.discount * np.multiply(np.invert(done_batch), Q_batch)
 
-        loss_value = self.sess.run(self.loss, feed_dict={self.y_tf:y_batch, self.Q_value:Q_batch})
+        loss_value = self.sess.run(self.loss, feed_dict={self.y_tf:y_batch, self.Q_value_at_action:Q_batch})
         self.writer.add_summary(self.sess.run(self.update_summary, feed_dict={self.loss_value: loss_value}), self.training_metadata.frame)
 
         feed = {self.state_tf: state_batch, self.action_tf: action_batch, self.y_tf: y_batch, self.alpha: alpha}
