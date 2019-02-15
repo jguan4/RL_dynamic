@@ -247,10 +247,6 @@ class DQN_Agent:
                 self.replay_memory.add(self, state, action, reward, next_state, done)
 
                 # Performing experience replay if replay memory populated
-                if self.replay_memory.length() > self.replay_memory.batch_size: #100 * self.replay_memory.batch_size:
-                    self.sess.run(self.increment_frames_op)
-                    self.training_metadata.increment_frame()
-                    self.experience_replay(alpha)
                 state = next_state
                 done = info['true_done']
 
@@ -271,6 +267,10 @@ class DQN_Agent:
                 #     print('{0} +- {1}'.format(score, std))
                 #     self.writer.add_summary(self.sess.run(self.test_summary,
                 #                                           feed_dict={self.test_score: score}), self.training_metadata.frame)
+            if self.replay_memory.length() > self.replay_memory.batch_size: #100 * self.replay_memory.batch_size:
+                self.sess.run(self.increment_frames_op)
+                self.training_metadata.increment_frame()
+                self.experience_replay(alpha)
 
             if self.best_training_score==None or episode_frame<self.best_training_score:#score>self.best_training_score:
                 self.best_training_score = episode_frame
