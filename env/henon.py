@@ -21,7 +21,7 @@ class Henon:
 		self.terminate = 0.02
 		self.hs = hs
 		self.direction = direction
-		self.action_space = np.multiply(self.hs, [+1.0, +0.5, 0., -0.5, -1.0])
+		self.action_space = np.multiply(self.hs, [+1.0, +0.5, +0.25, 0., -0.25, -0.5, -1.0])
 		# self.x_bar = [0.6314,0.1894]
 		# self.x_bar = [1.2019, 1.2019]
 		# self.x_bar = [0.8385, 0.8385]

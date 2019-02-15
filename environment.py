@@ -17,11 +17,11 @@ class Henon_Map:
         self.state_dimension = [2]
         self.history_pick = history_pick
         self.state_space_size = history_pick * np.prod(self.state_dimension)
-        self.action_space_size = 5
+        self.action_space_size = 7
         self.state_shape = [None, self.history_pick*self.state_dimension[0]] 
         self.action_shape = [None, self.history_pick*1] 
         self.history = []
-        self.action_dict = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4}
+        self.action_dict = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6}
 
     # returns a random action
     def sample_action_space(self):
