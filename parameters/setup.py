@@ -65,7 +65,7 @@ setup_dict = {
 		'explore_rate': No_Explore,
 		'target_update_frequency': 1000,
 		'replay_frequency': 100,
-		'batch_size': 128, 
+		'batch_size': 1028, 
 		'memory_capacity': 1000000, 
 		'num_episodes': 10000,
 		'learning_rate_drop_frame_limit': 50000
