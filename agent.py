@@ -225,8 +225,8 @@ class DQN_Agent:
             done = False
             episode_frame = 0
 
-            while episode_frame<1000:
-            # while not done:
+            # while episode_frame<1000:
+            while not done:
                 epsilon = self.explore_rate.get(self.training_metadata)
                 alpha = self.learning_rate.get(self.training_metadata)
 
