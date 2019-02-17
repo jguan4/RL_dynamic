@@ -45,11 +45,11 @@ class Henon:
 		info = {}
 		
 		# self.update_radius()
-		if not np.any(self.x_bars):
-			traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0))
-		else:
-			x_bar = np.mean(self.x_bars, axis=0)
-			traj_dev = np.absolute(traj[-1]-x_bar)
+		# if not np.any(self.x_bars):
+		traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0))
+		# else:
+		# 	x_bar = np.mean(self.x_bars, axis=0)
+		# 	traj_dev = np.absolute(traj[-1]-x_bar)
 		norm_dist = LA.norm(traj_dev,2)
 		reward = -norm_dist
 
