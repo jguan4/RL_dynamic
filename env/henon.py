@@ -50,8 +50,6 @@ class Henon:
 			norm_dist = LA.norm(traj_dev,2)
 			reward = -norm_dist
 			mid_norm_dist = LA.norm(mid_dev,2)
-			print(norm_dist)
-			utils.pause()
 			if mid_norm_dist>norm_dist:
 				reward+=1
 		else:
