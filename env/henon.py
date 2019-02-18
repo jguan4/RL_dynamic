@@ -45,7 +45,7 @@ class Henon:
 		info = {}
 		
 		if self.period>1:
-			traj_dev = np.absolute(traj[-1]-traj[-2])
+			traj_dev = np.absolute(traj[-1][0]-traj[-2][0])
 			mid_dev = np.absolute(traj[-1][1::]-traj[-2][::-2])
 			norm_dist = LA.norm(traj_dev,2)
 			reward = -norm_dist
