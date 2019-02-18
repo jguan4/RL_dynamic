@@ -50,8 +50,8 @@ class Henon:
 			norm_dist = LA.norm(traj_dev,2)
 			reward = -norm_dist
 			mid_norm_dist = LA.norm(mid_dev,2)
-			if mid_norm_dist>norm_dist:
-				reward+=1
+			if mid_norm_dist<norm_dist:
+				reward-=1
 		else:
 			traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) # for period 1 only
 			# traj_dev = np.absolute(traj[-1]-traj[-2])
@@ -72,7 +72,7 @@ class Henon:
 
 		# if norm_dist<self.radius and past_dev > self.radius*1.5:
 
-		if norm_dist<self.radius:
+		if np.absolute(reward)<self.radius:
 			self.x_bars = np.append(self.x_bars,[self.state],axis=0)
 			info['Fixed_Point'] = self.state
 			# if self.in_neigh: self.consecutive_reward += 1
