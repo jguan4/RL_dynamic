@@ -46,7 +46,8 @@ class Henon:
 		
 		# self.update_radius()
 		# if not np.any(self.x_bars):
-		traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0))
+		# traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) # for period 1 only
+		traj_dev = np.absolute(traj[-1]-traj[-2])
 		# else:
 		# 	x_bar = np.mean(self.x_bars, axis=0)
 		# 	traj_dev = np.absolute(traj[-1]-x_bar)
