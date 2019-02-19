@@ -51,7 +51,7 @@ class Henon:
 			# norm_dist = traj_dev
 			reward = -norm_dist
 			mid_norm_dist = LA.norm(mid_dev,2)
-			if mid_norm_dist<1.5*norm_dist:
+			if mid_norm_dist<2*norm_dist:
 				reward-=1
 		else:
 			traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) # for period 1 only
