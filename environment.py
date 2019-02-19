@@ -15,7 +15,7 @@ class Henon_Map:
         self.name = type + str(time.time())
         self.env = Henon(period=period)
         self.period = period
-        self.state_dimension = [2]
+        self.state_dimension = [4]
         self.history_pick = history_pick
         self.state_space_size = history_pick * np.prod(self.state_dimension)
         self.action_range = action_range
