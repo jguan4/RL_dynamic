@@ -23,14 +23,26 @@ class Henon:
 		# self.x_bar = [0.6314,0.1894]
 		# self.x_bar = [1.2019, 1.2019]
 		# self.x_bar = [0.8385, 0.8385]
-		self.x_bars = np.empty((0,2),float)
+		dim = max(2,self.period)
+		self.x_bars = np.empty((0,dim),float)
 		# self.x_bar = None
 
 	def reset(self):
-		self.state = [-0.2, 0.15] + np.random.normal(0, 0.1, 2)
+		# setting up first delay coordinates
+		init_state =  np.random.normal(0, 0.5, 2)
+		self.x_traj = [init_state]
 		self.t = 0
-		self.x_traj = [self.state]
+		act = np.multiply(0, self.direction)
+		self.t = self.t + self.dt
+		ns_p = self.henon(self.t, self.x_traj[-1], act)
+
+		# first delay coordinates obtained
+		# update trajectories
+		self.state = ns_p[:,0]
+		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
 		self.o_traj = [self.state]
+
+		# not important parameters
 		self.in_neigh = False
 		self.consecutive_reward = 0
 		return self.state
