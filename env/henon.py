@@ -29,7 +29,7 @@ class Henon:
 
 	def reset(self):
 		# setting up first delay coordinates
-		init_state =  np.random.normal(0, 0.5, 2)
+		init_state =  [-0.2, 0.15] + np.random.normal(0, 0.1, 2)
 		self.x_traj = [init_state]
 		self.t = 0
 		act = np.multiply(0, self.direction)
@@ -58,12 +58,18 @@ class Henon:
 		
 		if self.period>1:
 			traj_dev = np.absolute(traj[-1]-traj[-2])
-			mid_dev = np.absolute(traj[-1]-np.flip(traj[-2],0))
 			norm_dist = LA.norm(traj_dev,2)
 			# norm_dist = traj_dev
 			reward = -norm_dist
-			mid_norm_dist = LA.norm(mid_dev,2)
-			if norm_dist<self.radius and mid_norm_dist<5*self.radius:
+			
+			# mid_dev = np.absolute(traj[-1]-np.flip(traj[-2],0))
+			# mid_dev = np.absolute(traj[-1][1::]-traj[-2][-(self.period-1)::])
+			# mid_norm_dist = LA.norm(mid_dev,2)
+
+			# this is to test the repeatedness of first entry in the state:
+			minus_vec = np.absolute(traj[-1][1::]-traj[-1][0])
+			min_minus_vec = np.min(minus_vec)
+			if norm_dist<self.radius and min_minus_vec<0.15:
 				reward-=1
 		else:
 			traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) # for period 1 only

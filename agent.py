@@ -90,7 +90,7 @@ class DQN_Agent:
         self.test_score = tf.placeholder(dtype=tf.float32, name='test_score')
         self.avg_q = tf.placeholder(dtype=tf.float32, name='avg_q')
         self.loss_value = tf.placeholder(dtype=tf.float32, name='loss_value')
-        # self.henon_x1 = tf.placeholder(dtype=tf.float32, name='henon_x1')
+        self.henon_x1 = tf.placeholder(dtype=tf.float32, name='henon_x1')
         # self.henon_x2 = tf.placeholder(dtype=tf.float32, name='henon_x2')
         # self.scat_1 = tf.placeholder(dtype=tf.float32, name='scat_1')
         # self.scat_2 = tf.placeholder(dtype=tf.float32, name='scat_2')
@@ -146,7 +146,7 @@ class DQN_Agent:
         avg_q = tf.summary.scalar("Average Q-value", self.avg_q, collections=None, family=None)
         loss = tf.summary.scalar("Loss", self.loss_value, collections=None, family=None)
         # henon_x2 = tf.summary.scalar("henon_x2", self.henon_x2, collections=None, family=None)
-        # henon_x1 = tf.summary.scalar("henon_x1", self.henon_x1, collections=None, family=None)
+        henon_x1 = tf.summary.scalar("henon_x1", self.henon_x1, collections=None, family=None)
         # scat_1 = tf.summary.scalar("scat_1", self.scat_1, collections=None, family=None)
         # scat_2 = tf.summary.scalar("scat_2", self.scat_2, collections=None, family=None)
         fp = tf.summary.histogram("fp",self.fp,collections=None, family=None)
@@ -155,7 +155,7 @@ class DQN_Agent:
         self.training_summary = tf.summary.merge([avg_q])
         self.update_summary = tf.summary.merge([loss])
         self.test_summary = tf.summary.merge([test_score])
-        self.traj_summary = tf.summary.merge([fp])
+        self.traj_summary = tf.summary.merge([fp,henon_x1])
         self.scat_summary = tf.summary.merge([traj])
         self.frame_summary = tf.summary.merge([f_count])
         # subprocess.Popen(['tensorboard', '--logdir', self.log_path])
@@ -253,7 +253,7 @@ class DQN_Agent:
                 if isinstance(info['Fixed_Point'], np.ndarray):
                     fp = info['Fixed_Point']
                     self.writer.add_summary(self.sess.run(self.traj_summary,
-                        feed_dict={self.fp: [fp]}), self.training_metadata.frame)
+                        feed_dict={self.fp: [fp], self.henon_x1:fp[0]}), self.training_metadata.frame)
                 for i in range(np.size(next_state)):
                     self.writer.add_summary(self.sess.run(self.scat_summary,
                         feed_dict={self.traj: next_state[i]}), self.training_metadata.frame)
