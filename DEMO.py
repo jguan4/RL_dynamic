@@ -18,7 +18,7 @@ DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 # direction = [np.cos(direction_ang[direction_ind]), np.sin(direction_ang[direction_ind])]
 
 train = 1
-period = 2
+period = 4
 model_name = "0205runs/Henon_paper_NE/Delay_P{0}/ao_100u_5x64_disp5_batch1024_rewardfordiffer_ver10".format(period)
 model_path = DIR_PATH+"/models/"+model_name
 
