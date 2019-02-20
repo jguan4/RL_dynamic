@@ -2,7 +2,8 @@ import sys
 sys.dont_write_bytecode = True
 
 import gym
-from env.henon import Henon
+from env import Henon
+from env import Lorenz
 import numpy as np
 import random
 from PIL import Image
@@ -74,6 +75,80 @@ class Henon_Map:
 
     def __str__(self):
         return self.name + '\nactions: {0}\n period: {1}'.format(self.action_space, self.period)
+
+
+##################################################################
+##################################################################
+
+class Lorenz_Attractor:
+
+    def __init__(self, action_range, hs, type="Lorenz", history_pick=1, period=1):
+        self.name = type + str(time.time())
+        self.env = Lorenz(period=period)
+        self.period = period
+        self.state_dimension = [max(3,period)]
+        self.history_pick = history_pick
+        self.state_space_size = history_pick * np.prod(self.state_dimension)
+        self.action_range = action_range
+        self.hs = hs
+        self.action_space = np.multiply(self.hs, self.action_range)
+        self.action_space_size = self.action_space.size 
+        self.state_shape = [None, self.history_pick*self.state_dimension[0]] 
+        self.action_shape = [None, self.history_pick*1] 
+        self.history = []
+
+    # returns a random action
+    def sample_action_space(self):
+        return np.random.randint(self.action_space_size)
+
+    def map_action(self, action):
+        return self.action_space[action]
+
+    # resets the environment and returns the initial state
+    def reset(self, test=False):
+        return self.process(self.env.reset())
+
+    # take action 
+    def step(self, action, test=False):
+        action = self.map_action(action)
+        total_reward = 0
+        n = 1
+        for i in range(n):
+            next_state, reward, done, info = self.env.step(action)
+            total_reward += reward
+            info['true_done'] = done
+            if done: break
+        processed_next_state = self.process(next_state)    
+        return processed_next_state, total_reward, done, info
+
+    def render(self):
+        self.env.render()
+
+    # process state and return the current history
+    def process(self, state):
+        self.add_history(state)
+        if len(self.history) < self.history_pick:
+            zeros = np.zeros(self.state_dimension)
+            result = np.tile(zeros, ((self.history_pick - len(self.history)), 1))
+            result = np.concatenate((result, np.array(self.history)),axis=0)
+        else:
+            result = np.array(self.history)
+        result = np.reshape(result,(self.history_pick*self.state_dimension[0]))
+        return result
+
+    def add_history(self, state):
+        if len(self.history) >= self.history_pick:
+            self.history.pop(0)
+        # temp = utils.process_image(state, detect_edges=self.detect_edges, flip=self.flip_episode)
+        temp = state
+        self.history.append(temp)
+
+    def __str__(self):
+        return self.name + '\nactions: {0}\n period: {1}'.format(self.action_space, self.period)
+
+
+##################################################################
+##################################################################
 
 
 class Acrobot:

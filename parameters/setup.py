@@ -62,7 +62,7 @@ setup_dict = {
 	'agent': {
 		'architecture': Basic_Architecture, 
 		'learning_rate': Atari_Learning_Rate,
-		'explore_rate': Fast_Explore,
+		'explore_rate': No_Explore,
 		'target_update_frequency': 1000,
 		'replay_frequency': 100,
 		'batch_size': 1024, 
@@ -71,13 +71,18 @@ setup_dict = {
 		'learning_rate_drop_frame_limit': 50000
 	},
 
-	# 'acrobot': {
-	# },
+	'acrobot': {
+	},
 
-	# 'pendulum': {
-	# },
+	'pendulum': {
+	},
 
 	'henon': {
+		'action_range': [+1.0, 0., -1.0],
+		'hs': 0.025
+	},
+
+	'lorenz': {
 		'action_range': [+1.0, 0., -1.0],
 		'hs': 0.025
 	}
