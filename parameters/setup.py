@@ -67,7 +67,7 @@ setup_dict = {
 		'replay_frequency': 100,
 		'batch_size': 1024, 
 		'memory_capacity': 1000000, 
-		'num_episodes': 10000,
+		'num_episodes': 10,
 		'learning_rate_drop_frame_limit': 50000
 	},
 

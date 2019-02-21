@@ -216,10 +216,17 @@ class DQN_Agent:
     # Parameters: 	None
     # Output: 		None
     def train(self):
+        training_scores = np.empty((0,2),float)
+        frame_eps = np.empty((0,2),float)
+        traj = np.empty((0,1),float)
+        period_points = np.empty((0,self.state_size),float)
+
         while self.sess.run(self.episode) < self.training_metadata.num_episodes:
             episode = self.sess.run(self.episode)
             self.training_metadata.increment_episode()
             self.sess.run(self.increment_episode_op)
+
+            traj = np.append(traj, [[10]], axis=0)
 
             # Setting up game environment
             state = self.env.reset()
@@ -254,16 +261,18 @@ class DQN_Agent:
                     fp = info['Fixed_Point']
                     self.writer.add_summary(self.sess.run(self.traj_summary,
                         feed_dict={self.fp: [fp], self.henon_x1:fp[0]}), self.training_metadata.frame)
+                    period_points = np.append(period_points,[fp],axis=0)
+
                 for i in range(np.size(next_state)):
                     self.writer.add_summary(self.sess.run(self.scat_summary,
                         feed_dict={self.traj: next_state[i]}), self.training_metadata.frame)
+                    traj = np.append(traj, [[state[i]]], axis=0)                    
 
                 self.replay_memory.add(self, state, action, reward, next_state, done)
 
                 # Performing experience replay if replay memory populated
                 state = next_state
                 done = info['true_done']
-
                 self.sess.run(self.increment_frames_op)
                 self.training_metadata.increment_frame()
 
@@ -276,78 +285,57 @@ class DQN_Agent:
                 avg_q = self.estimate_avg_q()
                 self.writer.add_summary(self.sess.run(self.training_summary, feed_dict={self.avg_q: avg_q}), self.training_metadata.frame)
 
-                # if (self.training_metadata.frame % 3000 == 0) and (self.training_metadata.frame != 0):
-                #     score, std, rewards = self.test(num_test_episodes=5, visualize=True)
-                #     if self.best_training_score==None or score>self.best_training_score:
-                #         self.best_training_score = score
-                #         self.delete_previous_checkpoints()
-                #         self.saver.save(self.sess, self.model_path + '/best.data.chkp', global_step=self.training_metadata.episode)
-                #     # if (self.training_metadata.num_episodes - episode)<30:
-                #     #     self.saver.save(self.sess, self.model_path + '/last.data.chkp', global_step=self.training_metadata.episode)
-                #     print('{0} +- {1}'.format(score, std))
-                #     self.writer.add_summary(self.sess.run(self.test_summary,
-                #                                           feed_dict={self.test_score: score}), self.training_metadata.frame)
-
+            # end of episode
             if self.best_training_score==None or episode_frame<self.best_training_score:#score>self.best_training_score:
                 self.best_training_score = episode_frame
                 self.delete_previous_checkpoints()
                 self.saver.save(self.sess, self.model_path + '/best.data.chkp', global_step=self.training_metadata.episode)
             if abs(self.training_metadata.num_episodes - episode)<10:
                 self.saver.save(self.sess, self.model_path + '/last.data.chkp', global_step=self.training_metadata.episode)
+
+            # update tensorboard
             self.writer.add_summary(self.sess.run(self.test_summary,
                 feed_dict={self.test_score: episode_frame}), self.training_metadata.episode)
             self.writer.add_summary(self.sess.run(self.frame_summary,
                 feed_dict={self.f_count: self.training_metadata.frame}), self.training_metadata.episode)
 
-            # Saving tensorboard data and model weights
-            # if (self.training_metadata.frame % 300 == 0) and (self.training_metadata.frame != 0):
-            #     score, std, rewards = self.test(num_test_episodes=5, visualize=True)
-            #     if self.best_training_score==None or score>self.best_training_score:
-            #         self.best_training_score = score
-            #         self.delete_previous_checkpoints()
-            #         self.saver.save(self.sess, self.model_path + '/best.data.chkp', global_step=self.training_metadata.episode)
-            #     # if (self.training_metadata.num_episodes - episode)<30:
-            #     #     self.saver.save(self.sess, self.model_path + '/last.data.chkp', global_step=self.training_metadata.episode)
-            #     print('{0} +- {1}'.format(score, std))
-            #     self.writer.add_summary(self.sess.run(self.test_summary,
-            #                                           feed_dict={self.test_score: score}), self.training_metadata.frame)
-                
-            # self.writer.add_summary(self.sess.run(self.training_summary, feed_dict={self.avg_q: avg_q}), self.training_metadata.frame)
+            training_scores = np.append(training_scores, [[self.training_metadata.episode, episode_frame]], axis=0)
+            frame_eps = np.append(frame_eps, [[self.training_metadata.episode, self.training_metadata.frame]], axis=0)
+
+        # end of training 
+        np.savetxt(self.model_path+"/training_scores.csv", training_scores, delimiter=",")
+        np.savetxt(self.model_path+"/frame_eps.csv", frame_eps, delimiter=",")
+        np.savetxt(self.model_path+"/traj.csv", traj, delimiter=",")
+        np.savetxt(self.model_path+"/period_points.csv", period_points, delimiter=",")
+
 
     # Description: Tests the model
     # Parameters:
     # - num_test_episodes: 	Integer, giving the number of episodes to be tested over
     # - visualize: 			Boolean, gives whether should render the testing gameplay
     def test(self, num_test_episodes, visualize, pause=False):
-        rewards = []
-        state_arr = []
+        traj = np.empty((0,self.state_size),float)
+        training_scores = np.empty((0,2),float)
         for episode in range(num_test_episodes):
+            traj = np.append(traj, [[10,10]], axis=0)
             done = False
             state = self.env.reset(test=True)
-            episode_reward = 0
-            reward = 0
             frame = 0
-            if not visualize:
-                self.test_env.render()
             # while not done:
             while frame < 1000:
-                if visualize:
-                    self.env.render()
                 action = self.get_action(state, epsilon=0)
                 next_state, reward, done, info = self.env.step(action, test=True)
                 frame += 1
-                state_arr.append(state[0])
+                traj = np.append(traj, [state], axis=0)
                 state = next_state
                 print("Reward: {0} \t State: {1} \t Fixed Point: {2}".format(reward, state, info['Fixed_Point']))
-                episode_reward += reward
                 done = info['true_done']
+                if done: training_scores = np.append(training_scores, [[episode, frame]], axis=0)
                 if pause: utils.pause()
-            rewards.append(episode_reward)
-        f = open(self.model_path+'/states_track.txt', 'w')
-        pickle.dump(state_arr, f)
-        f.close()
+        np.savetxt(self.model_path+"/test_training_scores.csv", training_scores, delimiter=",")
+        np.savetxt(self.model_path+"/test_traj.csv", traj, delimiter=",")
+        return traj, training_scores
 
-        return np.mean(rewards), np.std(rewards), rewards
 
     # Description: Returns average Q-value over some number of fixed tracks
     # Parameters: 	None

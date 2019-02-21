@@ -19,7 +19,7 @@ import utils
 #    in parameters/setup.py.
 ########################################################################################################
 
-environment = env.Henon_Map(period = int(sys.argv[1]), **setup.setup_dict['lorenz'])
+environment = env.Henon_Map(period = int(sys.argv[1]), **setup.setup_dict['henon'])
 control = agent.DQN_Agent(environment=environment, model_name=sys.argv[2], **setup.setup_dict['agent'])
 
 #####################################  Traning a model  ################################################
@@ -28,4 +28,4 @@ if sys.argv[3]=='None':
 else:
 ##################################  Testing a checkpoint ###############################################
 	control.load(sys.argv[3])
-	control.test(5, True, pause = True)
+	control.test(5, False, pause = False)

@@ -2,11 +2,14 @@ import sys
 sys.dont_write_bytecode = True
 
 import numpy as np
+import os
+import tensorflow as tf
+import matplotlib.pyplot as plt
+
 # from skimage.transform import resize
 # import time
 # from PIL import Image
 # import cv2 as cv
-# import matplotlib.pyplot as plt
 
 ########## File used to perform image operations and pause game for debugging ##########
 
@@ -15,6 +18,13 @@ import numpy as np
 def pause():
     programPause = input("Press the <ENTER> key to continue...")
 
+def plot_func(file_path):
+    traj = np.loadtxt(file_path,dtype='float',delimiter=',')
+    traj = np.squeeze(np.reshape(traj,(1,np.size(traj))))
+    plt.plot(range(np.size(traj)), traj)
+    plt.ylabel('First Coordinate')
+    plt.xlabel('Frames')
+    plt.show()
 
 # # Sets all pixel values to be between (0,1)
 # # Parameters:
@@ -143,3 +153,18 @@ class Training_Metadata:
 
     def increment_episode(self):
         self.episode += 1
+
+
+class Event_Iterator:
+    def __init__(self,model_path):
+        self.model_path = model_path
+        self.log_path = self.model_path + '/log'
+        files = os.listdir(self.log_path)
+        self.log_name = os.path.join(self.log_path,files[0])
+
+
+    def iterator(self):
+        for e in tf.train.summary_iterator(self.log_name):
+            for v in e.summary.value:
+                if v.tag == 'Training_score':
+                    print(v.simple_value)
