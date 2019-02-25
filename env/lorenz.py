@@ -72,8 +72,9 @@ class Lorenz:
 			if norm_dist<self.radius and min_minus_vec<0.15:
 				reward-=1
 		else:
-			traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) # for period 1 only
+			# traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) # for period 1 only
 			# traj_dev = np.absolute(traj[-1]-traj[-2])
+			traj_dev = np.absolute(traj[-1][1::]-traj[-1][0])
 			norm_dist = LA.norm(traj_dev,2)
 			reward = -norm_dist
 			
