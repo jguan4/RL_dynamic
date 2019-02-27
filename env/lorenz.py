@@ -14,8 +14,9 @@ class Lorenz:
 
 		# parameters
 		self.period = period
+		self.substep = 2
 		self.h = 0.025
-		self.dt = self.period*self.h
+		self.dt = self.period*self.h*self.substep
 		self.radius = 0.05
 		self.past = 10
 		self.terminate = 0.02
@@ -139,12 +140,13 @@ class Lorenz:
 		t = self.t
 		h = self.h
 		# one step of the Runge-Kutta order 4 method
-		s1 = self.ydot(t,w);
-		s2 = self.ydot(t+h/2, w+h*s1/2);
-		s3 = self.ydot(t+h/2, w+h*s2/2);
-		s4 = self.ydot(t+h, w+h*s3);
-		y = w + h*(s1+2*s2+2*s3+s4)/6;
-		return y
+		for i in range(self.substep):
+			s1 = self.ydot(t,w);
+			s2 = self.ydot(t+h/2, w+h*s1/2);
+			s3 = self.ydot(t+h/2, w+h*s2/2);
+			s4 = self.ydot(t+h, w+h*s3);
+			w = w + h*(s1+2*s2+2*s3+s4)/6;
+		return w
 
 	def ydot(self,t,y):
 		s = 10

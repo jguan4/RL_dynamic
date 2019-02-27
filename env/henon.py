@@ -3,7 +3,7 @@ import utils
 from numpy import linalg as LA
 
 class Henon:
-	def __init__(self, period=1):
+	def __init__(self, delay=False, period=1):
 		# initializer
 		self.state = None
 		self.t = None
@@ -11,6 +11,7 @@ class Henon:
 		self.o_traj = None
 		self.in_neigh = False
 		self.consecutive_reward = None
+		self.delay = delay
 
 		# parameters
 		self.delay = 1
@@ -23,7 +24,9 @@ class Henon:
 		# self.x_bar = [0.6314,0.1894]
 		# self.x_bar = [1.2019, 1.2019]
 		# self.x_bar = [0.8385, 0.8385]
-		dim = max(2,self.period)
+		if self.delay:
+			self.dim = max(2,self.period)
+		else: self.dim = 2
 		self.x_bars = np.empty((0,dim),float)
 		# self.x_bar = None
 
@@ -38,9 +41,11 @@ class Henon:
 
 		# first delay coordinates obtained
 		# update trajectories
-		self.state = ns_p[:,0]
+		if delay:
+			self.state = [ns_p[:,0]]
+		else: self.state = ns_p
 		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
-		self.o_traj = [self.state]
+		self.o_traj = self.state
 
 		# not important parameters
 		self.in_neigh = False
@@ -116,17 +121,21 @@ class Henon:
 		self.t = self.t + self.dt
 		ns_p = self.henon(self.t, self.x_traj[-1], act)
 		# self.state = ns_p[-1]
-		self.state = ns_p[:,0]
+		if self.delay:
+			self.state = [ns_p[:,0]]
+		else: self.state = ns_p
 
 		# only for producing trajectory, not for reference use
 		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
-		self.o_traj = np.append(self.o_traj,[self.state],axis=0)
+		self.o_traj = np.append(self.o_traj,self.state,axis=0)
 		(reward,terminal,info) = self._terminal()
 
 		return (self.state, reward, terminal, info)
 
 	def henon(self,t,w,act):
-		iter_num = max(2,self.period)
+		if self.delay: 
+			iter_num = max(2,self.period)
+		else: iter_num = self.period
 		y = np.zeros((iter_num,2))
 		# y[0] = -1.4*np.square(w[0])+w[1]+1
 		# y[1] = 0.3*w[0]
