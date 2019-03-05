@@ -3,7 +3,7 @@ import utils
 from numpy import linalg as LA
 
 class Lorenz:
-	def __init__(self, period=1):
+	def __init__(self, delay=False, period=1):
 		# initializer
 		self.state = None
 		self.t = None
@@ -11,6 +11,7 @@ class Lorenz:
 		self.o_traj = None
 		self.in_neigh = False
 		self.consecutive_reward = None
+		self.delay = delay
 
 		# parameters
 		self.period = period
@@ -21,16 +22,15 @@ class Lorenz:
 		self.past = 10
 		self.terminate = 0.02
 		self.direction = [1,0,0]
-		# self.x_bar = [0.6314,0.1894]
-		# self.x_bar = [1.2019, 1.2019]
-		# self.x_bar = [0.8385, 0.8385]
-		self.dim = max(3,self.period)
-		self.x_bars = np.empty((0,self.dim),float)
+		if self.delay:
+			self.dim = max(3,self.period)
+		else: self.dim = self.period
+		self.x_bars = np.empty((0,3),float)
 		# self.x_bar = None
 
 	def reset(self):
 		# setting up first delay coordinates
-		init_state =  [1, 0, 0] + np.random.normal(0, 0.1, 3)
+		init_state =  [0, 0, 0] + np.random.normal(0, 0.1, 3)
 		self.x_traj = [init_state]
 		self.t = 0
 		act = np.multiply(0, self.direction)
@@ -39,13 +39,12 @@ class Lorenz:
 
 		# first delay coordinates obtained
 		# update trajectories
-		self.state = ns_p[:,0]
+		if self.delay:
+			self.state = ns_p[:,0]
+		else: self.state = ns_p[-1]
 		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
 		self.o_traj = [self.state]
 
-		# not important parameters
-		self.in_neigh = False
-		self.consecutive_reward = 0
 		return self.state
 
 	# cat: 0 not stationary - reward 0
@@ -94,7 +93,8 @@ class Lorenz:
 		# if norm_dist<self.radius and past_dev > self.radius*1.5:
 
 		if np.absolute(reward)<self.radius:
-			self.x_bars = np.append(self.x_bars,[self.state],axis=0)
+			c_x = self.x_traj[-1]
+			self.x_bars = np.append(self.x_bars,[c_x],axis=0)
 			info['Fixed_Point'] = self.state
 			# if self.in_neigh: self.consecutive_reward += 1
 			# self.in_neigh = True
@@ -118,7 +118,9 @@ class Lorenz:
 		ns_p = self.lor63(self.x_traj[-1], act)
 		self.t = self.t + self.dt
 		# self.state = ns_p[-1]
-		self.state = ns_p[:,0]
+		if self.delay:
+			self.state = ns_p[:,0]
+		else: self.state = ns_p[-1]
 
 		# only for producing trajectory, not for reference use
 		self.x_traj = np.append(self.x_traj,ns_p,axis=0)

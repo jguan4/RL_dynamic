@@ -14,7 +14,6 @@ class Henon:
 		self.delay = delay
 
 		# parameters
-		self.delay = 1
 		self.period = period
 		self.dt = self.period
 		self.radius = 0.05
@@ -26,8 +25,8 @@ class Henon:
 		# self.x_bar = [0.8385, 0.8385]
 		if self.delay:
 			self.dim = max(2,self.period)
-		else: self.dim = 2
-		self.x_bars = np.empty((0,dim),float)
+		else: self.dim = self.period
+		self.x_bars = np.empty((0,2),float)
 		# self.x_bar = None
 
 	def reset(self):
@@ -41,15 +40,13 @@ class Henon:
 
 		# first delay coordinates obtained
 		# update trajectories
-		if delay:
-			self.state = [ns_p[:,0]]
-		else: self.state = ns_p
-		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
-		self.o_traj = self.state
+		if self.delay:
+			self.state = ns_p[:,0]
+		else: self.state = ns_p[-1]
 
-		# not important parameters
-		self.in_neigh = False
-		self.consecutive_reward = 0
+		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
+		self.o_traj = [self.state]
+
 		return self.state
 
 	# cat: 0 not stationary - reward 0
@@ -77,8 +74,8 @@ class Henon:
 			if norm_dist<self.radius and min_minus_vec<0.15:
 				reward-=1
 		else:
-			traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) # for period 1 only
-			# traj_dev = np.absolute(traj[-1]-traj[-2])
+			# traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) # for period 1 only
+			traj_dev = np.absolute(traj[-1]-traj[-2])
 			norm_dist = LA.norm(traj_dev,2)
 			reward = -norm_dist
 			
@@ -97,7 +94,8 @@ class Henon:
 		# if norm_dist<self.radius and past_dev > self.radius*1.5:
 
 		if np.absolute(reward)<self.radius:
-			self.x_bars = np.append(self.x_bars,[self.state],axis=0)
+			c_x = self.x_traj[-1-self.period]
+			self.x_bars = np.append(self.x_bars,[c_x],axis=0)
 			info['Fixed_Point'] = self.state
 			# if self.in_neigh: self.consecutive_reward += 1
 			# self.in_neigh = True
@@ -122,25 +120,22 @@ class Henon:
 		ns_p = self.henon(self.t, self.x_traj[-1], act)
 		# self.state = ns_p[-1]
 		if self.delay:
-			self.state = [ns_p[:,0]]
-		else: self.state = ns_p
+			self.state = ns_p[:,0]
+		else: self.state = ns_p[-1]
 
 		# only for producing trajectory, not for reference use
 		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
-		self.o_traj = np.append(self.o_traj,self.state,axis=0)
+		self.o_traj = np.append(self.o_traj,[self.state],axis=0)
 		(reward,terminal,info) = self._terminal()
 
 		return (self.state, reward, terminal, info)
 
 	def henon(self,t,w,act):
-		if self.delay: 
-			iter_num = max(2,self.period)
-		else: iter_num = self.period
-		y = np.zeros((iter_num,2))
+		y = np.zeros((self.dim,2))
 		# y[0] = -1.4*np.square(w[0])+w[1]+1
 		# y[1] = 0.3*w[0]
 		w = w + act
-		for i in range(iter_num):
+		for i in range(self.dim):
 			# y[0] = 2*np.cos(w[0])+0.4*w[1]
 			# y[1] = w[0]
 			y[i,0] = 1.29+0.3*w[1]-w[0]**2

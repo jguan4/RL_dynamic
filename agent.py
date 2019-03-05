@@ -285,6 +285,12 @@ class DQN_Agent:
                 avg_q = self.estimate_avg_q()
                 self.writer.add_summary(self.sess.run(self.training_summary, feed_dict={self.avg_q: avg_q}), self.training_metadata.frame)
 
+                if self.training_metadata.frame % 1000 ==0 and self.training_metadata.frame != 0:
+                    temp_traj,x_bar = self.env.record_traj()
+                    np.savetxt(self.model_path+"/temp_traj.csv", temp_traj, delimiter=",")
+                    np.savetxt(self.model_path+"/x_bar.csv", x_bar, delimiter=",")
+
+
             # end of episode
             if self.best_training_score==None or episode_frame<self.best_training_score:#score>self.best_training_score:
                 self.best_training_score = episode_frame

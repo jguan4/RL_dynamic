@@ -12,11 +12,13 @@ import time
 
 class Henon_Map:
 
-    def __init__(self, action_range, hs, type="Henon", history_pick=1, period=1):
+    def __init__(self, action_range, hs, delay, type="Henon", history_pick=1, period=1):
         self.name = type + str(time.time())
-        self.env = Henon(period=period)
+        self.env = Henon(delay=delay,period=period)
         self.period = period
-        self.state_dimension = [max(2,period)]
+        if delay:
+            self.state_dimension = [max(2,period)]
+        else: self.state_dimension = [2]
         self.history_pick = history_pick
         self.state_space_size = history_pick * np.prod(self.state_dimension)
         self.action_range = action_range
@@ -72,6 +74,11 @@ class Henon_Map:
         # temp = utils.process_image(state, detect_edges=self.detect_edges, flip=self.flip_episode)
         temp = state
         self.history.append(temp)
+
+    def record_traj(self):
+        traj = self.env.x_traj
+        x_bar = self.env.x_bars
+        return traj, x_bar
 
     def __str__(self):
         return self.name + '\nactions: {0}\n period: {1}'.format(self.action_space, self.period)
@@ -82,11 +89,13 @@ class Henon_Map:
 
 class Lorenz_Attractor:
 
-    def __init__(self, action_range, hs, type="Lorenz", history_pick=1, period=1):
+    def __init__(self, action_range, hs, delay, type="Lorenz", history_pick=1, period=1):
         self.name = type + str(time.time())
-        self.env = Lorenz(period=period)
+        self.env = Lorenz(delay=delay,period=period)
         self.period = period
-        self.state_dimension = [max(3,period)]
+        if delay:
+            self.state_dimension = [max(3,period)]
+        else: self.state_dimension = [3]
         self.history_pick = history_pick
         self.state_space_size = history_pick * np.prod(self.state_dimension)
         self.action_range = action_range
@@ -142,6 +151,11 @@ class Lorenz_Attractor:
         # temp = utils.process_image(state, detect_edges=self.detect_edges, flip=self.flip_episode)
         temp = state
         self.history.append(temp)
+
+    def record_traj(self):
+        traj = self.env.x_traj
+        x_bar = self.env.x_bars
+        return traj, x_bar
 
     def __str__(self):
         return self.name + '\nactions: {0}\n period: {1}'.format(self.action_space, self.period)

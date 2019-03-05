@@ -11,6 +11,24 @@ class Find_Period:
 		ns_p = self.henon(self.xs[-1])
 		self.xs = np.append(self.xs,[ns_p[-1]],axis=0)
 
+	def broyden(self,k):
+		b = np.identity(2)
+		for i in range(k):
+			x_0 = self.xs[-1]
+			x = x_0-np.transpose(np.matmul(b,self.f_func(x_0)))
+			self.xs = np.append(self.xs,[x],axis=0)
+			de = np.transpose(x-x_0)
+			delta = self.f_func(x)-self.f_func(x_0)
+			s1 = np.matmul(b,delta)
+			s2 = de-s1
+			s3 = np.matmul(s2,np.transpose(de))
+			s4 = np.matmul(s3,b)
+			s5 = np.matmul(np.transpose(de),b)
+			s6 = np.matmul(s5,delta)
+			b=b+s4/s6
+		whole_traj = self.henon(self.xs[-1])
+		return whole_traj
+
 	def run_secant(self):
 		err = 1
 		while err>self.tol:
@@ -27,13 +45,7 @@ class Find_Period:
 		x_1=self.xs[-1].copy()
 		f_x_1 = self.f_func(x_1)
 		f_x_2 = self.f_func(x_2)
-		print(x_2)
-		print(x_1)
-		print(f_x_1)
-		print(f_x_2)
-		utils.pause()
 		x_n = x_1-f_x_1*(x_1-x_2)/(f_x_1-f_x_2)
-		print(x_n)
 		return x_n
 
 	def f_func(self, w):
@@ -41,7 +53,7 @@ class Find_Period:
 		diff = w-w_n[-1]
 		# diff_I = np.argmax(np.absolute(diff))
 		# return diff[diff_I]
-		return LA.norm(diff,2)
+		return np.transpose(diff)
 
 	def henon(self,w):
 		y = np.zeros((self.period,2))
