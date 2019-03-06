@@ -19,7 +19,7 @@ import utils
 #    in parameters/setup.py.
 ########################################################################################################
 
-environment = env.Lorenz_Attractor(period = int(sys.argv[1]), **setup.setup_dict['lorenz'])
+environment = env.Henon_Map(period = int(sys.argv[1]), **setup.setup_dict['henon'])
 control = agent.DQN_Agent(environment=environment, model_name=sys.argv[2], **setup.setup_dict['agent'])
 
 #####################################  Traning a model  ################################################
