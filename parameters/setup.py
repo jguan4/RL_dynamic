@@ -85,7 +85,7 @@ setup_dict = {
 
 	'lorenz': {
 		'action_range': [+2.0, +1.0, 0., -1.0, -2.0],
-		'delay': False,
+		'delay': True,
 		'hs': 0.025
 	}
 }
