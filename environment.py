@@ -94,7 +94,7 @@ class Lorenz_Attractor:
         self.env = Lorenz(delay=delay,period=period)
         self.period = period
         if delay:
-            self.state_dimension = [max(3,period)]
+            self.state_dimension = [max(4,period)]
         else: self.state_dimension = [3]
         self.history_pick = history_pick
         self.state_space_size = history_pick * np.prod(self.state_dimension)

@@ -21,9 +21,9 @@ class Lorenz:
 		self.radius = 0.05
 		self.past = 10
 		self.terminate = 0.02
-		self.direction = [1,0,0]
+		self.direction = [1,1,0]
 		if self.delay:
-			self.dim = max(3,self.period)
+			self.dim = max(4,self.period)
 		else: self.dim = self.period
 		self.x_bars = np.empty((0,3),float)
 		# self.x_bar = None
