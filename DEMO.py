@@ -19,12 +19,13 @@ DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 period = 1
 model_name = "0303runs/Lorenz/Whole_P{0}/ao_100u_5x64_disp5_batch1024".format(period)
 model_path = DIR_PATH+"/models/"+model_name
+utils.plot_func(model_path+'temp_traj110.csv')
 
-train = 1
-best_checkpoint_name = 'None'
-if not train:
-	files = os.listdir(model_path)
-	paths = [i for i in files if os.path.isfile(os.path.join(model_path,i)) and re.match('best.data.chkp', i)]
-	best_checkpoint_name = os.path.join(model_path,os.path.splitext(paths[1])[0])
+# train = 1
+# best_checkpoint_name = 'None'
+# if not train:
+# 	files = os.listdir(model_path)
+# 	paths = [i for i in files if os.path.isfile(os.path.join(model_path,i)) and re.match('best.data.chkp', i)]
+# 	best_checkpoint_name = os.path.join(model_path,os.path.splitext(paths[1])[0])
 
-subprocess.run(['python3', 'main.py', str(period), model_name, best_checkpoint_name])
+# subprocess.run(['python3', 'main.py', str(period), model_name, best_checkpoint_name])

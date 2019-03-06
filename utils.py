@@ -20,10 +20,11 @@ def pause():
 
 def plot_func(file_path):
     traj = np.loadtxt(file_path,dtype='float',delimiter=',')
-    traj = np.squeeze(np.reshape(traj,(1,np.size(traj))))
-    plt.plot(range(np.size(traj)), traj)
-    plt.ylabel('First Coordinate')
-    plt.xlabel('Frames')
+    # traj = np.squeeze(np.reshape(traj,(1,np.size(traj))))
+    traj = np.array(traj)
+    plt.plot(traj[:,0], traj[:,2])
+    plt.ylabel('x')
+    plt.xlabel('z')
     plt.show()
 
 # # Sets all pixel values to be between (0,1)
