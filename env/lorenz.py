@@ -21,7 +21,7 @@ class Lorenz:
 		self.radius = 0.05
 		self.past = 10
 		self.terminate = 0.02
-		self.direction = [1,0,0]
+		self.direction = [1,1,0]
 		if self.delay:
 			self.dim = max(3,self.period)
 		else: self.dim = self.period
@@ -30,7 +30,7 @@ class Lorenz:
 
 	def reset(self):
 		# setting up first delay coordinates
-		init_state =  [0, 0, 0] + np.random.normal(0, 0.1, 3)
+		init_state =  [1, 0, 0] + np.random.normal(0, 0.1, 3)
 		self.x_traj = [init_state]
 		self.t = 0
 		act = np.multiply(0, self.direction)
@@ -74,7 +74,6 @@ class Lorenz:
 		else:
 			# traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) # for period 1 only
 			traj_dev = np.absolute(traj[-1]-traj[-2])
-			# traj_dev = np.absolute(traj[-1][1::]-traj[-1][0])
 			norm_dist = LA.norm(traj_dev,2)
 			reward = -norm_dist
 			
@@ -100,14 +99,16 @@ class Lorenz:
 			# self.in_neigh = True
 			# if LA.norm(np.absolute(traj[-1]-self.x_bar))<self.terminate:
 			# if LA.norm(np.absolute(traj[-1]-x_bar))<self.terminate:
-			if norm_dist<self.terminate:
-				ter = True
+			# if norm_dist<self.terminate:
+			# 	ter = True
 		else:
 			info['Fixed_Point'] = None
 			# if self.in_neigh and cat == 0:
 				# if self.radius < 0.025: self.radius = self.radius*2
 				# self.hs = self.hs*2.
 				# self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
+		if self.t>50:
+			ter = True
 		return (reward,ter,info)
 
 	def render(self):

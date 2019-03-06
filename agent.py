@@ -212,6 +212,16 @@ class DQN_Agent:
     def update_fixed_target_weights(self):
         self.fixed_target_weights = self.sess.run(self.trainable_variables)
 
+    def fill_random(self):
+        state = self.env.reset()
+        eps = 10000
+        for i in range(eps):
+            action = self.get_action(state, 1)
+            next_state, reward, done, info = self.env.step(action)
+            self.replay_memory.add(self, state, action, reward, next_state, done)
+            state = next_state
+
+
     # Description: Trains the model
     # Parameters: 	None
     # Output: 		None
@@ -221,6 +231,7 @@ class DQN_Agent:
         traj = np.empty((0,1),float)
         period_points = np.empty((0,self.state_size),float)
 
+        self.fill_random()
         while self.sess.run(self.episode) < self.training_metadata.num_episodes:
             episode = self.sess.run(self.episode)
             self.training_metadata.increment_episode()
@@ -285,10 +296,6 @@ class DQN_Agent:
                 avg_q = self.estimate_avg_q()
                 self.writer.add_summary(self.sess.run(self.training_summary, feed_dict={self.avg_q: avg_q}), self.training_metadata.frame)
 
-                if self.training_metadata.frame % 1000 ==0 and self.training_metadata.frame != 0:
-                    temp_traj,x_bar = self.env.record_traj()
-                    np.savetxt(self.model_path+"/temp_traj.csv", temp_traj, delimiter=",")
-                    np.savetxt(self.model_path+"/x_bar.csv", x_bar, delimiter=",")
 
 
             # end of episode
@@ -298,6 +305,13 @@ class DQN_Agent:
                 self.saver.save(self.sess, self.model_path + '/best.data.chkp', global_step=self.training_metadata.episode)
             if abs(self.training_metadata.num_episodes - episode)<10:
                 self.saver.save(self.sess, self.model_path + '/last.data.chkp', global_step=self.training_metadata.episode)
+
+            # only for lorenz
+            # FIX THIS LATER!!!!!
+            temp_traj,x_bar = self.env.record_traj()
+            np.savetxt(self.model_path+"/x_bar.csv", x_bar, delimiter=",")
+            if self.training_metadata.episode%10 == 0:
+                np.savetxt(self.model_path+"/temp_traj"+str(self.training_metadata.episode)+".csv", temp_traj, delimiter=",")
 
             # update tensorboard
             self.writer.add_summary(self.sess.run(self.test_summary,
