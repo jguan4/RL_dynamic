@@ -19,7 +19,7 @@ DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 period = 1
 model_name = "0303runs/Lorenz/Whole_P{0}/ao_100u_5x64_disp5_batch1024".format(period)
 model_path = DIR_PATH+"/models/"+model_name
-utils.plot_func(model_path+'temp_traj110.csv')
+utils.plot_func(model_path+'/temp_traj110.csv')
 
 # train = 1
 # best_checkpoint_name = 'None'
