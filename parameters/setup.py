@@ -94,7 +94,7 @@ setup_dict = {
 		'delay': False,
 		'hs': 0.025,
 		'num_n': 2,
-		'obs': [0,1,2,3]
+		'obs': [0,1]
 	}
 }
 
