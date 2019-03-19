@@ -87,6 +87,14 @@ setup_dict = {
 		'action_range': [+2.0, +1.0, 0., -1.0, -2.0],
 		'delay': True,
 		'hs': 0.025
+	},
+
+	'henon_net':{
+		'action_range': [+2.0, +1.0, 0., -1.0, -2.0],
+		'delay': False,
+		'hs': 0.025,
+		'num_n': 2,
+		'obs': [0,1,2,3]
 	}
 }
 

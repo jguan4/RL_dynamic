@@ -214,12 +214,17 @@ class DQN_Agent:
 
     def fill_random(self):
         state = self.env.reset()
-        eps = 10000
+        eps = 100
+        done = False
         for i in range(eps):
-            action = self.get_action(state, 1)
-            next_state, reward, done, info = self.env.step(action)
-            self.replay_memory.add(self, state, action, reward, next_state, done)
-            state = next_state
+            if done:
+                state = self.env.reset()
+                done = False
+            while not done:
+                action = self.get_action(state, 1)
+                next_state, reward, done, info = self.env.step(action)
+                self.replay_memory.add(self, state, action, reward, next_state, done)
+                state = next_state
 
 
     # Description: Trains the model
@@ -261,7 +266,7 @@ class DQN_Agent:
                 action = self.get_action(state, epsilon)
                 next_state, reward, done, info = self.env.step(action)
                 episode_frame += 1
-                print("Frame {0} \t Reward: {1} \t State: {2}".format(self.training_metadata.frame, reward, next_state))
+                print("Frame {0} \t Action: {1} \t Reward: {2} \t State: {3}".format(self.training_metadata.frame, action, reward, next_state))
 
                 # print("State: {0} \t Reward: {1}".format(next_state,reward))
                 # if reward == 1:

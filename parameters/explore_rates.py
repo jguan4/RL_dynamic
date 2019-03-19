@@ -62,7 +62,7 @@ class No_Explore:
 class Fast_Explore:
 
     def get(self, training_metadata):
-        return max(0., (1 - float(training_metadata.episode) / 9000))
+        return max(0., (1 - float(training_metadata.episode) / 5000))
 
     def __str__(self):
-        return 'max(0., (1 - float(training_metadata.episode) / 9000))'
+        return 'max(0., (1 - float(training_metadata.episode) / 5000))'
