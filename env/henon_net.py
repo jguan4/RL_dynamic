@@ -27,6 +27,7 @@ class Henon_Net:
 		self.adj = create_full_adj(self.num_n)
 		self.obs_arr = create_obs_arr(self.num_n,
 			self.dim,self.obs)
+		obs_num = len(self.obs)
 		self.direction = [1,1,0,0]
 		self.p1 = 2 + 0.1*np.random.rand(self.num_n)
 		self.p2 = 0.4 + 0.1*np.random.rand(self.num_n)
@@ -38,7 +39,7 @@ class Henon_Net:
 			self.iter_step = max(2,self.period)
 		else: self.iter_step = self.period
 		self.dt = self.iter_step
-		self.x_bars = np.empty((0,self.iter_step*self.dim),float)
+		self.x_bars = np.empty((0,self.num_n*self.dim),float)
 		self.x_bar = None
 
 	def reset(self):
@@ -140,7 +141,7 @@ class Henon_Net:
 		else: 
 			self.state = ns_p[-1]
 			self.state = self.state[self.obs]
-			
+
 		# only for producing trajectory, not for reference use
 		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
 		self.o_traj = np.append(self.o_traj,[self.state],axis=0)
