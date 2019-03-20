@@ -2,9 +2,9 @@ import os
 import shutil
 
 des_path = '/home/fred/Dropbox/Neural Network/RL/Traj/Henon/'
-sour_path = '/home/fred/Documents/JJ_Folder/RL_dynamic/models/0303runs/Henon_FE/'
-s_folders = ['Whole_P1/','Whole_P2/','Whole_P4/']
-d_folders = ['Whole_P1_FE/','Whole_P2_FE/','Whole_P4_FE/']
+sour_path = '/home/fred/Documents/JJ_Folder/RL_dynamic/models/0221runs/Henon_paper_NE/'
+s_folders = ['Delay_P1/']
+d_folders = ['Delay_P1_NE/']
 temp = 'ao_100u_5x64_disp5_batch1024/'
 items = ['frame_eps.csv','period_points.csv','training_scores.csv','traj.csv']
 n = len(s_folders)
