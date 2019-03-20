@@ -6,7 +6,7 @@ sour_path = '/home/fred/Documents/JJ_Folder/RL_dynamic/models/0318runs/Henon_Net
 s_folders = ['Whole_P1_2n/','Whole_P1_2n_obs1/','Delay_P1_2n/','Delay_P2_2n/']
 d_folders = ['Whole_P1_2n/','Whole_P1_2n_obs1/','Delay_P1_2n/','Delay_P2_2n/']
 temp = 'ao_100u_5x64_disp5_batch1024/'
-items = ['x_bar.csv','temp_traj500.csv']
+items = ['x_bar.csv','temp_traj370.csv']
 n = len(s_folders)
 
 for ind in range(n):
