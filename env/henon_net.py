@@ -41,7 +41,6 @@ class Henon_Net:
 		# setting up first delay coordinates
 		init_state =  np.random.rand(self.num_n*self.dim)*2-1
 		self.x_traj = [init_state]
-		self.o_traj = np.empty((0,self.iter_step),float)
 		self.t = 0
 		act = np.zeros(self.num_n*self.dim)
 		self.t = self.t + self.dt
@@ -56,7 +55,7 @@ class Henon_Net:
 			self.state = self.state[self.obs]
 
 		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
-		self.o_traj = np.append(self.o_traj,[self.state],axis=0)
+		self.o_traj = [self.state]
 
 		return self.state
 
