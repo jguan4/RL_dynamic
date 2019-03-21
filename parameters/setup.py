@@ -92,10 +92,10 @@ setup_dict = {
 	'henon_net':{
 		'action_range': [+2.0, +1.0, -1.0, -2.0],
 		'act_dim': [0,1],
-		'delay': True,
+		'delay': False,
 		'hs': 0.025,
 		'num_n': 2,
-		'obs': [0]
+		'obs': [0,1,2,3]
 	}
 }
 
