@@ -4,7 +4,7 @@ from numpy import linalg as LA
 from .net import *
 
 class Henon_Net:
-	def __init__(self, num_n, obs, delay=True, period=1):
+	def __init__(self, net, delay=True, period=1):
 		# initializer
 		self.state = None
 		self.t = None
@@ -22,21 +22,15 @@ class Henon_Net:
 		self.dim = 2
 
 		# parameters for network and henon
-		self.num_n = num_n
-		self.obs = obs
-		self.adj = create_full_adj(self.num_n)
-		self.obs_arr = create_obs_arr(self.num_n,
-			self.dim,self.obs)
-		obs_num = len(self.obs)
-		self.direction = [1,1,0,0]
-		self.p1 = 2 + 0.1*np.random.rand(self.num_n)
-		self.p2 = 0.4 + 0.1*np.random.rand(self.num_n)
-
-		# self.x_bar = [0.6314,0.1894]
-		# self.x_bar = [1.2019, 1.2019]
-		# self.x_bar = [0.8385, 0.8385]
+		self.net = net
+		self.adj = self.net.adj
+		self.obs_arr = self.net.obs_arr
+		self.num_n = self.net.num_n
+		self.obs_num = self.net.obs_num
+		self.p1 = 3 + np.random.rand(self.num_n)
+		self.p2 = -0.4 + np.random.rand(self.num_n)
 		if self.delay:
-			self.iter_step = max(2,self.period)
+			self.iter_step = max(self.dim*self.num_n,self.period)
 		else: self.iter_step = self.period
 		self.dt = self.iter_step
 		self.x_bars = np.empty((0,self.num_n*self.dim),float)
@@ -46,8 +40,9 @@ class Henon_Net:
 		# setting up first delay coordinates
 		init_state =  np.random.rand(self.num_n*self.dim)*2-1
 		self.x_traj = [init_state]
+		self.o_traj = np.empty((0,self.iter_step),float)
 		self.t = 0
-		act = np.multiply(0, self.direction)
+		act = np.zeros(self.num_n*self.dim)
 		self.t = self.t + self.dt
 		ns_p = self.henon_net(self.t, self.x_traj[-1], act)
 
@@ -60,7 +55,7 @@ class Henon_Net:
 			self.state = self.state[self.obs]
 
 		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
-		self.o_traj = [self.state]
+		self.o_traj = np.append(self.o_traj,[self.state],axis=0)
 
 		return self.state
 
@@ -90,52 +85,26 @@ class Henon_Net:
 
 		reward = -norm_dist
 
-		# 	# self.update_radius()
-		# 	if not np.any(self.x_bars):
-		# 		traj_dev = np.absolute(traj[-1]-traj[-2]) # for period 1 only
-		# 	else:
-		# 		x_bar = np.mean(self.x_bars, axis=0)
-		# 		traj_dev = np.absolute(traj[-1]-x_bar)
-		# 	# traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) # for period 1 only	
-
-		# if self.period>1:
-		# 	past_dev = LA.norm(np.absolute(traj[-1]-traj[-2]),2)
-		# else:
-		# 	past_dev = self.radius + 1
-
-		# if norm_dist<self.radius and past_dev > self.radius*1.5:
-
+		info['Fixed_Point'] = None
 		if np.absolute(reward)<self.radius:
-			c_x = self.x_traj[-1]
+			c_x = self.x_traj[-1-self.period]
 			self.x_bars = np.append(self.x_bars,[c_x],axis=0)
 			info['Fixed_Point'] = self.state
-			# if self.in_neigh: self.consecutive_reward += 1
-			# self.in_neigh = True
-			# if LA.norm(np.absolute(traj[-1]-self.x_bar))<self.terminate:
-			# if LA.norm(np.absolute(traj[-1]-x_bar))<self.terminate:
-			# if norm_dist<self.terminate:
-			# 	ter = True
-		else:
-			info['Fixed_Point'] = None
-			# if self.in_neigh and cat == 0:
-				# if self.radius < 0.025: self.radius = self.radius*2
-				# self.hs = self.hs*2.
-				# self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])
+
 		if self.t/self.dt > 1000:
 			ter = True
 		if traj[-1][0]>10:
 			ter = True
 			reward = -10
+
 		return (reward,ter,info)
 
 	def render(self):
 		return None
 
 	def step(self, a):
-		act = np.multiply(a, self.direction)
 		self.t = self.t + self.dt
-		ns_p = self.henon_net(self.t, self.x_traj[-1], act)
-		# self.state = ns_p[-1]
+		ns_p = self.henon_net(self.t, self.x_traj[-1], a)
 		if self.delay:
 			self.state = np.matmul(ns_p,self.obs_arr)
 		else: 
@@ -162,14 +131,3 @@ class Henon_Net:
 			w = y[i,:].copy()
 		y = np.array(y)
 		return y
-
-	def update_radius(self):
-		if self.t>self.past:
-			# stay within 2*previous radius for 10 steps
-			traj_min = np.amin(self.x_traj[-1-self.past::],axis=0)
-			traj_max = np.amax(self.x_traj[-1-self.past::],axis=0)
-			traj_dev = np.absolute(traj_max-traj_min)
-			if traj_dev[0]<self.radius and traj_dev[1]<self.radius:
-				self.radius = self.radius/2.
-				# self.hs = self.hs/2.
-				# self.action_space = np.multiply(self.hs, [+1.0, 0., -1.0])

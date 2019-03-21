@@ -5,6 +5,8 @@ import gym
 from env import Henon
 from env import Lorenz
 from env import Henon_Net
+from env import Net
+import env
 import numpy as np
 import random
 from PIL import Image
@@ -89,23 +91,24 @@ class Henon_Map:
 
 class Henon_Network:
 
-    def __init__(self, action_range, hs, delay, num_n, obs, type="Henon_Network", history_pick=1, period=1):
+    def __init__(self, hs, action_range, act_dim, num_n, obs, delay, type="Henon_Network", history_pick=1, period=1):
         self.name = type + str(time.time())
-        self.env = Henon_Net(num_n=num_n, obs=obs, delay=delay,period=period)
-        self.period = period
+        self.dim = 2
         self.obs = obs
+        self.action_space = np.multiply(hs, action_range)
+        self.net = Net(num_n = num_n, dim = self.dim, obs = obs)
+        self.action_ref = self.net.create_net_action(self.action_space, act_dim)
+        self.env = Henon_Net(net = self.net, delay=delay, period=period)
+        self.period = period
         obs_num = len(obs)
         if delay:
-            self.state_dimension = [max(2,period)*obs_num]
+            self.state_dimension = [max(self.dim*num_n,period)]
         else: self.state_dimension = [period*obs_num] # change later
         self.history_pick = history_pick
         self.state_space_size = history_pick * np.prod(self.state_dimension)
-        self.action_range = action_range
-        self.hs = hs
-        self.action_space = np.multiply(self.hs, self.action_range)
-        self.action_space_size = self.action_space.size 
         self.state_shape = [None, self.history_pick*self.state_dimension[0]] 
         self.action_shape = [None, self.history_pick*1] 
+        self.action_space_size = np.shape(self.action_ref)[0]
         self.history = []
 
     # returns a random action
@@ -113,7 +116,7 @@ class Henon_Network:
         return np.random.randint(self.action_space_size)
 
     def map_action(self, action):
-        return self.action_space[action]
+        return self.action_ref[action]
 
     # resets the environment and returns the initial state
     def reset(self, test=False):

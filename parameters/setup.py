@@ -62,7 +62,7 @@ setup_dict = {
 	'agent': {
 		'architecture': Basic_Architecture, 
 		'learning_rate': Atari_Learning_Rate,
-		'explore_rate': Fast_Explore,
+		'explore_rate': Fast_ExploreI,
 		'target_update_frequency': 1000,
 		'replay_frequency': 100,
 		'batch_size': 1024, 
@@ -90,7 +90,8 @@ setup_dict = {
 	},
 
 	'henon_net':{
-		'action_range': [+2.0, +1.0, 0., -1.0, -2.0],
+		'action_range': [+2.0, +1.0, -1.0, -2.0],
+		'act_dim': [0,1],
 		'delay': True,
 		'hs': 0.025,
 		'num_n': 2,
