@@ -27,6 +27,7 @@ class Henon_Net:
 		self.obs_arr = self.net.obs_arr
 		self.num_n = self.net.num_n
 		self.obs_num = self.net.obs_num
+		self.obs = self.net.obs
 		self.p1 = 3 + np.random.rand(self.num_n)
 		self.p2 = -0.4 + np.random.rand(self.num_n)
 		if self.delay:
