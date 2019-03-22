@@ -18,7 +18,7 @@ class Henon:
 		self.dt = self.period
 		self.radius = 0.05
 		self.past = 10
-		self.terminate = 0.02
+		self.terminate = 0.05
 		self.direction = [1,0]
 		# self.x_bar = [0.6314,0.1894]
 		# self.x_bar = [1.2019, 1.2019]
@@ -58,37 +58,22 @@ class Henon:
 		ter = False
 		info = {}
 		
-		if self.period>1:
-			traj_dev = np.absolute(traj[-1]-traj[-2])
-			norm_dist = LA.norm(traj_dev,2)
-			# norm_dist = traj_dev
-			reward = -norm_dist
-			
-			# mid_dev = np.absolute(traj[-1]-np.flip(traj[-2],0))
-			# mid_dev = np.absolute(traj[-1][1::]-traj[-2][-(self.period-1)::])
-			# mid_norm_dist = LA.norm(mid_dev,2)
-
-			if self.delay:
-				# this is to test the repeatedness of first entry in the state:
+		if self.delay:
+			if self.period>1:
+				traj_dev = np.absolute(traj[-1]-traj[-2])
+				norm_dist = LA.norm(traj_dev,2)
 				minus_vec = np.absolute(traj[-1][1::]-traj[-1][0])
 				min_minus_vec = np.min(minus_vec)
 				if norm_dist<self.radius and min_minus_vec<0.15:
-					reward-=1
+					norm_dist+=1
 			else:
-				
-				traj_dev = np.absolute(traj[-1]-traj[-2])
+				traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) 
 				norm_dist = LA.norm(traj_dev,2)
-				reward = -norm_dist
 		else:
-			# self.update_radius()
-			if not np.any(self.x_bars):
-				traj_dev = np.absolute(traj[-1]-traj[-2]) # for period 1 only
-			else:
-				x_bar = np.mean(self.x_bars, axis=0)
-				traj_dev = np.absolute(traj[-1]-x_bar)
-			# traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) # for period 1 only
-			
+			traj_dev = np.absolute(traj[-1]-traj[-2])
+			norm_dist = LA.norm(traj_dev,2)
 
+		reward = -norm_dist
 
 		# if self.period>1:
 		# 	past_dev = LA.norm(np.absolute(traj[-1]-traj[-2]),2)
