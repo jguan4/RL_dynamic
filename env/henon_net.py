@@ -93,7 +93,7 @@ class Henon_Net:
 
 		if self.t/self.dt > 1000:
 			ter = True
-		if traj[-1][0]>10:
+		if traj[-1][0]>100:
 			ter = True
 			reward = -10
 

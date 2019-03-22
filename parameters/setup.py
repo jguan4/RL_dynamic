@@ -79,7 +79,7 @@ setup_dict = {
 
 	'henon': {
 		'action_range': [+1.0, 0., -1.0],
-		'delay': True,
+		'delay': False,
 		'hs': 0.025
 	},
 
