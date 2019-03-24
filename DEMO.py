@@ -17,7 +17,7 @@ DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 # direction_ind = 0
 # direction = [np.cos(direction_ang[direction_ind]), np.sin(direction_ang[direction_ind])]
 period = 1
-model_name = "0318runs/Henon/Delay_P{0}_800_1024/ao_100u_5x64_disp5_batch1024".format(period)
+model_name = "0318runs/Henon/Delay_P{0}_50_2048/ao_100u_5x64_disp5_batch1024".format(period)
 model_path = DIR_PATH+"/models/"+model_name
 # utils.plot_func(model_path+'/temp_traj390.csv')
 
