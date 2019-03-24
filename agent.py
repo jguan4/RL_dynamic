@@ -214,7 +214,7 @@ class DQN_Agent:
 
     def fill_random(self):
         state = self.env.reset()
-        eps = 100
+        eps = 1000
         done = False
         for i in range(eps):
             if done:
@@ -241,8 +241,6 @@ class DQN_Agent:
             episode = self.sess.run(self.episode)
             self.training_metadata.increment_episode()
             self.sess.run(self.increment_episode_op)
-
-            traj = np.append(traj, [[10]], axis=0)
 
             # Setting up game environment
             state = self.env.reset()

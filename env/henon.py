@@ -18,7 +18,7 @@ class Henon:
 		self.dt = self.period
 		self.radius = 0.05
 		self.past = 10
-		self.terminate = 0.05
+		self.terminate = 0.02
 		self.direction = [1,0]
 		# self.x_bar = [0.6314,0.1894]
 		# self.x_bar = [1.2019, 1.2019]

@@ -1,7 +1,6 @@
 import numpy as np
 import utils
 from numpy import linalg as LA
-from .net import *
 
 class Henon_Net:
 	def __init__(self, net, delay=True, period=1):
