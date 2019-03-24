@@ -236,7 +236,7 @@ class DQN_Agent:
         traj = np.empty((0,1),float)
         period_points = np.empty((0,self.state_size),float)
 
-        self.fill_random()
+        # self.fill_random()
         while self.sess.run(self.episode) < self.training_metadata.num_episodes:
             episode = self.sess.run(self.episode)
             self.training_metadata.increment_episode()
