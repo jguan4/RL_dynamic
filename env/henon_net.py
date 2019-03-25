@@ -39,7 +39,7 @@ class Henon_Net:
 
 	def reset(self):
 		# setting up first delay coordinates
-		init_state =  [1.4698,1.4923,1.4698,1.4923]#np.random.rand(self.num_n*self.dim)*2-1
+		init_state =  np.random.rand(self.num_n*self.dim)*2-1 #[1.4698,1.4923,1.4698,1.4923]#
 		self.x_traj = [init_state]
 		self.t = 0
 		act = np.zeros(self.num_n*self.dim)
