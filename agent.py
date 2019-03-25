@@ -248,6 +248,7 @@ class DQN_Agent:
             # Setting up parameters for the episode
             done = False
             episode_frame = 0
+            update = False
 
             freq = self.replay_memory.get_replay_frequency(self.training_metadata)
             # while episode_frame<1000:
@@ -260,6 +261,8 @@ class DQN_Agent:
                 if self.training_metadata.frame % self.target_update_frequency == 0 and (self.training_metadata.frame != 0):
                     self.update_fixed_target_weights()
 
+                if self.training_metadata.frame % freq == 0 and (self.training_metadata.frame != 0):
+                    update = True
                 # Choosing and performing action and updating the replay memory
                 action = self.get_action(state, epsilon)
                 next_state, reward, done, info = self.env.step(action)
@@ -290,8 +293,8 @@ class DQN_Agent:
                 self.sess.run(self.increment_frames_op)
                 self.training_metadata.increment_frame()
 
-                if self.replay_memory.length() > self.replay_memory.batch_size and self.training_metadata.frame %freq==0:#100 * self.replay_memory.batch_size:
-                    self.experience_replay(alpha)
+                # if self.replay_memory.length() > self.replay_memory.batch_size and self.training_metadata.frame %freq==0:#100 * self.replay_memory.batch_size:
+                #     self.experience_replay(alpha)
 
                 # Creating q_grid if not yet defined and calculating average q-value
                 if self.replay_memory.length() > 1000:
@@ -300,6 +303,8 @@ class DQN_Agent:
                 self.writer.add_summary(self.sess.run(self.training_summary, feed_dict={self.avg_q: avg_q}), self.training_metadata.frame)
 
 
+            if self.replay_memory.length() > self.replay_memory.batch_size and update:
+                self.experience_replay(alpha)
 
             # end of episode
             if self.best_training_score==None or episode_frame<self.best_training_score:#score>self.best_training_score:
