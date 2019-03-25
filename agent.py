@@ -303,7 +303,7 @@ class DQN_Agent:
                 self.writer.add_summary(self.sess.run(self.training_summary, feed_dict={self.avg_q: avg_q}), self.training_metadata.frame)
 
 
-            if self.replay_memory.length() > self.replay_memory.batch_size and update:
+            if self.replay_memory.length() > self.replay_memory.batch_size:
                 self.experience_replay(alpha)
 
             # end of episode
