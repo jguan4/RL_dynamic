@@ -3,8 +3,8 @@ import shutil
 
 des_path = '/home/fred/Dropbox/Neural Network/RL/Traj/Henon_Net/'
 sour_path = '/home/fred/Documents/JJ_Folder/RL_dynamic/models/0318runs/Henon_Network/'
-s_folders = ['Whole_P1_17a']
-d_folders = ['Whole_P1_17a']
+s_folders = ['Whole_P1_17a/']
+d_folders = ['Whole_P1_17a/']
 temp = 'ao_100u_5x64_disp5_batch1024/'
 items = ['x_bar.csv','temp_traj1160.csv']
 n = len(s_folders)
