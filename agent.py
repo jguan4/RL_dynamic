@@ -293,18 +293,14 @@ class DQN_Agent:
                 self.sess.run(self.increment_frames_op)
                 self.training_metadata.increment_frame()
 
-                # if self.replay_memory.length() > self.replay_memory.batch_size and self.training_metadata.frame %freq==0:#100 * self.replay_memory.batch_size:
-                #     self.experience_replay(alpha)
+                if self.replay_memory.length() > self.replay_memory.batch_size and self.training_metadata.frame %freq==0:#100 * self.replay_memory.batch_size:
+                    self.experience_replay(alpha)
 
                 # Creating q_grid if not yet defined and calculating average q-value
                 if self.replay_memory.length() > 1000:
                     self.q_grid = self.replay_memory.get_q_grid(size=200, training_metadata=self.training_metadata)
                 avg_q = self.estimate_avg_q()
                 self.writer.add_summary(self.sess.run(self.training_summary, feed_dict={self.avg_q: avg_q}), self.training_metadata.frame)
-
-
-            if self.replay_memory.length() > self.replay_memory.batch_size:
-                self.experience_replay(alpha)
 
             # end of episode
             if self.best_training_score==None or episode_frame<self.best_training_score:#score>self.best_training_score:
