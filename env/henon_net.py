@@ -15,7 +15,7 @@ class Henon_Net:
 
 		# parameters for environment
 		self.period = period
-		self.radius = 0.05
+		self.radius = 0.2 #0.05
 		self.past = 10
 		self.terminate = 0.02
 		self.dim = 2
@@ -91,7 +91,7 @@ class Henon_Net:
 			self.x_bars = np.append(self.x_bars,[c_x],axis=0)
 			info['Fixed_Point'] = self.state
 
-		if self.t/self.dt > 1000:
+		if self.t/self.dt > 1e7:
 			ter = True
 		if traj[-1][0]>100:
 			ter = True
