@@ -62,3 +62,10 @@ class Replay_Memory:
     # size defines the size to sample.
     def get_q_grid(self, size, *args, **kwargs):
         return [data[0] for data in random.sample(self.memory, size)]
+
+    def get_replay_frequency(self, training_metadata):
+        if float(training_metadata.episode)>5000:
+            freq = 200
+        else:
+            freq = 100
+        return freq

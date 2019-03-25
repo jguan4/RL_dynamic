@@ -45,7 +45,7 @@ class DQN_Agent:
 
     def __init__(self, environment, architecture, explore_rate, learning_rate,
                  batch_size, memory_capacity, num_episodes, learning_rate_drop_frame_limit,
-                 target_update_frequency, replay_frequency, discount=0.5, delta=1, model_name=None):
+                 target_update_frequency, discount=0.5, delta=1, model_name=None):
         self.env = environment
         self.architecture = architecture()
         self.explore_rate = explore_rate()
@@ -56,7 +56,6 @@ class DQN_Agent:
 
         # Training parameters setup
         self.target_update_frequency = target_update_frequency
-        self.replay_frequency = replay_frequency
         self.discount = discount
         self.best_training_score = None;
         self.replay_memory = rplm.Replay_Memory(memory_capacity, batch_size)
@@ -250,6 +249,7 @@ class DQN_Agent:
             done = False
             episode_frame = 0
 
+            freq = self.replay_memory.get_replay_frequency(self.training_metadata)
             # while episode_frame<1000:
             while not done:
                 epsilon = self.explore_rate.get(self.training_metadata)
@@ -290,7 +290,7 @@ class DQN_Agent:
                 self.sess.run(self.increment_frames_op)
                 self.training_metadata.increment_frame()
 
-                if self.replay_memory.length() > self.replay_memory.batch_size and self.replay_memory.length()%self.replay_frequency==0:#100 * self.replay_memory.batch_size:
+                if self.replay_memory.length() > self.replay_memory.batch_size and self.training_metadata.frame %freq==0:#100 * self.replay_memory.batch_size:
                     self.experience_replay(alpha)
 
                 # Creating q_grid if not yet defined and calculating average q-value
