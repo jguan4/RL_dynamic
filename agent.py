@@ -303,6 +303,11 @@ class DQN_Agent:
                 self.writer.add_summary(self.sess.run(self.training_summary, feed_dict={self.avg_q: avg_q}), self.training_metadata.frame)
 
             # end of episode
+            # if self.replay_memory.length() > self.replay_memory.batch_size and update:
+            #     print('Reach the end of an episode')
+            #     self.experience_replay(alpha)
+            #     utils.pause()
+
             if self.best_training_score==None or episode_frame<self.best_training_score:#score>self.best_training_score:
                 self.best_training_score = episode_frame
                 self.delete_previous_checkpoints()

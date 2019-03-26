@@ -64,9 +64,9 @@ class Replay_Memory:
         return [data[0] for data in random.sample(self.memory, size)]
 
     def get_replay_frequency(self, training_metadata):
-        # if float(training_metadata.episode)>5000:
-        #     freq = 10
-        # else:
-        #     freq = 100
-        freq = 200
+        if float(training_metadata.episode)>5000:
+            freq = 200
+        else:
+            freq = 50
+        # freq = 100
         return freq
