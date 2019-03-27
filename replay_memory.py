@@ -65,8 +65,8 @@ class Replay_Memory:
 
     def get_replay_frequency(self, training_metadata):
         if float(training_metadata.episode)>5000:
-            freq = 100
-        else:
             freq = 1
+        else:
+            freq = 100
         # freq = 100
         return freq
