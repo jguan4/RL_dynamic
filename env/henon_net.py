@@ -15,9 +15,9 @@ class Henon_Net:
 
 		# parameters for environment
 		self.period = period
-		self.radius = 0.2 #0.05
+		self.radius = 0.1 #0.05
 		self.past = 10
-		self.terminate = 0.02
+		self.terminate = 0.05
 		self.dim = 2
 
 		# parameters for network and henon
@@ -28,14 +28,16 @@ class Henon_Net:
 		self.obs_num = self.net.obs_num
 		self.obs = self.net.obs
 		np.random.seed(10)
-		self.p1 = 3 + np.random.rand(self.num_n)
-		self.p2 = -0.4 + np.random.rand(self.num_n)
+		self.p1 = [3.23139619298002,3.00622558480782] #3 + 0.1*np.random.rand(self.num_n)
+		self.p2 = [-0.209905529522117,-0.175358835238416] #-0.4 + 0.1*np.random.rand(self.num_n)
 		if self.delay:
 			self.iter_step = max(self.dim*self.num_n,self.period)
 		else: self.iter_step = self.period
 		self.dt = self.iter_step
-		self.x_bars = np.empty((0,self.num_n*self.dim),float)
-		self.x_bar = None
+		self.x_bars = np.empty((0,(self.num_n*self.dim)*2),float)
+		self.x_bar = [-3.74253810363669,-3.72571485279983,-3.74253810363669,-3.72571485279983]
+		# self.x_bar = [1.28412153700697,1.27988461040069,1.28412153700697,1.27988461040069]
+
 
 	def reset(self):
 		# setting up first delay coordinates
@@ -63,7 +65,7 @@ class Henon_Net:
 	#      1 stationary - reward 1
 	#      2 went out of neighborhood - reward -1
 	#      3 close to the fixed point, terminate
-	def _terminal(self):
+	def _terminal(self,a):
 		traj = self.o_traj
 		ter = False
 		info = {}
@@ -80,7 +82,8 @@ class Henon_Net:
 				traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) 
 				norm_dist = LA.norm(traj_dev,2)
 		else:
-			traj_dev = np.absolute(traj[-1]-traj[-2])
+			# traj_dev = np.absolute(traj[-1]-traj[-2])
+			traj_dev = np.absolute(traj[-1]-self.x_bar)
 			norm_dist = LA.norm(traj_dev,2)
 
 		reward = -norm_dist
@@ -88,15 +91,16 @@ class Henon_Net:
 		info['Fixed_Point'] = None
 		if np.absolute(reward)<self.radius:
 			c_x = self.x_traj[-1-self.period]
-			self.x_bars = np.append(self.x_bars,[c_x],axis=0)
+			self.x_bars = np.append(self.x_bars,[np.append(c_x,a)],axis=0)
 			info['Fixed_Point'] = self.state
+			# if np.absolute(reward)<self.terminate:
+			# 	ter = True
 
-		if self.t/self.dt > 1e7:
+		if self.t/self.dt > 1e3:
 			ter = True
 		if traj[-1][0]>100:
 			ter = True
 			reward = -10
-
 		return (reward,ter,info)
 
 	def render(self):
@@ -114,7 +118,7 @@ class Henon_Net:
 		# only for producing trajectory, not for reference use
 		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
 		self.o_traj = np.append(self.o_traj,[self.state],axis=0)
-		(reward,terminal,info) = self._terminal()
+		(reward,terminal,info) = self._terminal(a)
 
 		return (self.state, reward, terminal, info)
 
