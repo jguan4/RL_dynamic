@@ -13,6 +13,7 @@
 
 import sys
 import os
+import numpy as np
 path = os.path.realpath(__file__)
 sys.path.append(path)
 
@@ -89,10 +90,11 @@ setup_dict = {
 	},
 
 	'henon_net':{
-		'action_range': [+2.0, +1.0, -1.0, -2.0],
-		'act_dim': [0,1,2,3],
+		'action_range': np.arange(-8,9),#[+2.0, +1.0, -1.0, -2.0],
+		'angle': np.pi/4,
+		'act_dim': [0,1],
 		'delay': False,
-		'hs': 0.025,
+		'hs': 0.05,
 		'num_n': 2,
 		'obs': [0,1,2,3]
 	}

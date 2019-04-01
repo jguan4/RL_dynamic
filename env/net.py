@@ -27,3 +27,8 @@ class Net:
 			act_ref = np.append(act_ref,act_set,axis=0)
 		act_ref = np.append(act_ref,[np.zeros(self.num_n*self.dim)],axis=0)
 		return act_ref
+
+	def create_line_action(self, angle, action_range):
+		basis = [np.cos(angle),np.cos(angle),0,0]
+		act_ref = np.outer(action_range,basis)
+		return act_ref
