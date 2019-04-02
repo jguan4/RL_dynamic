@@ -2,11 +2,11 @@ import os
 import shutil
 
 des_path = '/home/fred/Dropbox/Neural Network/RL/Traj/Henon/'
-sour_path = '/home/fred/Documents/JJ_Folder/RL_dynamic/models/0318runs/Henon/'
-s_folders = ['Delay_P1_25by2048/','Delay_P1_10by2048/','Delay_P1_5by2048/','Delay_P1_1by2048/']
-d_folders = ['Delay_P1_25by2048/','Delay_P1_10by2048/','Delay_P1_5by2048/','Delay_P1_1by2048/']
+sour_path = '/home/fred/Documents/JJ_Folder/RL_dynamic/models/0318runs/Henon_Network/'
+s_folders = ['Whole_P1_lineAction17_approach-3/','Whole_P1_lineAction17_approach-3_squareReward/']
+d_folders = ['Whole_P1_lineAction17_approach-3/','Whole_P1_lineAction17_approach-3_squareReward/']
 temp = 'ao_100u_5x64_disp5_batch1024/'
-items = ['frame_eps.csv','training_scores.csv']
+items = ['temp_traj1390.csv','x_bar.csv']
 n = len(s_folders)
 
 for ind in range(n):
