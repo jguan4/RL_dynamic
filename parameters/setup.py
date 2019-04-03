@@ -90,7 +90,7 @@ setup_dict = {
 	},
 
 	'henon_net':{
-		'action_range': np.arange(-8,9,2),#[+2.0, +1.0, -1.0, -2.0],
+		'action_range': np.arange(-16,17,2),#[+2.0, +1.0, -1.0, -2.0],
 		'angle': np.pi/4,
 		'act_dim': [0,1],
 		'delay': False,
