@@ -15,9 +15,9 @@ class Henon_Net:
 
 		# parameters for environment
 		self.period = period
-		self.radius = np.power(0.1,4) #0.05
+		self.radius = np.power(0.1,2) #0.05
 		self.past = 10
-		self.terminate = np.power(0.05,4)
+		self.terminate = np.power(0.05,2)
 		self.dim = 2
 
 		# parameters for network and henon
@@ -85,7 +85,7 @@ class Henon_Net:
 			# traj_dev = np.absolute(traj[-1]-traj[-2])
 			traj_dev = np.absolute(traj[-1]-self.x_bar)
 			# norm_dist = LA.norm(traj_dev,2)
-			norm_dist = np.power(LA.norm(traj_dev,2),4)
+			norm_dist = np.power(LA.norm(traj_dev,2),2)
 
 		reward = -norm_dist
 
