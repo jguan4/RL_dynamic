@@ -35,8 +35,8 @@ class Henon_Net:
 		else: self.iter_step = self.period
 		self.dt = self.iter_step
 		self.x_bars = np.empty((0,(self.num_n*self.dim)*2),float)
-		self.x_bar = [-3.74253810363669,-3.72571485279983,-3.74253810363669,-3.72571485279983]
-		# self.x_bar = [1.28412153700697,1.27988461040069,1.28412153700697,1.27988461040069]
+		# self.x_bar = [-3.74253810363669,-3.72571485279983,-3.74253810363669,-3.72571485279983]
+		self.x_bar = [1.28412153700697,1.27988461040069,1.28412153700697,1.27988461040069]
 
 
 	def reset(self):
@@ -84,7 +84,8 @@ class Henon_Net:
 		else:
 			# traj_dev = np.absolute(traj[-1]-traj[-2])
 			traj_dev = np.absolute(traj[-1]-self.x_bar)
-			norm_dist = np.square(LA.norm(traj_dev,2))
+			norm_dist = LA.norm(traj_dev,2)
+			# norm_dist = np.square(LA.norm(traj_dev,2))
 
 		reward = -norm_dist
 
