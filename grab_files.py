@@ -3,8 +3,8 @@ import shutil
 
 des_path = '/home/fred/Dropbox/Neural Network/RL/Traj/Henon_Net/'
 sour_path = '/home/fred/Documents/JJ_Folder/RL_dynamic/models/0318runs/Henon_Network/'
-s_folders = ['Whole_P1_lineAction9_approach-3_squareReward/']
-d_folders = ['Whole_P1_lineAction9_approach-3_squareReward/']
+s_folders = ['Whole_P1_lineAction9_approach-3_squareReward/','Whole_P1_lineAction17_doubleMag_approach-3_squareReward/']
+d_folders = ['Whole_P1_lineAction9_approach-3_squareReward/','Whole_P1_lineAction17_doubleMag_approach-3_squareReward/']
 temp = 'ao_100u_5x64_disp5_batch1024/'
 items = ['temp_traj1340.csv','x_bar.csv']
 n = len(s_folders)
