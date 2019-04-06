@@ -36,7 +36,7 @@ class Net:
 			hh = np.multiply(mul,h)
 			hh_n = -np.flip(hh,axis=0)
 			action_range = np.append(hh_n[0:n],hh)
-		else if act_type=='line':
+		elif act_type=='line':
 			incre = max_mag/num_n
 			h = np.arange(-n, n+1)
 			action_range = np.multiply(incre,h)
