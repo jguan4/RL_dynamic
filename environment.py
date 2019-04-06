@@ -91,12 +91,12 @@ class Henon_Map:
 
 class Henon_Network:
 
-    def __init__(self, hs, action_range, act_dim, angle, num_n, obs, delay, type="Henon_Network", history_pick=1, period=1):
+    def __init__(self, num_act, max_mag, act_type, act_dim, angle, num_n, obs, delay, type="Henon_Network", history_pick=1, period=1):
         self.name = type + str(time.time())
         self.dim = 2
         self.obs = obs
-        self.action_space = np.multiply(hs, action_range)
         self.net = Net(num_n = num_n, dim = self.dim, obs = obs)
+        self.action_space = self.net.create_action_range(num_act,max_mag act_type)
         self.action_ref = self.net.create_line_action(angle, self.action_space)
         self.env = Henon_Net(net = self.net, delay=delay, period=period)
         self.period = period

@@ -28,6 +28,20 @@ class Net:
 		act_ref = np.append(act_ref,[np.zeros(self.num_n*self.dim)],axis=0)
 		return act_ref
 
+	def create_action_range(self,num_n,max_mag,act_type):
+		n = np.floor(num_n/2)
+		if act_type=='dense':
+			mul = max_mag*(n+1)/n
+			h = np.subtract(np.divide(1,np.arange(n+1,0,-1)),1/(n+1))
+			hh = np.multiply(mul,h)
+			hh_n = -np.flip(hh,axis=0)
+			action_range = np.append(hh_n[0:n],hh)
+		else if act_type=='line':
+			incre = max_mag/num_n
+			h = np.arange(-n, n+1)
+			action_range = np.multiply(incre,h)
+		return action_range
+
 	def create_line_action(self, angle, action_range):
 		basis = [np.cos(angle),np.cos(angle),0,0]
 		act_ref = np.outer(action_range,basis)

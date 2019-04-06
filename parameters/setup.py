@@ -90,13 +90,13 @@ setup_dict = {
 	},
 
 	'henon_net':{
-		'action_range': np.arange(-16,17,2),#[+2.0, +1.0, -1.0, -2.0],
+		'num_act': 17,
+		'max_mag': 1,
+		'act_type': 'line',
 		'angle': np.pi/4,
 		'act_dim': [0,1],
 		'delay': False,
-		'hs': 0.05,
 		'num_n': 2,
 		'obs': [0,1,2,3]
 	}
 }
-
