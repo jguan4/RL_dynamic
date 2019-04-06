@@ -91,8 +91,8 @@ setup_dict = {
 
 	'henon_net':{
 		'num_act': 17,
-		'max_mag': 1,
-		'act_type': 'line',
+		'max_mag': 0.8,
+		'act_type': 'dense',
 		'angle': np.pi/4,
 		'act_dim': [0,1],
 		'delay': False,
