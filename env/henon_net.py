@@ -82,8 +82,8 @@ class Henon_Net:
 				traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) 
 				norm_dist = LA.norm(traj_dev,2)
 		else:
-			# traj_dev = np.absolute(traj[-1]-traj[-2])
-			traj_dev = np.absolute(traj[-1]-self.x_bar)
+			traj_dev = np.absolute(traj[-1]-traj[-2])
+			# traj_dev = np.absolute(traj[-1]-self.x_bar)
 			# norm_dist = LA.norm(traj_dev,2)
 			norm_dist = np.power(LA.norm(traj_dev,2),2)
 
