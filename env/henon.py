@@ -127,10 +127,10 @@ class Henon:
 		for i in range(self.dim):
 			# y[0] = 2*np.cos(w[0])+0.4*w[1]
 			# y[1] = w[0]
-			y[i,0] = 1.29+0.3*w[1]-w[0]**2
-			y[i,1] = w[0]
-			# y[i,0] = 3*np.cos(w[0])-0.5*w[1]
-			# y[i,1] = 0.7*w[0]
+			# y[i,0] = 1.29+0.3*w[1]-w[0]**2
+			# y[i,1] = w[0]
+			y[i,0] = 3*np.cos(w[0])-0.5*w[1]
+			y[i,1] = 0.7*w[0]
 			w = y[i,:].copy()
 		y = np.array(y)
 		return y
