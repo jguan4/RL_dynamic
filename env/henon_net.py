@@ -28,14 +28,16 @@ class Henon_Net:
 		self.obs_num = self.net.obs_num
 		self.obs = self.net.obs
 		np.random.seed(10)
-		self.p1 = [3.23139619298002,3.00622558480782] #3 + 0.1*np.random.rand(self.num_n)
-		self.p2 = [-0.209905529522117,-0.175358835238416] #-0.4 + 0.1*np.random.rand(self.num_n)
-		if self.delay:
+		self.p1 = [3, -2] #[3.23139619298002,3.00622558480782] #3 + 0.1*np.random.rand(self.num_n)
+		self.p2 = [-0.5, -0.7] #[-0.209905529522117,-0.175358835238416] #-0.4 + 0.1*np.random.rand(self.num_n)
+		self.p3 = [0.7, 0.8]
+		self.cw = [0.5, 0.3]
+		if self.delay: 
 			self.iter_step = max(self.dim*self.num_n,self.period)
 		else: self.iter_step = self.period
 		self.dt = self.iter_step
 		self.x_bars = np.empty((0,(self.num_n*self.dim)*2),float)
-		self.x_bar = [-3.74253810363669,-3.72571485279983,-3.74253810363669,-3.72571485279983]
+		# self.x_bar = [-3.74253810363669,-3.72571485279983,-3.74253810363669,-3.72571485279983]
 		# self.x_bar = [1.28412153700697,1.27988461040069,1.28412153700697,1.27988461040069]
 
 
@@ -131,8 +133,8 @@ class Henon_Net:
 		for i in range(self.iter_step):
 			p_x1 = w[:self.num_n:]
 			p_x2 = w[self.num_n::]
-			y[i,:self.num_n:] = np.multiply(self.p1,np.cos(p_x1))+np.multiply(self.p2,p_x2)+np.matmul(p_x1,np.transpose(self.adj))/self.num_n
-			y[i,self.num_n::] = p_x1
+			y[i,:self.num_n:] = np.multiply(self.p1,np.cos(p_x1))+np.multiply(self.p2,p_x2)+np.multiply(self.cw,np.matmul(p_x1,np.transpose(self.adj)))
+			y[i,self.num_n::] = np.multiply(self.p3,p_x1)
 			w = y[i,:].copy()
 		y = np.array(y)
 		return y
