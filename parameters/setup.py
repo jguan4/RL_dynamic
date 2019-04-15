@@ -78,9 +78,9 @@ setup_dict = {
 	},
 
 	'henon': {
-		'action_range': [+1.0, 0., -1.0],
+		'action_range': [+2.0, +1.0, 0., -1.0, -2.0],
 		'delay': True,
-		'hs': 0.025
+		'hs': 0.05
 	},
 
 	'lorenz': {
