@@ -93,10 +93,10 @@ setup_dict = {
 		'num_act': 17,
 		'max_mag': 0.8,
 		'act_type': 'line',
-		'angle': np.pi/4,
-		'act_dim': [0,1],
+		# 'angle': np.pi/4,
+		# 'act_dim': [0,1,2],
 		'delay': False,
-		'num_n': 2,
-		'obs': [0,1,2,3]
+		'num_n': 3,
+		'obs': [0,1,2,3,4,5]
 	}
 }

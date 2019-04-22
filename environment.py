@@ -91,7 +91,7 @@ class Henon_Map:
 
 class Henon_Network:
 
-    def __init__(self, num_act, max_mag, act_type, act_dim, angle, num_n, obs, delay, type="Henon_Network", history_pick=1, period=1):
+    def __init__(self, num_act, max_mag, act_type, num_n, obs, delay, type="Henon_Network", history_pick=1, period=1):
         self.name = type + str(time.time())
         self.dim = 2
         self.obs = obs

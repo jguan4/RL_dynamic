@@ -28,10 +28,10 @@ class Henon_Net:
 		self.obs_num = self.net.obs_num
 		self.obs = self.net.obs
 		np.random.seed(10)
-		self.p1 = [3, -2] #[3.23139619298002,3.00622558480782] #3 + 0.1*np.random.rand(self.num_n)
-		self.p2 = [-0.5, -0.7] #[-0.209905529522117,-0.175358835238416] #-0.4 + 0.1*np.random.rand(self.num_n)
-		self.p3 = [0.7, 0.8]
-		self.cw = [0.5, 0.3]
+		self.p1 = [3,-2,4] #[3, -2] #[3.23139619298002,3.00622558480782] #3 + 0.1*np.random.rand(self.num_n)
+		self.p2 = [-0.5,-0.7,-0.6] #[-0.5, -0.7] #[-0.209905529522117,-0.175358835238416] #-0.4 + 0.1*np.random.rand(self.num_n)
+		self.p3 = [0.7,0.8,0.5] #[0.7, 0.8]
+		self.cw = [0.5, 0.3,0.3] #[0.5, 0.3]
 		if self.delay: 
 			self.iter_step = max(self.dim*self.num_n,self.period)
 		else: self.iter_step = self.period
