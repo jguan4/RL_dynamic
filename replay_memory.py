@@ -68,5 +68,5 @@ class Replay_Memory:
         #     freq = 1
         # else:
         #     freq = 100
-        freq = 5
+        freq = 50
         return freq
