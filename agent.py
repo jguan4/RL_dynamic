@@ -280,10 +280,10 @@ class DQN_Agent:
                         feed_dict={self.fp: [fp], self.henon_x1:fp[0]}), self.training_metadata.frame)
                     period_points = np.append(period_points,[fp],axis=0)
 
-                for i in range(np.size(next_state)):
-                    self.writer.add_summary(self.sess.run(self.scat_summary,
-                        feed_dict={self.traj: next_state[i]}), self.training_metadata.frame)
-                    traj = np.append(traj, [[state[i]]], axis=0)                    
+                # for i in range(np.size(next_state)):
+                self.writer.add_summary(self.sess.run(self.scat_summary,
+                    feed_dict={self.traj: next_state[0]}), self.training_metadata.frame)
+                traj = np.append(traj, [[state[0]]], axis=0)                    
 
                 self.replay_memory.add(self, state, action, reward, next_state, done)
 

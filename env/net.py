@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import linalg as LA
 
 class Net:
 	def __init__(self,num_n,dim,obs):
@@ -28,21 +29,22 @@ class Net:
 		act_ref = np.append(act_ref,[np.zeros(self.num_n*self.dim)],axis=0)
 		return act_ref
 
-	def create_action_range(self,num_n,max_mag,act_type):
-		n = np.floor(num_n/2)
+	def create_action_range(self,num_act,max_mag,act_type):
+		n = np.floor(num_act/2)
 		if act_type=='dense':
 			mul = max_mag*(n+1)/n
 			h = np.subtract(np.divide(1,np.arange(n+1,0,-1)),1/(n+1))
 			hh = np.multiply(mul,h)
 			hh_n = -np.flip(hh,axis=0)
 			action_range = np.append(hh_n[0:int(n)],hh)
-		elif act_type=='line':
-			incre = max_mag/num_n
+		elif act_type== 'line':
+			incre = max_mag/num_act
 			h = np.arange(-n, n+1)
 			action_range = np.multiply(incre,h)
 		return action_range
 
-	def create_line_action(self, angle, action_range):
-		basis = [np.cos(angle),np.cos(angle),0,0]
+	def create_line_action(self, action_range):
+		temp_b = np.append(np.ones(self.num_n),np.zeros(self.num_n))
+		basis = temp_b/LA.norm(temp_b)
 		act_ref = np.outer(action_range,basis)
 		return act_ref

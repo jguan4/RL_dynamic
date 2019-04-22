@@ -97,7 +97,7 @@ class Henon_Network:
         self.obs = obs
         self.net = Net(num_n = num_n, dim = self.dim, obs = obs)
         self.action_space = self.net.create_action_range(num_act,max_mag,act_type)
-        self.action_ref = self.net.create_line_action(angle, self.action_space)
+        self.action_ref = self.net.create_line_action(self.action_space)
         self.env = Henon_Net(net = self.net, delay=delay, period=period)
         self.period = period
         obs_num = len(obs)
