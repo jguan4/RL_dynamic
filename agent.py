@@ -315,12 +315,11 @@ class DQN_Agent:
             if abs(self.training_metadata.num_episodes - episode)<10:
                 self.saver.save(self.sess, self.model_path + '/last.data.chkp', global_step=self.training_metadata.episode)
 
-            # only for lorenz
-            # FIX THIS LATER!!!!!
-            temp_traj,x_bar = self.env.record_traj()
-            np.savetxt(self.model_path+"/x_bar.csv", x_bar, delimiter=",")
-            if self.training_metadata.episode%10 == 0:
-                np.savetxt(self.model_path+"/temp_traj"+str(self.training_metadata.episode)+".csv", temp_traj, delimiter=",")
+            # record intermediate trajectories and fixed points
+            # temp_traj,x_bar = self.env.record_traj()
+            # np.savetxt(self.model_path+"/x_bar.csv", x_bar, delimiter=",")
+            # if self.training_metadata.episode%10 == 0:
+                # np.savetxt(self.model_path+"/temp_traj"+str(self.training_metadata.episode)+".csv", temp_traj, delimiter=",")
 
             # update tensorboard
             self.writer.add_summary(self.sess.run(self.test_summary,
@@ -332,9 +331,9 @@ class DQN_Agent:
             frame_eps = np.append(frame_eps, [[self.training_metadata.episode, self.training_metadata.frame]], axis=0)
 
         # end of training 
-        np.savetxt(self.model_path+"/training_scores.csv", training_scores, delimiter=",")
+        # np.savetxt(self.model_path+"/training_scores.csv", training_scores, delimiter=",")
         np.savetxt(self.model_path+"/frame_eps.csv", frame_eps, delimiter=",")
-        np.savetxt(self.model_path+"/traj.csv", traj, delimiter=",")
+        # np.savetxt(self.model_path+"/traj.csv", traj, delimiter=",")
         np.savetxt(self.model_path+"/period_points.csv", period_points, delimiter=",")
 
 
