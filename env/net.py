@@ -16,8 +16,9 @@ class Net:
 		self.adj[inds,inds] = 0
 
 	def create_obs_arr(self):
-		self.obs_arr = np.zeros(self.num_n*self.dim)
-		self.obs_arr[[self.obs]] = 1
+		obs_arr_t = np.zeros(self.num_n*self.dim)
+		obs_arr_t[[self.obs]] = 1
+		self.obs_arr = np.tile(obs_arr_t,(self.num_n*self.dim,1))
 
 	def create_net_action(self, action_range, act_dim):
 		act_ref = np.empty((0,self.num_n*self.dim),float)

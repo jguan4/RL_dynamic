@@ -95,8 +95,8 @@ setup_dict = {
 		'act_type': 'line',
 		# 'angle': np.pi/4,
 		# 'act_dim': [0,1,2],
-		'delay': False,
+		'delay': True,
 		'num_n': 3,
-		'obs': [0,1,2,3,4,5]
+		'obs': [0]
 	}
 }

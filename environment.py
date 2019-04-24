@@ -100,13 +100,18 @@ class Henon_Network:
         self.action_ref = self.net.create_line_action(self.action_space)
         self.env = Henon_Net(net = self.net, delay=delay, period=period)
         self.period = period
+        self.history_pick = history_pick
         obs_num = len(obs)
         if delay:
             self.state_dimension = [max(self.dim*num_n,period)]
-        else: self.state_dimension = [period*obs_num] # change later
-        self.history_pick = history_pick
+            if obs_num == 1:
+                self.state_shape = [None, self.history_pick*self.state_dimension[0]]
+            else: 
+                self.state_shape = [self.state_dimension[0],obs_num]
+        else: 
+            self.state_dimension = [period*obs_num] # change later
+            self.state_shape = [None, self.history_pick*self.state_dimension[0]] 
         self.state_space_size = history_pick * np.prod(self.state_dimension)
-        self.state_shape = [None, self.history_pick*self.state_dimension[0]] 
         self.action_shape = [None, self.history_pick*1] 
         self.action_space_size = np.shape(self.action_ref)[0]
         self.history = []
@@ -147,7 +152,8 @@ class Henon_Network:
             result = np.concatenate((result, np.array(self.history)),axis=0)
         else:
             result = np.array(self.history)
-        result = np.reshape(result,(self.history_pick*self.state_dimension[0]))
+        if not self.state_shape[0]:
+            result = np.reshape(result,(self.history_pick*self.state_dimension[0]))
         return result
 
     def add_history(self, state):

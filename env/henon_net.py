@@ -53,7 +53,7 @@ class Henon_Net:
 		# first delay coordinates obtained
 		# update trajectories
 		if self.delay:
-			self.state = np.matmul(ns_p,self.obs_arr)
+			self.state = np.squeeze(ns_p[:,self.obs])
 		else: 
 			self.state = ns_p[-1]
 			self.state = self.state[self.obs]
@@ -75,14 +75,15 @@ class Henon_Net:
 		if self.delay:
 			if self.period>1:
 				traj_dev = np.absolute(traj[-1]-traj[-2])
-				norm_dist = LA.norm(traj_dev,2)
+				norm_dist = LA.norm(traj_dev)
 				minus_vec = np.absolute(traj[-1][1::]-traj[-1][0])
 				min_minus_vec = np.min(minus_vec)
 				if norm_dist<self.radius and min_minus_vec<0.15:
 					norm_dist+=1
 			else:
-				traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) 
-				norm_dist = LA.norm(traj_dev,2)
+				# traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) 
+				traj_dev = np.absolute(traj[-1]-traj[-2]) 
+				norm_dist = LA.norm(traj_dev)
 		else:
 			traj_dev = np.absolute(traj[-1]-traj[-2])
 			# traj_dev = np.absolute(traj[-1]-self.x_bar)
@@ -101,9 +102,9 @@ class Henon_Net:
 
 		if self.t/self.dt > 1e3:
 			ter = True
-		if traj[-1][0]>100:
-			ter = True
-			reward = -10
+		# if self.state[-1][0]>100:
+		# 	ter = True
+		# 	reward = -10
 		return (reward,ter,info)
 
 	def render(self):
@@ -113,7 +114,7 @@ class Henon_Net:
 		self.t = self.t + self.dt
 		ns_p = self.henon_net(self.t, self.x_traj[-1], a)
 		if self.delay:
-			self.state = np.matmul(ns_p,self.obs_arr)
+			self.state = np.squeeze(ns_p[:,self.obs])
 		else: 
 			self.state = ns_p[-1]
 			self.state = self.state[self.obs]

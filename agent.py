@@ -89,11 +89,11 @@ class DQN_Agent:
         self.test_score = tf.placeholder(dtype=tf.float32, name='test_score')
         self.avg_q = tf.placeholder(dtype=tf.float32, name='avg_q')
         self.loss_value = tf.placeholder(dtype=tf.float32, name='loss_value')
-        self.henon_x1 = tf.placeholder(dtype=tf.float32, name='henon_x1')
+        # self.P_x1 = tf.placeholder(dtype=tf.float32, name='P_x1')
         # self.henon_x2 = tf.placeholder(dtype=tf.float32, name='henon_x2')
         # self.scat_1 = tf.placeholder(dtype=tf.float32, name='scat_1')
         # self.scat_2 = tf.placeholder(dtype=tf.float32, name='scat_2')
-        self.fp = tf.placeholder(dtype=tf.float32, shape=self.state_shape, name='fp')
+        # self.fp = tf.placeholder(dtype=tf.float32, shape=self.state_shape, name='fp')
         self.traj = tf.placeholder(dtype=tf.float32, name='traj')
         self.f_count = tf.placeholder(dtype=tf.float32, name='f_count')
 
@@ -145,16 +145,16 @@ class DQN_Agent:
         avg_q = tf.summary.scalar("Average Q-value", self.avg_q, collections=None, family=None)
         loss = tf.summary.scalar("Loss", self.loss_value, collections=None, family=None)
         # henon_x2 = tf.summary.scalar("henon_x2", self.henon_x2, collections=None, family=None)
-        henon_x1 = tf.summary.scalar("henon_x1", self.henon_x1, collections=None, family=None)
+        # P_x1 = tf.summary.scalar("P_x1", self.P_x1, collections=None, family=None)
         # scat_1 = tf.summary.scalar("scat_1", self.scat_1, collections=None, family=None)
         # scat_2 = tf.summary.scalar("scat_2", self.scat_2, collections=None, family=None)
-        fp = tf.summary.histogram("fp",self.fp,collections=None, family=None)
+        # fp = tf.summary.histogram("fp",self.fp,collections=None, family=None)
         traj = tf.summary.scalar("traj", self.traj, collections=None, family=None)
         f_count= tf.summary.scalar("f_count", self.f_count, collections=None, family=None)
         self.training_summary = tf.summary.merge([avg_q])
         self.update_summary = tf.summary.merge([loss])
         self.test_summary = tf.summary.merge([test_score])
-        self.traj_summary = tf.summary.merge([fp,henon_x1])
+        # self.traj_summary = tf.summary.merge([P_x1])
         self.scat_summary = tf.summary.merge([traj])
         self.frame_summary = tf.summary.merge([f_count])
         # subprocess.Popen(['tensorboard', '--logdir', self.log_path])
@@ -198,7 +198,11 @@ class DQN_Agent:
         if random.random() < epsilon:
             return self.env.sample_action_space()
         else:
-            return self.sess.run(self.Q_argmax, feed_dict={self.state_tf: [state]})[0]
+            if self.state_shape[0]:
+                feed_in = state
+            else: 
+                feed_in = [state]
+            return self.sess.run(self.Q_argmax, feed_dict={self.state_tf: feed_in})[0]
             # states_repeat = np.tile(state,(self.action_size,1))
             # actions_possible = np.arange(self.action_size).reshape((self.action_size, 1))
             # return self.sess.run(self.Q_argmax, 
@@ -230,10 +234,10 @@ class DQN_Agent:
     # Parameters: 	None
     # Output: 		None
     def train(self):
-        training_scores = np.empty((0,2),float)
+        # training_scores = np.empty((0,2),float)
         frame_eps = np.empty((0,2),float)
-        traj = np.empty((0,1),float)
-        period_points = np.empty((0,self.state_size),float)
+        # traj = np.empty((0,1),float)
+        # period_points = np.empty((0,self.state_size),float)
 
         # self.fill_random()
         while self.sess.run(self.episode) < self.training_metadata.num_episodes:
@@ -274,16 +278,20 @@ class DQN_Agent:
                 #     print(info['Fixed_Point'])
                 #     utils.pause()
 
-                if isinstance(info['Fixed_Point'], np.ndarray):
-                    fp = info['Fixed_Point']
-                    self.writer.add_summary(self.sess.run(self.traj_summary,
-                        feed_dict={self.fp: [fp], self.henon_x1:fp[0]}), self.training_metadata.frame)
-                    period_points = np.append(period_points,[fp],axis=0)
+                # if isinstance(info['Fixed_Point'], np.ndarray):
+                #     fp = info['Fixed_Point']
+                #     self.writer.add_summary(self.sess.run(self.traj_summary,
+                #         feed_dict={self.fp: [fp], self.P_x1:fp[0]}), self.training_metadata.frame)
+                #     period_points = np.append(period_points,[fp],axis=0)
 
                 # for i in range(np.size(next_state)):
+                if self.state_shape[0]:
+                    ns_in = next_state[-1][0]
+                else:
+                    ns_in = next_state[0]
                 self.writer.add_summary(self.sess.run(self.scat_summary,
-                    feed_dict={self.traj: next_state[0]}), self.training_metadata.frame)
-                traj = np.append(traj, [[state[0]]], axis=0)                    
+                    feed_dict={self.traj: ns_in}), self.training_metadata.frame)
+                # traj = np.append(traj, [[state[0]]], axis=0)                    
 
                 self.replay_memory.add(self, state, action, reward, next_state, done)
 
@@ -327,14 +335,14 @@ class DQN_Agent:
             self.writer.add_summary(self.sess.run(self.frame_summary,
                 feed_dict={self.f_count: self.training_metadata.frame}), self.training_metadata.episode)
 
-            training_scores = np.append(training_scores, [[self.training_metadata.episode, episode_frame]], axis=0)
+            # training_scores = np.append(training_scores, [[self.training_metadata.episode, episode_frame]], axis=0)
             frame_eps = np.append(frame_eps, [[self.training_metadata.episode, self.training_metadata.frame]], axis=0)
 
         # end of training 
         # np.savetxt(self.model_path+"/training_scores.csv", training_scores, delimiter=",")
         np.savetxt(self.model_path+"/frame_eps.csv", frame_eps, delimiter=",")
         # np.savetxt(self.model_path+"/traj.csv", traj, delimiter=",")
-        np.savetxt(self.model_path+"/period_points.csv", period_points, delimiter=",")
+        # np.savetxt(self.model_path+"/period_points.csv", period_points, delimiter=",")
 
 
     # Description: Tests the model

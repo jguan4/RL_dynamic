@@ -19,7 +19,7 @@ import utils
 #    in parameters/setup.py.
 ########################################################################################################
 
-environment = env.Henon_Map(period = int(sys.argv[1]), **setup.setup_dict['henon'])
+environment = env.Henon_Network(period = int(sys.argv[1]), **setup.setup_dict['henon_net'])
 control = agent.DQN_Agent(environment=environment, model_name=sys.argv[2], **setup.setup_dict['agent'])
 
 #####################################  Traning a model  ################################################
