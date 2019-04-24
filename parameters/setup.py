@@ -65,7 +65,7 @@ setup_dict = {
 		'learning_rate': Atari_Learning_Rate,
 		'explore_rate': No_Explore,
 		'target_update_frequency': 1000,
-		'batch_size': 4096, 
+		'batch_size': 2048, 
 		'memory_capacity': 1000000, 
 		'num_episodes': 10000,
 		'learning_rate_drop_frame_limit': 50000
@@ -79,7 +79,7 @@ setup_dict = {
 
 	'henon': {
 		'action_range': [+1.0, 0., -1.0],#[+5.0, +2.0, +1.0, 0., -1.0, -2.0, -5.0],
-		'delay': False,
+		'delay': True,
 		'hs': 0.025
 	},
 
