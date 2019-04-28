@@ -104,7 +104,7 @@ class Henon_Network:
         self.history_pick = history_pick
         obs_num = len(obs)
         if delay:
-            self.state_dimension = [max(self.dim*num_n,period)]
+            self.state_dimension = [4]#[max(self.dim*num_n,period)]
             self.state_shape = [None, self.history_pick*self.state_dimension[0]]
         else: 
             self.state_dimension = [period*obs_num] # change later

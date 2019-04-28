@@ -34,8 +34,8 @@ class Henon_Net:
 		self.p3 = [0.7,0.8,0.5] #[0.7, 0.8]
 		self.cw = [0.5, 0.3,0.3] #[0.5, 0.3]
 		if self.delay: 
-			self.iter_step = max(self.dim*self.num_n,self.period)
-			self.iter_step = math.ceil(self.iter_step/self.obs_num)
+			self.iter_step = 4#max(self.dim*self.num_n,self.period)
+			# self.iter_step = math.ceil(self.iter_step/self.obs_num)
 		else: self.iter_step = self.period
 		self.dt = self.iter_step
 		self.x_bars = np.empty((0,(self.num_n*self.dim)*2),float)
@@ -56,7 +56,7 @@ class Henon_Net:
 		# update trajectories
 		if self.delay:
 			self.state = np.squeeze(ns_p[:,self.obs])
-			self.state = np.reshape(self.state,(self.iter_step*self.obs_num))
+			# self.state = np.reshape(self.state,(self.iter_step*self.obs_num))
 		else: 
 			self.state = ns_p[-1]
 			self.state = self.state[self.obs]
@@ -118,7 +118,7 @@ class Henon_Net:
 		ns_p = self.henon_net(self.t, self.x_traj[-1], a)
 		if self.delay:
 			self.state = np.squeeze(ns_p[:,self.obs])
-			self.state = np.reshape(self.state,(self.iter_step*self.obs_num))
+			# self.state = np.reshape(self.state,(self.iter_step*self.obs_num))
 		else: 
 			self.state = ns_p[-1]
 			self.state = self.state[self.obs]
