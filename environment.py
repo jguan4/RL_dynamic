@@ -8,6 +8,7 @@ from env import Henon_Net
 from env import Net
 import env
 import numpy as np
+import math
 import random
 from PIL import Image
 import utils
@@ -104,10 +105,7 @@ class Henon_Network:
         obs_num = len(obs)
         if delay:
             self.state_dimension = [max(self.dim*num_n,period)]
-            if obs_num == 1:
-                self.state_shape = [None, self.history_pick*self.state_dimension[0]]
-            else: 
-                self.state_shape = [self.state_dimension[0],obs_num]
+            self.state_shape = [None, self.history_pick*self.state_dimension[0]]
         else: 
             self.state_dimension = [period*obs_num] # change later
             self.state_shape = [None, self.history_pick*self.state_dimension[0]] 
@@ -137,7 +135,7 @@ class Henon_Network:
             total_reward += reward
             info['true_done'] = done
             if done: break
-        processed_next_state = self.process(next_state)    
+        processed_next_state = self.process(next_state)
         return processed_next_state, total_reward, done, info
 
     def render(self):
@@ -154,6 +152,8 @@ class Henon_Network:
             result = np.array(self.history)
         if not self.state_shape[0]:
             result = np.reshape(result,(self.history_pick*self.state_dimension[0]))
+        else:
+            result = np.reshape(result,self.state_shape)
         return result
 
     def add_history(self, state):
