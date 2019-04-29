@@ -3,8 +3,8 @@ import shutil
 
 des_path = '/home/fred/Dropbox/Neural Network/RL/Traj/Henon/'
 sour_path = '/home/fred/Documents/JJ_Folder/RL_dynamic/models/0318runs/Henon/'
-s_folders = ['Whole_P1_1by2048/','Whole_P1_5by2048/','Whole_P1_50by2048/','Whole_P1_100by2048/','Whole_P1_200by2048/','Whole_P1_500by2048/','Whole_P1_800by2048/','Whole_P1_5by512/','Whole_P1_5by128/','Whole_P1_5by4096/']
-d_folders = ['Whole_P1_1by2048/','Whole_P1_5by2048/','Whole_P1_50by2048/','Whole_P1_100by2048/','Whole_P1_200by2048/','Whole_P1_500by2048/','Whole_P1_800by2048/','Whole_P1_5by512/','Whole_P1_5by128/','Whole_P1_5by4096/']
+s_folders = ['Delay_P2_5by2048/','Delay_P4_5by2048/']
+d_folders = ['Delay_P2_5by2048/','Delay_P4_5by2048/']
 temp = 'ao_100u_5x64_disp5_batch1024/'
 items = ['frame_eps.csv']#,'x_bar.csv']
 n = len(s_folders)
