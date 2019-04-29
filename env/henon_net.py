@@ -34,8 +34,8 @@ class Henon_Net:
 		self.p3 = [0.7,0.8,0.5] #[0.7, 0.8]
 		self.cw = [0.5, 0.3,0.3] #[0.5, 0.3]
 		if self.delay: 
-			self.iter_step = 4#max(self.dim*self.num_n,self.period)
-			# self.iter_step = math.ceil(self.iter_step/self.obs_num)
+			self.iter_step = max(self.dim*self.num_n,self.period)
+			self.iter_step = math.ceil(self.iter_step/self.obs_num)
 		else: self.iter_step = self.period
 		self.dt = self.iter_step
 		self.x_bars = np.empty((0,(self.num_n*self.dim)*2),float)
