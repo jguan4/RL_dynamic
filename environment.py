@@ -5,6 +5,7 @@ import gym
 from env import Henon
 from env import Lorenz
 from env import Henon_Net
+from env import Henon_Net_PO
 from env import Net
 import env
 import numpy as np
@@ -174,6 +175,85 @@ class Henon_Network:
 ##################################################################
 ##################################################################
 
+class Henon_Network_PO:
+
+    def __init__(self, num_act, max_mag, act_type, num_n, obs, delay, type="Henon_Network", history_pick=1, period=1):
+        self.name = type + str(time.time())
+        self.dim = 2
+        self.obs = obs
+        self.net = Net(num_n = num_n, dim = self.dim, obs = obs)
+        self.action_space = self.net.create_action_range(num_act,max_mag,act_type)
+        self.action_ref = self.net.create_line_action(self.action_space)
+        self.env = Henon_Net_PO(net = self.net, delay=delay, period=period)
+        self.period = period
+        self.history_pick = history_pick
+        obs_num = len(obs)
+        self.state_dimension = [obs_num] # change later
+        self.state_shape = [None, self.history_pick*self.state_dimension[0]] 
+        self.state_space_size = history_pick * np.prod(self.state_dimension)
+        self.action_shape = [None, self.history_pick*1] 
+        self.action_space_size = np.shape(self.action_ref)[0]
+        self.history = []
+
+    # returns a random action
+    def sample_action_space(self):
+        return np.random.randint(self.action_space_size)
+
+    def map_action(self, action):
+        return self.action_ref[action]
+
+    # resets the environment and returns the initial state
+    def reset(self, test=False):
+        return self.process(self.env.reset())
+
+    # take action 
+    def step(self, action, test=False):
+        action = self.map_action(action)
+        total_reward = 0
+        n = 1
+        for i in range(n):
+            next_state, reward, done, info = self.env.step(action)
+            total_reward += reward
+            info['true_done'] = done
+            if done: break
+        processed_next_state = self.process(next_state)
+        return processed_next_state, total_reward, done, info
+
+    def render(self):
+        self.env.render()
+
+    # process state and return the current history
+    def process(self, state):
+        self.add_history(state)
+        if len(self.history) < self.history_pick:
+            zeros = np.zeros(self.state_dimension)
+            result = np.tile(zeros, ((self.history_pick - len(self.history)), 1))
+            result = np.concatenate((result, np.array(self.history)),axis=0)
+        else:
+            result = np.array(self.history)
+        if not self.state_shape[0]:
+            result = np.reshape(result,(self.history_pick*self.state_dimension[0]))
+        else:
+            result = np.reshape(result,self.state_shape)
+        return result
+
+    def add_history(self, state):
+        if len(self.history) >= self.history_pick:
+            self.history.pop(0)
+        # temp = utils.process_image(state, detect_edges=self.detect_edges, flip=self.flip_episode)
+        temp = state
+        self.history.append(temp)
+
+    def record_traj(self):
+        traj = self.env.x_traj
+        x_bar = self.env.x_bars
+        return traj, x_bar
+
+    def __str__(self):
+        return self.name + '\nactions: {0}\n period: {1}\n observed: {2}\n '.format(self.action_space, self.period, self.obs)
+
+##################################################################
+##################################################################
 class Lorenz_Attractor:
 
     def __init__(self, action_range, hs, delay, type="Lorenz", history_pick=1, period=1):
