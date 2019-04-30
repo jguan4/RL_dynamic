@@ -45,7 +45,7 @@ class DQN_Agent:
 
     def __init__(self, environment, architecture, explore_rate, learning_rate,
                  batch_size, memory_capacity, num_episodes, learning_rate_drop_frame_limit,
-                 target_update_frequency, discount=0.5, delta=1, model_name=None):
+                 target_update_frequency, discount=0.9, delta=1, model_name=None):
         self.env = environment
         self.architecture = architecture()
         self.explore_rate = explore_rate()
