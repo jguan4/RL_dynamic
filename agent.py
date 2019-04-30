@@ -324,10 +324,10 @@ class DQN_Agent:
                 self.saver.save(self.sess, self.model_path + '/last.data.chkp', global_step=self.training_metadata.episode)
 
             # record intermediate trajectories and fixed points
-            # temp_traj,x_bar = self.env.record_traj()
-            # np.savetxt(self.model_path+"/x_bar.csv", x_bar, delimiter=",")
-            # if self.training_metadata.episode%10 == 0:
-                # np.savetxt(self.model_path+"/temp_traj"+str(self.training_metadata.episode)+".csv", temp_traj, delimiter=",")
+            temp_traj,x_bar = self.env.record_traj()
+            np.savetxt(self.model_path+"/x_bar.csv", x_bar, delimiter=",")
+            if self.training_metadata.episode%10 == 0:
+                np.savetxt(self.model_path+"/temp_traj"+str(self.training_metadata.episode)+".csv", temp_traj, delimiter=",")
 
             # update tensorboard
             self.writer.add_summary(self.sess.run(self.test_summary,
