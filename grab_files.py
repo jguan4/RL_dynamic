@@ -1,10 +1,10 @@
 import os
 import shutil
 
-des_path = '/home/fred/Dropbox/Neural Network/RL/Traj/Henon/'
-sour_path = '/home/fred/Documents/JJ_Folder/RL_dynamic/models/0318runs/Henon/'
-s_folders = ['Delay_P2_5by2048/','Delay_P4_5by2048/']
-d_folders = ['Delay_P2_5by2048/','Delay_P4_5by2048/']
+des_path = '/home/fred/Dropbox/Neural Network/RL/Traj/Henon_Net/'
+sour_path = '/home/fred/Documents/JJ_Folder/RL_dynamic/models/0318runs/Henon_Network/'
+s_folders = ['Delay_P1_5by2048_3n_obs01_1d_squareDist/']
+d_folders = ['Delay_P1_5by2048_3n_obs01_1d_squareDist/']
 temp = 'ao_100u_5x64_disp5_batch1024/'
 items = ['period_points.csv']#,'x_bar.csv']
 n = len(s_folders)
