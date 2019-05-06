@@ -188,7 +188,7 @@ class Henon_Network_PO:
         self.period = period
         self.history_pick = history_pick
         obs_num = len(obs)
-        self.state_dimension = [obs_num] # change later
+        self.state_dimension = [obs_num*(self.period+1)] # change later
         self.state_shape = [None, self.history_pick*self.state_dimension[0]] 
         self.state_space_size = history_pick * np.prod(self.state_dimension)
         self.action_shape = [None, self.history_pick*1] 

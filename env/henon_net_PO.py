@@ -48,12 +48,14 @@ class Henon_Net_PO:
 		act = np.zeros(self.num_n*self.dim)
 		self.t = self.t + self.dt
 		ns_p = self.henon_net(self.t, self.x_traj[-1], act)
+		ns_po = np.squeeze(ns_p[:,self.obs])
+		ns_po = np.reshape(ns_po,((self.iter_step+1)*self.obs_num))
 
 		# first delay coordinates obtained
 		# update trajectories
-		self.state = np.squeeze(ns_p[-1,self.obs])
+		self.state = ns_po
 
-		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
+		self.x_traj = np.append(self.x_traj,[ns_p[-1]],axis=0)
 		self.o_traj = [self.state]
 
 		return self.state
@@ -95,26 +97,28 @@ class Henon_Net_PO:
 		self.t = self.t + self.dt
 		ns_p = self.henon_net(self.t, self.x_traj[-1], a)
 		ns_po = np.squeeze(ns_p[:,self.obs])
+		ns_po = np.reshape(ns_po,((self.iter_step+1)*self.obs_num))
 
 		# only for producing trajectory, not for reference use
 		(reward,terminal,info) = self._terminal(a,ns_po)
-		self.state = np.squeeze(ns_p[-1,self.obs])
-		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
+		self.state = ns_po
+		self.x_traj = np.append(self.x_traj,[ns_p[-1]],axis=0)
 		self.o_traj = np.append(self.o_traj,[self.state],axis=0)
 
 
 		return (self.state, reward, terminal, info)
 
 	def henon_net(self,t,w,act):
-		y = np.zeros((self.iter_step,self.dim*self.num_n))
+		y = np.zeros((self.iter_step+1,self.dim*self.num_n))
+		y[0,:] = w.copy()
 		# y[0] = -1.4*np.square(w[0])+w[1]+1
 		# y[1] = 0.3*w[0]
 		w = w + act
 		for i in range(self.iter_step):
 			p_x1 = w[:self.num_n:]
 			p_x2 = w[self.num_n::]
-			y[i,:self.num_n:] = np.multiply(self.p1,np.cos(p_x1))+np.multiply(self.p2,p_x2)+np.multiply(self.cw,np.matmul(p_x1,np.transpose(self.adj)))
-			y[i,self.num_n::] = np.multiply(self.p3,p_x1)
-			w = y[i,:].copy()
+			y[i+1,:self.num_n:] = np.multiply(self.p1,np.cos(p_x1))+np.multiply(self.p2,p_x2)+np.multiply(self.cw,np.matmul(p_x1,np.transpose(self.adj)))
+			y[i+1,self.num_n::] = np.multiply(self.p3,p_x1)
+			w = y[i+1,:].copy()
 		y = np.array(y)
 		return y
