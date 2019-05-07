@@ -69,7 +69,11 @@ class Henon_Net_PO:
 		ter = False
 		info = {}
 
-		traj_dev = np.subtract(ns_po,self.state)
+		traj_dev = np.subtract(ns_po,ns_po[0,:])
+		print(traj_dev)
+		print(ns_po)
+		utils.pause()
+		# traj_dev = np.subtract(ns_po,self.state)
 		# traj_dev = np.absolute(traj[-1]-self.x_bar)
 		# norm_dist = LA.norm(traj_dev,2)
 		norm_dist = np.power(LA.norm(traj_dev),1)
@@ -97,10 +101,10 @@ class Henon_Net_PO:
 		self.t = self.t + self.dt
 		ns_p = self.henon_net(self.t, self.x_traj[-1], a)
 		ns_po = np.squeeze(ns_p[:,self.obs])
-		ns_po = np.reshape(ns_po,((self.iter_step+1)*self.obs_num))
 
 		# only for producing trajectory, not for reference use
 		(reward,terminal,info) = self._terminal(a,ns_po)
+		ns_po = np.reshape(ns_po,((self.iter_step+1)*self.obs_num))
 		self.state = ns_po
 		self.x_traj = np.append(self.x_traj,[ns_p[-1]],axis=0)
 		self.o_traj = np.append(self.o_traj,[self.state],axis=0)
