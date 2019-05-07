@@ -70,9 +70,6 @@ class Henon_Net_PO:
 		info = {}
 
 		traj_dev = np.subtract(ns_po,ns_po[0,:])
-		print(traj_dev)
-		print(ns_po)
-		utils.pause()
 		# traj_dev = np.subtract(ns_po,self.state)
 		# traj_dev = np.absolute(traj[-1]-self.x_bar)
 		# norm_dist = LA.norm(traj_dev,2)
