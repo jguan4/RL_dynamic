@@ -53,7 +53,7 @@ class Henon:
 	#      1 stationary - reward 1
 	#      2 went out of neighborhood - reward -1
 	#      3 close to the fixed point, terminate
-	def _terminal(self):
+	def _terminal(self,ns_p):
 		traj = self.o_traj
 		ter = False
 		info = {}
@@ -67,7 +67,8 @@ class Henon:
 				if norm_dist<self.radius and min_minus_vec<0.15:
 					norm_dist+=1
 			else:
-				traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) 
+				# traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) 
+				traj_dev = np.subtract(ns_p,ns_p[0,:])
 				norm_dist = LA.norm(traj_dev,2)
 		else:
 			traj_dev = np.absolute(traj[-1]-traj[-2])
@@ -115,7 +116,7 @@ class Henon:
 		# only for producing trajectory, not for reference use
 		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
 		self.o_traj = np.append(self.o_traj,[self.state],axis=0)
-		(reward,terminal,info) = self._terminal()
+		(reward,terminal,info) = self._terminal(ns_p)
 
 		return (self.state, reward, terminal, info)
 
