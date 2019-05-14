@@ -110,15 +110,16 @@ class Henon:
 		self.t = self.t + self.dt
 		ns_p = self.henon(self.t, self.x_traj[-1], act)
 		# self.state = ns_p[-1]
-		(reward,terminal,info) = self._terminal(ns_p[-1,0])
 		if self.delay:
 			self.state = ns_p[-1,0]
 		else: self.state = ns_p[-1]
 
 		# only for producing trajectory, not for reference use
 		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
-		# self.o_traj = np.append(self.o_traj,[self.state],axis=0)
-		self.o_traj = np.append(self.o_traj,[self.state])
+		self.o_traj = np.append(self.o_traj,[self.state],axis=0)
+		# self.o_traj = np.append(self.o_traj,[self.state])
+
+		(reward,terminal,info) = self._terminal(ns_p[-1,0])
 
 		return (self.state, reward, terminal, info)
 
