@@ -22,7 +22,8 @@ class Henon_Map:
         self.env = Henon(delay=delay,period=period)
         self.period = period
         if delay:
-            self.state_dimension = [max(2,period)]
+            # self.state_dimension = [max(2,period)]
+            self.state_dimension = [max(1,period)]
         else: self.state_dimension = [2]
         self.history_pick = history_pick
         self.state_space_size = history_pick * np.prod(self.state_dimension)
