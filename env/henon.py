@@ -24,7 +24,7 @@ class Henon:
 		# self.x_bar = [1.2019, 1.2019]
 		# self.x_bar = [0.8385, 0.8385]
 		if self.delay:
-			self.dim = max(1,self.period)
+			self.dim = max(3,self.period)
 		else: self.dim = self.period
 		self.x_bars = np.empty((0,2),float)
 		self.x_bar = None
@@ -40,8 +40,9 @@ class Henon:
 
 		# first delay coordinates obtained
 		# update trajectories
+		
 		if self.delay:
-			self.state = ns_p[-1,0]
+			self.state = ns_p[:,0]
 		else: self.state = ns_p[-1]
 
 		self.x_traj = np.append(self.x_traj,ns_p,axis=0)
@@ -68,7 +69,8 @@ class Henon:
 					norm_dist+=1
 			else:
 				# traj_dev = np.absolute(traj[-1]-np.flip(traj[-2],0)) 
-				traj_dev = np.subtract(self.state,ns_p)
+				# traj_dev = np.subtract(self.state,ns_p)
+				traj_dev = np.subtract(self.state[-1],self.state[-2])
 				# norm_dist = LA.norm(traj_dev,2)
 				norm_dist = np.absolute(traj_dev)
 		else:
@@ -111,7 +113,7 @@ class Henon:
 		ns_p = self.henon(self.t, self.x_traj[-1], act)
 		# self.state = ns_p[-1]
 		if self.delay:
-			self.state = ns_p[-1,0]
+			self.state = ns_p[:,0]
 		else: self.state = ns_p[-1]
 
 		# only for producing trajectory, not for reference use
