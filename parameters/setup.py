@@ -98,6 +98,6 @@ setup_dict = {
 		# 'act_dim': [0,1,2],
 		'delay': True,
 		'num_n': 3,
-		'obs': [0]
+		'obs': [2,5]
 	}
 }
